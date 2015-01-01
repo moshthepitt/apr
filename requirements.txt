@@ -1,4 +1,13 @@
 Django==1.7.1
+South==1.0.2
 argparse==1.2.1
+coverage==3.7.1
+django-annoying==0.8.0
+django-appconf==0.6
+django-compressor==1.4
+django-scheduler==0.7.3
 python-dateutil==2.3
+pytz==2014.10
+six==1.8.0
+vobject==0.8.1c
 wsgiref==0.1.2
