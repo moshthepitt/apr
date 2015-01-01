@@ -1,0 +1,6 @@
+*.pyc
+local_settings.py
+*.sqlite3
+celerybeat.pid
+celerybeat-schedule
+whoosh_index/

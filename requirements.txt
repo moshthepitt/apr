@@ -1,0 +1,4 @@
+Django==1.7.1
+argparse==1.2.1
+python-dateutil==2.3
+wsgiref==0.1.2
