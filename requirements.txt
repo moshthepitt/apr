@@ -5,6 +5,7 @@ coverage==3.7.1
 django-annoying==0.8.0
 django-appconf==0.6
 django-compressor==1.4
+django-crispy-forms==1.4.0
 django-scheduler==0.7.3
 python-dateutil==2.3
 pytz==2014.10

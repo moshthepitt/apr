@@ -1,17 +1,25 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
 {% load staticfiles %}
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'fullcalendar/css/fullcalendar.min.css' %}" type="text/css" />
 {% endblock %}
 {% block content %}
-	<div id="calendar" class="row"></div>
+	<div class="row">
+		<div class="col-md-8">
+			<div id="calendar" class="row"></div>
+		</div>
+		<div class="col-md-4">
+			{% crispy form %}
+		</div>
+	</div>	
 {% endblock %}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
 	<script src="{% static 'fullcalendar/js/fullcalendar.min.js' %}"></script>
 	<script type="text/javascript">
-    $(document).ready(function() {
-	
+    $(document).ready(function() {	
 			$('#calendar').fullCalendar({
 				header: {
 					left: 'prev,next,today',
@@ -26,9 +34,8 @@
 				dayClick: function(date, allDay, jsEvent, view) {
 					$('#calendar').fullCalendar('changeView', 'agendaDay');
 					$('#calendar').fullCalendar('gotoDate', date);
-				}
-			});
-		
+				},
+			});		
 		});
 	</script>
 {% endblock %}

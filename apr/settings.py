@@ -32,6 +32,7 @@ INSTALLED_APPS = (
     #third party
     'compressor',
     'schedule',
+    'crispy_forms',
 
     #custom
     'appointments',
@@ -82,6 +83,9 @@ STATICFILES_FINDERS = (
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
 
 STATIC_URL = '/static/'
+
+#crispy forms
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 try:
    from local_settings import *
