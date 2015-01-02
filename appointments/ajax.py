@@ -10,12 +10,12 @@ from schedule.models import Event
 from schedule.periods import Period
 
 def event_feed(request):
-    if request.method == 'GET':
+    if request.is_ajax() and request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
             fro = timezone.make_aware(parser.parse(request.GET['start']),timezone.get_current_timezone())
             to = timezone.make_aware(parser.parse(request.GET['end']),timezone.get_current_timezone())
             period = Period(Event.objects.all(),fro,to)
-            occurences = [{
+            occurences = [{ 'id': x.pk,
                             'title':x.title,
                             'className':'event-info',
                             'start':timezone.localtime(x.start).isoformat(),
@@ -24,9 +24,5 @@ def event_feed(request):
                           for x in period.get_occurrences()]
         data = occurences
         return HttpResponse(json.dumps(data), content_type="application/json")
-    else:
-        data = {
-            "success": 0,
-            "error": "Something went wrong"
-        }
-        return HttpResponse(json.dumps(data), content_type="application/json")
+    #if all fails
+    raise Http404
