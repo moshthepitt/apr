@@ -36,6 +36,7 @@ INSTALLED_APPS = (
 
     #custom
     'appointments',
+    'users',
 )
 
 MIDDLEWARE_CLASSES = (
