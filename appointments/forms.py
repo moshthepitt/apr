@@ -9,14 +9,6 @@ class AppointmentForm(forms.Form):
         label = _("Title"),
         required = True
     )
-    name = forms.CharField(
-        label = _("Name"),
-        required = True
-    )
-    email = forms.EmailField(
-        label = _("Email"),
-        required = True
-    )
     start_date = forms.CharField(
         label = _("Start date"),
         required = True
@@ -33,15 +25,15 @@ class AppointmentForm(forms.Form):
         label = _("End time"),
         required = True
     )
-    # description = forms.CharField(
-    #     label = _("Description"),
-    #     required=False,
-    #     widget=forms.Textarea
-    # )
+    description = forms.CharField(
+        label = _("Description"),
+        required=False,
+        widget=forms.Textarea
+    )
 
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-eventForm'
+        self.helper.form_id = 'id-event-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))

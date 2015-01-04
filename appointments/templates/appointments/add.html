@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}{% endblock %}
+{% block content %}
+	<div class="row">
+		{% crispy UserForm %}
+		{% crispy AppointmentForm %}
+	</div>	
+{% endblock %}
+{% block extrajs %}{% endblock %}
