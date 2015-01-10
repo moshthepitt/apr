@@ -5,6 +5,11 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 
 class AppointmentForm(forms.Form):
+    user = forms.IntegerField(
+        label = _("Client"),
+        required = True,
+        widget = forms.HiddenInput
+    )
     title = forms.CharField(
         label = _("Title"),
         required = True
@@ -37,3 +42,4 @@ class AppointmentForm(forms.Form):
         self.helper.form_id = 'id-event-form'
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.render_hidden_fields = True

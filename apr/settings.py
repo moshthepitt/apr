@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'compressor',
     'schedule',
     'crispy_forms',
+    'django_select2',
 
     #custom
     'appointments',

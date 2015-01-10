@@ -4,9 +4,116 @@
 {% load staticfiles %}
 {% block extracss %}{% endblock %}
 {% block content %}
-	<div class="row">
-		{% crispy UserForm %}
-		{% crispy AppointmentForm %}
+	<div class="row" id="get-user">
+		<div class="col-md-6">
+			{% crispy SelectUserForm %}
+		</div>
+		<div class="col-md-6">
+			{% crispy AddUserForm %}
+		</div>		
 	</div>	
+	<div class="row" id="create-event">
+		{% crispy AppointmentForm %}
+	</div>
 {% endblock %}
-{% block extrajs %}{% endblock %}
+{% block extrajs %}
+	<script src="{% static 'js/jquery.cookie.js' %}"></script>
+	<script>
+		$(document).ready(function() {
+			//id-add-user-form
+			$('#id-add-user-form').submit(function(event) {
+				event.preventDefault();
+				var add_user_form = '#id-add-user-form';
+				$.ajax({
+				    url: "{% url 'appointments:process_add_user_form' %}",
+				    type: "POST",
+				    data: $(add_user_form).serialize(),
+				    dataType: 'json',
+				    success: function(data) {				    	
+			        if (!(data['success'])) {
+		            $(add_user_form).replaceWith(data['form_html']);
+			        }
+			        else {
+		            // Here you can show the user a success message or do whatever you need
+		            $(add_user_form).find('.success-message').show();
+			        }
+				    },
+				    error: function () {
+			        $(add_user_form).find('.error-message').show()
+				    }
+				});
+			});	
+			//select-user-form
+			$('#id-select-user-form').submit(function(event) {
+				event.preventDefault();
+				var add_user_form = '#id-select-user-form';
+				$.ajax({
+				    url: "{% url 'appointments:process_select_user_form' %}",
+				    type: "POST",
+				    data: $(add_user_form).serialize(),
+				    dataType: 'json',
+				    success: function(data) {				    	
+			        if (!(data['success'])) {
+		            $(add_user_form).replaceWith(data['form_html']);
+			        }
+			        else {
+		            // Here you can show the user a success message or do whatever you need
+		            $(add_user_form).find('.success-message').show();
+			        }
+				    },
+				    error: function () {
+			        $(add_user_form).find('.error-message').show()
+				    }
+				});
+			});				
+		});
+		$(document).ajaxStop(function() {
+			//id-add-user-form
+			$('#id-add-user-form').submit(function(event) {
+				event.preventDefault();
+				var add_user_form = '#id-add-user-form';
+				$.ajax({
+				    url: "{% url 'appointments:process_add_user_form' %}",
+				    type: "POST",
+				    data: $(add_user_form).serialize(),
+				    dataType: 'json',
+				    success: function(data) {					    	
+			        if (!(data['success'])) {
+		            $(add_user_form).replaceWith(data['form_html']);
+			        }
+			        else {
+		            // Here you can show the user a success message or do whatever you need
+		            $(add_user_form).find('.success-message').show();
+			        }
+				    },
+				    error: function () {
+			        $(add_user_form).find('.error-message').show()
+				    }
+				});
+			});	
+			//select-user-form
+			$('#id-select-user-form').submit(function(event) {
+				event.preventDefault();
+				var add_user_form = '#id-select-user-form';
+				$.ajax({
+				    url: "{% url 'appointments:process_select_user_form' %}",
+				    type: "POST",
+				    data: $(add_user_form).serialize(),
+				    dataType: 'json',
+				    success: function(data) {				    	
+			        if (!(data['success'])) {
+		            $(add_user_form).replaceWith(data['form_html']);
+			        }
+			        else {
+		            // Here you can show the user a success message or do whatever you need
+		            $(add_user_form).find('.success-message').show();
+			        }
+				    },
+				    error: function () {
+			        $(add_user_form).find('.error-message').show()
+				    }
+				});
+			});			 
+		});
+	</script>
+{% endblock %}
