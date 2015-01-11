@@ -8,12 +8,12 @@
 {% endblock %}
 {% block title %}{% trans "Create appointment" %} | APR{% endblock %}
 {% block content %}
-	<div class="row" id="get-user">
+	<div class="row" id="get-client">
 		<div class="col-md-6">
-			{% crispy SelectUserForm %}
+			{% crispy SelectClientForm %}
 		</div>
 		<div class="col-md-6">
-			{% crispy AddUserForm %}
+			{% crispy AddClientForm %}
 		</div>		
 	</div>	
 	<div class="row" id="create-event" style="display:none;">
@@ -27,51 +27,51 @@
 	<script src="{% static 'js/jquery.datepair.min.js' %}"></script>
 	<script>
 		$(document).ready(function() {
-			//id-add-user-form
-			$('#id-add-user-form').submit(function(event) {
+			//id-add-client-form
+			$('#id-add-client-form').submit(function(event) {
 				event.preventDefault();
-				var add_user_form = '#id-add-user-form';
+				var add_client_form = '#id-add-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_add_user_form' %}",
+			    url: "{% url 'appointments:process_add_client_form' %}",
 			    type: "POST",
-			    data: $(add_user_form).serialize(),
+			    data: $(add_client_form).serialize(),
 			    dataType: 'json',
 			    success: function(data) {				    	
 		        if (!(data['success'])) {
-	            $(add_user_form).replaceWith(data['form_html']);
+	            $(add_client_form).replaceWith(data['form_html']);
 		        }
 		        else {
-	            document.getElementById('id-create-appointment-user').value = data['user_id'];
-	            $('#get-user').hide();
+	            document.getElementById('id-create-appointment-client').value = data['client_id'];
+	            $('#get-client').hide();
 	            $('#create-event').show();
 		        }
 			    },
 			    error: function () {
-		        $(add_user_form).find('.error-message').show()
+		        $(add_client_form).find('.error-message').show()
 			    }
 				});
 			});	
 			//select-user-form
-			$('#id-select-user-form').submit(function(event) {
+			$('#id-select-client-form').submit(function(event) {
 				event.preventDefault();
-				var select_user_form = '#id-select-user-form';
+				var select_client_form = '#id-select-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_select_user_form' %}",
+			    url: "{% url 'appointments:process_select_client_form' %}",
 			    type: "POST",
-			    data: $(select_user_form).serialize(),
+			    data: $(select_client_form).serialize(),
 			    dataType: 'json',
 			    success: function(data) {				    	
 		        if (!(data['success'])) {
-	            $(select_user_form).replaceWith(data['form_html']);
+	            $(select_client_form).replaceWith(data['form_html']);
 		        }
 		        else {
-	            document.getElementById('id-create-appointment-user').value = data['user_id'];
-	            $('#get-user').hide();
+	            document.getElementById('id-create-appointment-client').value = data['client_id'];
+	            $('#get-client').hide();
 	            $('#create-event').show();
 		        }
 			    },
 			    error: function () {
-		        $(select_user_form).find('.error-message').show()
+		        $(select_client_form).find('.error-message').show()
 			    }
 				});
 			});	
@@ -92,7 +92,7 @@
   			event.preventDefault();
   			var add_event_form = '#id-event-form';
   			$.ajax({
-  		    url: "{% url 'appointments:process_select_user_form' %}",
+  		    url: "{% url 'appointments:process_select_client_form' %}",
   		    type: "POST",
   		    data: $(add_event_form).serialize(),
   		    dataType: 'json',
@@ -111,51 +111,51 @@
   		});	
 		});
 		$(document).ajaxStop(function() {
-			//id-add-user-form
-			$('#id-add-user-form').submit(function(event) {
+			//id-add-client-form
+			$('#id-add-client-form').submit(function(event) {
 				event.preventDefault();
-				var add_user_form = '#id-add-user-form';
+				var add_client_form = '#id-add-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_add_user_form' %}",
+			    url: "{% url 'appointments:process_add_client_form' %}",
 			    type: "POST",
-			    data: $(add_user_form).serialize(),
+			    data: $(add_client_form).serialize(),
 			    dataType: 'json',
 			    success: function(data) {				    	
 		        if (!(data['success'])) {
-	            $(add_user_form).replaceWith(data['form_html']);
+	            $(add_client_form).replaceWith(data['form_html']);
 		        }
 		        else {
-	            document.getElementById('id-create-appointment-user').value = data['user_id'];
-	            $('#get-user').hide();
+	            document.getElementById('id-create-appointment-client').value = data['client_id'];
+	            $('#get-client').hide();
 	            $('#create-event').show();
 		        }
 			    },
 			    error: function () {
-		        $(add_user_form).find('.error-message').show()
+		        $(add_client_form).find('.error-message').show()
 			    }
 				});
 			});	
 			//select-user-form
-			$('#id-select-user-form').submit(function(event) {
+			$('#id-select-client-form').submit(function(event) {
 				event.preventDefault();
-				var select_user_form = '#id-select-user-form';
+				var select_client_form = '#id-select-client-form';
 				$.ajax({
 			    url: "{% url 'appointments:process_add_event_form' %}",
 			    type: "POST",
-			    data: $(select_user_form).serialize(),
+			    data: $(select_client_form).serialize(),
 			    dataType: 'json',
 			    success: function(data) {				    	
 		        if (!(data['success'])) {
-	            $(select_user_form).replaceWith(data['form_html']);
+	            $(select_client_form).replaceWith(data['form_html']);
 		        }
 		        else {
-	            document.getElementById('id-create-appointment-user').value = data['user_id'];
-	            $('#get-user').hide();
+	            document.getElementById('id-create-appointment-client').value = data['client_id'];
+	            $('#get-client').hide();
 	            $('#create-event').show();
 		        }
 			    },
 			    error: function () {
-		        $(select_user_form).find('.error-message').show()
+		        $(select_client_form).find('.error-message').show()
 			    }
 				});
 			});	

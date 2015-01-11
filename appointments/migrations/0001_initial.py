@@ -9,6 +9,7 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('users', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('schedule', '__first__'),
     ]
@@ -20,8 +21,9 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='created on')),
                 ('updated_on', models.DateTimeField(auto_now=True, verbose_name='updated on')),
+                ('client', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Client', to='users.Client')),
+                ('creator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Creator', to=settings.AUTH_USER_MODEL)),
                 ('event', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Event', to='schedule.Event')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='User', to=settings.AUTH_USER_MODEL)),
             ],
             options={
             },

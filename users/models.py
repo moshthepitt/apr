@@ -4,6 +4,38 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+class Client(models.Model):
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+    updated_on = models.DateTimeField(_("updated on"), auto_now=True)
+    first_name = models.CharField(_('First name'), max_length=255, blank=True)
+    last_name = models.CharField(_('Last name'), max_length=255, blank=True)
+    email = models.EmailField(_('Email address'), blank=True)
+    is_active = models.BooleanField(_('Active'), default=True,
+            help_text=_('Designates whether this client should be treated as '
+                        'active.'))
+    creator = models.ForeignKey(User, verbose_name=_("Creator"),  on_delete=models.PROTECT)
+
+    def get_full_name(self):
+        """
+        Returns the first_name plus the last_name, with a space in between.
+        """
+        full_name = '%s %s' % (self.first_name, self.last_name)
+        return full_name.strip()
+
+    def get_short_name(self):
+        "Returns the short name for the client."
+        return self.first_name
+
+    def __unicode__(self):
+        if self.get_full_name():
+            return self.get_full_name()
+        return "%s" % self.email
+
+    class Meta:
+        verbose_name = _("Client")
+        verbose_name_plural = _("Clients")
+        unique_together = ("email", "creator")
+
 class UserProfile(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
@@ -13,4 +45,4 @@ class UserProfile(models.Model):
         return _("%s's profile") % self.user
 
 #### S I G N A L S ####
-from . import signals
+from users import signals

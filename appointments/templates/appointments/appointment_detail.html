@@ -11,11 +11,11 @@
 		  	<tr><th colspan="2">{% trans "Client details" %}</th></tr>
 		  	<tr>
 		  		<th>{% trans "Name" %}</th>
-		  		<td width="80%">{{object.user.first_name}} {{object.user.last_name}}</td>
+		  		<td width="80%">{{object.client.get_full_name}}</td>
 		  	</tr>
 		  	<tr>
 		  		<th>{% trans "Email" %}</th>
-		  		<td width="80%">{{object.user.email}}</td>
+		  		<td width="80%">{{object.client.email}}</td>
 		  	</tr>
 		  	<tr><th colspan="2">{% trans "Appointment details" %}</th></tr>
 		    <tr>

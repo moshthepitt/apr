@@ -1,11 +1,12 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
-class UserModelChoiceField(forms.ModelChoiceField):
+from users.models import Client
+
+class ClientModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         if obj.first_name:
             return "%s %s" % (obj.first_name, obj.last_name)
@@ -13,28 +14,28 @@ class UserModelChoiceField(forms.ModelChoiceField):
             return "%s" % obj.email
         return "%s" % obj.username
 
-class SelectUserForm(forms.Form):
-    user = UserModelChoiceField(
+class SelectClientForm(forms.Form):
+    client = ClientModelChoiceField(
         label = _("Client"),
-        queryset=User.objects.all(),
+        queryset=Client.objects.all(),
     )
 
     def __init__(self, *args, **kwargs):
-        super(SelectUserForm, self).__init__(*args, **kwargs)
+        super(SelectClientForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-select-user-form'
+        self.helper.form_id = 'id-select-client-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
-                _('Select user'),
-                Field('user', id="id-select-user")
+                _('Select client'),
+                Field('client', id="id-select-client")
             ),
             ButtonHolder(
                 Submit('submit', 'Submit', css_class='btn-primary')
             )
         )
 
-class AddUserForm(forms.Form):
+class AddClientForm(forms.Form):
     first_name = forms.CharField(
         label = _("First name"),
         required = True
@@ -48,24 +49,24 @@ class AddUserForm(forms.Form):
         required = True
     )
 
-    def create_user(self):
-        new_user = User(
-            username = self.cleaned_data['email'],
+    def create_client(self,user):
+        new_client = Client(
             email = self.cleaned_data['email'],
             first_name = self.cleaned_data['first_name'],
             last_name = self.cleaned_data['last_name'],
+            creator = user
             )
-        new_user.save()
-        return new_user
+        new_client.save()
+        return new_client
 
     def __init__(self, *args, **kwargs):
-        super(AddUserForm, self).__init__(*args, **kwargs)
+        super(AddClientForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-add-user-form'
+        self.helper.form_id = 'id-add-client-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
-                _('Create new user'),
+                _('Create new client'),
                 'email',
                 'first_name',
                 'last_name'

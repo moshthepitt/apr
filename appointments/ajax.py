@@ -9,7 +9,7 @@ from jsonview.decorators import json_view
 from schedule.models import Event
 from schedule.periods import Period
 
-from users.forms import AddUserForm, SelectUserForm
+from users.forms import AddClientForm, SelectClientForm
 from appointments.forms import AppointmentForm
 
 def event_feed(request):
@@ -32,25 +32,25 @@ def event_feed(request):
 
 @csrf_exempt
 @json_view
-def process_select_user_form(request):
-    form = SelectUserForm(request.POST or None)
+def process_select_client_form(request):
+    form = SelectClientForm(request.POST or None)
     if form.is_valid():
         return {
             'success': True,
-            'user_id': form.cleaned_data['user'].id
+            'client_id': form.cleaned_data['client'].id
             }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
 
 @csrf_exempt
 @json_view
-def process_add_user_form(request):
-    form = AddUserForm(request.POST or None)
+def process_add_client_form(request):
+    form = AddClientForm(request.POST or None)
     if form.is_valid():
-        user = form.create_user()
+        client = form.create_client(request.user)
         return {
             'success': True,
-            'user_id': user.id
+            'client_id': client.id
             }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}

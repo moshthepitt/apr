@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 from django.utils import timezone
 
@@ -8,10 +7,11 @@ from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Div, Subm
 from dateutil import parser
 from schedule.models import Event
 
+from users.models import Client
 from appointments.models import Appointment
 
 class AppointmentForm(forms.Form):
-    user = forms.IntegerField(
+    client = forms.IntegerField(
         label = _("Client"),
         required = True,
         widget = forms.HiddenInput
@@ -77,7 +77,7 @@ class AppointmentForm(forms.Form):
                 ),
                 Div(
                     'description',
-                    Field('user', id="id-create-appointment-user"),
+                    Field('client', id="id-create-appointment-client"),
                     css_class = 'form-group'
                 )
             ),
@@ -108,8 +108,9 @@ class AppointmentForm(forms.Form):
     def create_appointment(self,user):
         event = self.create_event(user)
         new_appointment = Appointment(
-            user = User.objects.get(pk=self.cleaned_data['user']),
-            event = event
+            client = Client.objects.get(pk=self.cleaned_data['client']),
+            event = event,
+            creator = user
         )
         new_appointment.save()
         return new_appointment
