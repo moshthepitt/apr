@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}{% endblock %}
+{% block title %}{{object.event.title}} | APR{% endblock %}
+{% block content %}
+	<div class="row">
+		<div class="table-responsive">
+		  <table class="table">
+		  	<tr><th colspan="2">{% trans "Client details" %}</th></tr>
+		  	<tr>
+		  		<th>{% trans "Name" %}</th>
+		  		<td width="80%">{{object.user.first_name}} {{object.user.last_name}}</td>
+		  	</tr>
+		  	<tr>
+		  		<th>{% trans "Email" %}</th>
+		  		<td width="80%">{{object.user.email}}</td>
+		  	</tr>
+		  	<tr><th colspan="2">{% trans "Appointment details" %}</th></tr>
+		    <tr>
+		    	<th>{% trans "Title" %}</th>
+		    	<td width="80%">{{object.event.title}}</td>
+		    </tr>
+		    <tr>
+		    	<th>{% trans "Start" %}</th>
+		    	<td width="80%">{{object.event.start}}</td>
+		    </tr>
+		    <tr>
+		    	<th>{% trans "End" %}</th>
+		    	<td width="80%">{{object.event.end}}</td>
+		    </tr>
+		    <tr>
+		    	<th>{% trans "Description" %}</th>
+		    	<td width="80%">{{object.event.description}}</td>
+		    </tr>
+		  </table>
+		</div>
+	</div>
+{% endblock %}
+{% block extrajs %}{% endblock %}

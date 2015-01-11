@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Submit
+from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
 class UserModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -24,7 +24,15 @@ class SelectUserForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_id = 'id-select-user-form'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset(
+                _('Select user'),
+                Field('user', id="id-select-user")
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='btn-primary')
+            )
+        )
 
 class AddUserForm(forms.Form):
     first_name = forms.CharField(
@@ -55,4 +63,14 @@ class AddUserForm(forms.Form):
         self.helper = FormHelper()
         self.helper.form_id = 'id-add-user-form'
         self.helper.form_method = 'post'
-        self.helper.add_input(Submit('submit', 'Submit'))
+        self.helper.layout = Layout(
+            Fieldset(
+                _('Create new user'),
+                'email',
+                'first_name',
+                'last_name'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='btn-primary')
+            )
+        )

@@ -2,7 +2,11 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
-{% block extracss %}{% endblock %}
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" type="text/css" />
+{% endblock %}
+{% block title %}{% trans "Create appointment" %} | APR{% endblock %}
 {% block content %}
 	<div class="row" id="get-user">
 		<div class="col-md-6">
@@ -12,12 +16,15 @@
 			{% crispy AddUserForm %}
 		</div>		
 	</div>	
-	<div class="row" id="create-event">
+	<div class="row" id="create-event" style="display:none;">
 		{% crispy AppointmentForm %}
 	</div>
 {% endblock %}
 {% block extrajs %}
-	<script src="{% static 'js/jquery.cookie.js' %}"></script>
+	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
+	<script src="{% static 'js/datepair.min.js' %}"></script>
+	<script src="{% static 'js/jquery.datepair.min.js' %}"></script>
 	<script>
 		$(document).ready(function() {
 			//id-add-user-form
@@ -25,47 +32,83 @@
 				event.preventDefault();
 				var add_user_form = '#id-add-user-form';
 				$.ajax({
-				    url: "{% url 'appointments:process_add_user_form' %}",
-				    type: "POST",
-				    data: $(add_user_form).serialize(),
-				    dataType: 'json',
-				    success: function(data) {				    	
-			        if (!(data['success'])) {
-		            $(add_user_form).replaceWith(data['form_html']);
-			        }
-			        else {
-		            // Here you can show the user a success message or do whatever you need
-		            $(add_user_form).find('.success-message').show();
-			        }
-				    },
-				    error: function () {
-			        $(add_user_form).find('.error-message').show()
-				    }
+			    url: "{% url 'appointments:process_add_user_form' %}",
+			    type: "POST",
+			    data: $(add_user_form).serialize(),
+			    dataType: 'json',
+			    success: function(data) {				    	
+		        if (!(data['success'])) {
+	            $(add_user_form).replaceWith(data['form_html']);
+		        }
+		        else {
+	            document.getElementById('id-create-appointment-user').value = data['user_id'];
+	            $('#get-user').hide();
+	            $('#create-event').show();
+		        }
+			    },
+			    error: function () {
+		        $(add_user_form).find('.error-message').show()
+			    }
 				});
 			});	
 			//select-user-form
 			$('#id-select-user-form').submit(function(event) {
 				event.preventDefault();
-				var add_user_form = '#id-select-user-form';
+				var select_user_form = '#id-select-user-form';
 				$.ajax({
-				    url: "{% url 'appointments:process_select_user_form' %}",
-				    type: "POST",
-				    data: $(add_user_form).serialize(),
-				    dataType: 'json',
-				    success: function(data) {				    	
-			        if (!(data['success'])) {
-		            $(add_user_form).replaceWith(data['form_html']);
-			        }
-			        else {
-		            // Here you can show the user a success message or do whatever you need
-		            $(add_user_form).find('.success-message').show();
-			        }
-				    },
-				    error: function () {
-			        $(add_user_form).find('.error-message').show()
-				    }
+			    url: "{% url 'appointments:process_select_user_form' %}",
+			    type: "POST",
+			    data: $(select_user_form).serialize(),
+			    dataType: 'json',
+			    success: function(data) {				    	
+		        if (!(data['success'])) {
+	            $(select_user_form).replaceWith(data['form_html']);
+		        }
+		        else {
+	            document.getElementById('id-create-appointment-user').value = data['user_id'];
+	            $('#get-user').hide();
+	            $('#create-event').show();
+		        }
+			    },
+			    error: function () {
+		        $(select_user_form).find('.error-message').show()
+			    }
 				});
-			});				
+			});	
+			//date time selects
+			// initialize input widgets first
+	    $('#id-datetime-pairs .time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'g:ia'
+	    });
+	    $('#id-datetime-pairs .date').datepicker({
+        'format': 'dd-mm-yyyy',
+        'autoclose': true
+	    });
+	    // initialize datepair
+	    $('#id-datetime-pairs').datepair();		
+  		//add-event-form
+  		$('#id-event-form').submit(function(event) {
+  			event.preventDefault();
+  			var add_event_form = '#id-event-form';
+  			$.ajax({
+  		    url: "{% url 'appointments:process_select_user_form' %}",
+  		    type: "POST",
+  		    data: $(add_event_form).serialize(),
+  		    dataType: 'json',
+  		    success: function(data) {				    	
+  	        if (!(data['success'])) {
+              $(add_event_form).replaceWith(data['form_html']);
+  	        }
+  	        else {
+              console.log("sex");
+  	        }
+  		    },
+  		    error: function () {
+  	        $(add_event_form).find('.error-message').show()
+  		    }
+  			});
+  		});	
 		});
 		$(document).ajaxStop(function() {
 			//id-add-user-form
@@ -73,47 +116,83 @@
 				event.preventDefault();
 				var add_user_form = '#id-add-user-form';
 				$.ajax({
-				    url: "{% url 'appointments:process_add_user_form' %}",
-				    type: "POST",
-				    data: $(add_user_form).serialize(),
-				    dataType: 'json',
-				    success: function(data) {					    	
-			        if (!(data['success'])) {
-		            $(add_user_form).replaceWith(data['form_html']);
-			        }
-			        else {
-		            // Here you can show the user a success message or do whatever you need
-		            $(add_user_form).find('.success-message').show();
-			        }
-				    },
-				    error: function () {
-			        $(add_user_form).find('.error-message').show()
-				    }
+			    url: "{% url 'appointments:process_add_user_form' %}",
+			    type: "POST",
+			    data: $(add_user_form).serialize(),
+			    dataType: 'json',
+			    success: function(data) {				    	
+		        if (!(data['success'])) {
+	            $(add_user_form).replaceWith(data['form_html']);
+		        }
+		        else {
+	            document.getElementById('id-create-appointment-user').value = data['user_id'];
+	            $('#get-user').hide();
+	            $('#create-event').show();
+		        }
+			    },
+			    error: function () {
+		        $(add_user_form).find('.error-message').show()
+			    }
 				});
 			});	
 			//select-user-form
 			$('#id-select-user-form').submit(function(event) {
 				event.preventDefault();
-				var add_user_form = '#id-select-user-form';
+				var select_user_form = '#id-select-user-form';
 				$.ajax({
-				    url: "{% url 'appointments:process_select_user_form' %}",
-				    type: "POST",
-				    data: $(add_user_form).serialize(),
-				    dataType: 'json',
-				    success: function(data) {				    	
-			        if (!(data['success'])) {
-		            $(add_user_form).replaceWith(data['form_html']);
-			        }
-			        else {
-		            // Here you can show the user a success message or do whatever you need
-		            $(add_user_form).find('.success-message').show();
-			        }
-				    },
-				    error: function () {
-			        $(add_user_form).find('.error-message').show()
-				    }
+			    url: "{% url 'appointments:process_add_event_form' %}",
+			    type: "POST",
+			    data: $(select_user_form).serialize(),
+			    dataType: 'json',
+			    success: function(data) {				    	
+		        if (!(data['success'])) {
+	            $(select_user_form).replaceWith(data['form_html']);
+		        }
+		        else {
+	            document.getElementById('id-create-appointment-user').value = data['user_id'];
+	            $('#get-user').hide();
+	            $('#create-event').show();
+		        }
+			    },
+			    error: function () {
+		        $(select_user_form).find('.error-message').show()
+			    }
 				});
-			});			 
+			});	
+			//date time selects
+			// initialize input widgets first
+	    $('#id-datetime-pairs .time').timepicker({
+        'showDuration': true,
+        'timeFormat': 'g:ia'
+	    });
+	    $('#id-datetime-pairs .date').datepicker({
+        'format': 'dd-mm-yyyy',
+        'autoclose': true
+	    });
+	    // initialize datepair
+	    $('#id-datetime-pairs').datepair();		
+  		//add-event-form
+  		$('#id-event-form').submit(function(event) {
+  			event.preventDefault();
+  			var add_event_form = '#id-event-form';
+  			$.ajax({
+  		    url: "{% url 'appointments:process_add_event_form' %}",
+  		    type: "POST",
+  		    data: $(add_event_form).serialize(),
+  		    dataType: 'json',
+  		    success: function(data) {				    	
+  	        if (!(data['success'])) {
+              $(add_event_form).replaceWith(data['form_html']);
+  	        }
+  	        else {
+              console.log("sex");
+  	        }
+  		    },
+  		    error: function () {
+  	        $(add_event_form).find('.error-message').show()
+  		    }
+  			});
+  		});	
 		});
 	</script>
 {% endblock %}

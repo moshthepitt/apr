@@ -10,6 +10,7 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddUserForm, SelectUserForm
+from appointments.forms import AppointmentForm
 
 def event_feed(request):
     if request.is_ajax() and request.method == 'GET':
@@ -34,7 +35,10 @@ def event_feed(request):
 def process_select_user_form(request):
     form = SelectUserForm(request.POST or None)
     if form.is_valid():
-        return {'success': True}
+        return {
+            'success': True,
+            'user_id': form.cleaned_data['user'].id
+            }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
 
@@ -43,8 +47,22 @@ def process_select_user_form(request):
 def process_add_user_form(request):
     form = AddUserForm(request.POST or None)
     if form.is_valid():
-        x = form.create_user()
-        print x
-        return {'success': True}
+        user = form.create_user()
+        return {
+            'success': True,
+            'user_id': user.id
+            }
+    form_html = render_crispy_form(form)
+    return {'success': False, 'form_html': form_html}
+
+@csrf_exempt
+@json_view
+def process_add_event_form(request):
+    form = AppointmentForm(request.POST or None)
+    if form.is_valid():
+        appointment = form.create_appointment(request.user)
+        return {
+            'success': True,
+            }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
