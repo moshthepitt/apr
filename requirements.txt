@@ -1,4 +1,4 @@
-Django==1.7.4
+Django==1.7.7
 Django-Select2==4.2.2
 South==1.0.2
 argparse==1.2.1

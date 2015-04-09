@@ -5,6 +5,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit
 
 from users.models import Client
+from core import labels
 
 
 class ClientModelChoiceField(forms.ModelChoiceField):
@@ -19,7 +20,7 @@ class ClientModelChoiceField(forms.ModelChoiceField):
 
 class SelectClientForm(forms.Form):
     client = ClientModelChoiceField(
-        label=_("Client"),
+        label=getattr(labels, 'CLIENT', _("Client")),
         queryset=Client.objects.all(),
     )
 
@@ -30,7 +31,7 @@ class SelectClientForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
-                _('Select client'),
+                getattr(labels, 'SELECT_CLIENT', _('Select client')),
                 Field('client', id="id-select-client")
             ),
             ButtonHolder(

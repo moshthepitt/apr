@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from core import labels
+
 
 class Client(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -31,8 +33,8 @@ class Client(models.Model):
         return "%s" % self.email
 
     class Meta:
-        verbose_name = _("Client")
-        verbose_name_plural = _("Clients")
+        verbose_name = getattr(labels, 'CLIENT', _("Client"))
+        verbose_name_plural = getattr(labels, 'CLIENT_PLURAL', _("Client"))
         unique_together = ("email", "creator")
 
 
@@ -43,6 +45,7 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return _("%s's profile") % self.user
+
 
 # ### S I G N A L S ####
 from users import signals

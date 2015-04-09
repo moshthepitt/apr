@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     # custom
     'appointments',
     'users',
+    'core',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -10,10 +10,12 @@ from schedule.models import Event
 from users.models import Client
 from appointments.models import Appointment
 
+from core import labels
+
 
 class AppointmentForm(forms.Form):
     client = forms.IntegerField(
-        label=_("Client"),
+        label=getattr(labels, 'CLIENT', _("Client")),
         required=True,
         widget=forms.HiddenInput
     )
@@ -38,7 +40,7 @@ class AppointmentForm(forms.Form):
         required=True
     )
     description = forms.CharField(
-        label=_("Description"),
+        label=getattr(labels, 'DESCRIPTION', _("Description")),
         required=False,
         widget=forms.Textarea
     )
