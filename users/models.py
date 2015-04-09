@@ -34,7 +34,7 @@ class Client(models.Model):
 
     class Meta:
         verbose_name = getattr(labels, 'CLIENT', _("Client"))
-        verbose_name_plural = getattr(labels, 'CLIENT_PLURAL', _("Client"))
+        verbose_name_plural = getattr(labels, 'CLIENT_PLURAL', _("Clients"))
         unique_together = ("email", "creator")
 
 

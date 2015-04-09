@@ -71,7 +71,7 @@ class AddClientForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
-                _('Create new client'),
+                getattr(labels, 'CREATE_CLIENT', _('Create new client')),
                 'email',
                 'first_name',
                 'last_name'
