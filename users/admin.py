@@ -6,18 +6,22 @@ from users.models import UserProfile, Client
 
 # Define an inline admin descriptor for UserProfile model
 # which acts a bit like a singleton
+
+
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
     can_delete = False
     verbose_name_plural = 'UserProfile'
 
 # Define a new User admin
+
+
 class UserAdmin(UserAdmin):
     inlines = (UserProfileInline, )
 
+
 class ClientAdmin(admin.ModelAdmin):
     pass
-
 
 
 # Re-register UserAdmin

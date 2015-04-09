@@ -29,13 +29,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    #third party
+    # third party
     'compressor',
     'schedule',
     'crispy_forms',
     'django_select2',
 
-    #custom
+    # custom
     'appointments',
     'users',
 )
@@ -67,7 +67,7 @@ USE_L10N = True
 
 USE_TZ = True
 
-#Templates
+# Templates
 TEMPLATE_DIRS = [
     os.path.join(BASE_DIR, 'templates'),
 ]
@@ -81,12 +81,12 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-#COMPRESSOR
+# COMPRESSOR
 COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
 
 STATIC_URL = '/static/'
 
-#crispy forms
+# crispy forms
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 try:

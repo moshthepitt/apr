@@ -1,10 +1,10 @@
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
+
 
 class AddEventView(TemplateView):
     template_name = 'appointments/add.html'
@@ -15,6 +15,7 @@ class AddEventView(TemplateView):
         context['AddClientForm'] = AddClientForm()
         context['AppointmentForm'] = AppointmentForm()
         return context
+
 
 class AppointmentView(DetailView):
     model = Appointment

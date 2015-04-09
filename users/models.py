@@ -1,8 +1,7 @@
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
-from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
+
 
 class Client(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -11,9 +10,9 @@ class Client(models.Model):
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
     is_active = models.BooleanField(_('Active'), default=True,
-            help_text=_('Designates whether this client should be treated as '
-                        'active.'))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"),  on_delete=models.PROTECT)
+                                    help_text=_('Designates whether this client should be treated as '
+                                                'active.'))
+    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
 
     def get_full_name(self):
         """
@@ -36,6 +35,7 @@ class Client(models.Model):
         verbose_name_plural = _("Clients")
         unique_together = ("email", "creator")
 
+
 class UserProfile(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
@@ -44,5 +44,5 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return _("%s's profile") % self.user
 
-#### S I G N A L S ####
+# ### S I G N A L S ####
 from users import signals

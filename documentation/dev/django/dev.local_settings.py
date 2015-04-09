@@ -11,28 +11,28 @@ DATABASES = {
     }
 }
 
-#Emails
-#Email
+# Emails
+# Email
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_HOST = 'localhost'
 EMAIL_PORT = 1025
-DEFAULT_FROM_EMAIL='Jaya <support@jayanoris.com>'
+DEFAULT_FROM_EMAIL = 'Jaya <support@jayanoris.com>'
 
 
-#static
+# static
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 STATIC_ROOT = '/static/'
 
-#CACHE
+# CACHE
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
     }
 }
 
-#DEBUG
+# DEBUG
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
