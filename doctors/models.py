@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.models import User
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -16,6 +17,7 @@ class Doctor(models.Model):
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
+    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this doctor should be treated as '
                                                 'active.'))
