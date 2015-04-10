@@ -18,8 +18,9 @@
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
 	<script src="{% static 'fullcalendar/js/fullcalendar.min.js' %}"></script>
+	{% block event_feed_js %}
 	<script type="text/javascript">
-    $(document).ready(function() {	
+	    $(document).ready(function() {	
 			$('#calendar').fullCalendar({
 				header: {
 					left: 'prev,next,today',
@@ -38,4 +39,5 @@
 			});		
 		});
 	</script>
+	{% endblock %}
 {% endblock %}

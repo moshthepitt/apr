@@ -11,12 +11,25 @@ class Client(models.Model):
     """
     This models stores clients in the sense that it is clients who come to any appointments
     """
+    SELF_PAYING = '1'
+    COMPANY_PAYING = '2'
+    INSURANCE_PAYING = '3'
+    PAYMENT_CHOICES = (
+        (SELF_PAYING, _('Self')),
+        (COMPANY_PAYING, _('Company')),
+        (INSURANCE_PAYING, _('Insurance')),
+    )
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
+    client_id = models.CharField(getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True)
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True, unique=True)
+    payment = models.CharField(_("Payment Method"), max_length=1, choices=PAYMENT_CHOICES, blank=False, help_text=_(
+        "How will payment be made?"))
+    insurance_company = models.CharField(_('Insurance Company'), max_length=255, blank=True)
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this client should be treated as '
                                                 'active.'))
