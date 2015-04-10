@@ -13,6 +13,7 @@ from schedule.periods import Period
 from users.forms import AddClientForm, SelectClientForm
 from appointments.forms import AppointmentForm
 from venues.models import Venue
+from doctors.models import Doctor
 
 
 def event_feed(request):
@@ -46,6 +47,29 @@ def venue_event_feed(request, pk):
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(
                 Event.objects.exclude(appointment=None).filter(appointment__venue=venue), fro, to)
+            occurences = [{'id': x.pk,
+                           'title': x.title,
+                           'className': 'event-info',
+                           'start': timezone.localtime(x.start).isoformat(),
+                           'end': timezone.localtime(x.end).isoformat()
+                           }
+                          for x in period.get_occurrences()]
+        data = occurences
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    # if all fails
+    raise Http404
+
+
+def doctor_event_feed(request, pk):
+    doctor = get_object_or_404(Doctor, pk=pk)
+    if request.is_ajax() and request.method == 'GET':
+        if 'start' in request.GET and 'end' in request.GET:
+            fro = timezone.make_aware(
+                parser.parse(request.GET['start']), timezone.get_current_timezone())
+            to = timezone.make_aware(
+                parser.parse(request.GET['end']), timezone.get_current_timezone())
+            period = Period(
+                Event.objects.exclude(appointment=None).filter(appointment__doctor=doctor), fro, to)
             occurences = [{'id': x.pk,
                            'title': x.title,
                            'className': 'event-info',
