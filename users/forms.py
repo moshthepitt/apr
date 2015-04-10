@@ -50,7 +50,7 @@ class AddClientForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ['email', 'phone', 'first_name', 'last_name']
+        fields = ['email', 'phone', 'client_id', 'first_name', 'last_name', 'payment', 'insurance_company']
 
     def create_client(self, user):
         new_client = Client(
@@ -58,6 +58,9 @@ class AddClientForm(forms.ModelForm):
             phone=self.cleaned_data['phone'],
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
+            client_id=self.cleaned_data['client_id'],
+            payment=self.cleaned_data['payment'],
+            insurance_company=self.cleaned_data['insurance_company'],
             creator=user
         )
         new_client.save()
@@ -69,6 +72,7 @@ class AddClientForm(forms.ModelForm):
         self.fields['phone'].required = True
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
+        self.fields['client_id'].required = True
         self.helper = FormHelper()
         self.helper.form_id = 'id-add-client-form'
         self.helper.form_method = 'post'
@@ -77,8 +81,11 @@ class AddClientForm(forms.ModelForm):
                 getattr(labels, 'CREATE_CLIENT', _('Create new client')),
                 'email',
                 'phone',
+                'client_id',
                 'first_name',
-                'last_name'
+                'last_name',
+                'payment',
+                'insurance_company',
             ),
             ButtonHolder(
                 Submit('submit', 'Submit', css_class='btn-primary')
