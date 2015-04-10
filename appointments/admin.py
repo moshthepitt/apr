@@ -1,7 +1,6 @@
 from django.contrib import admin
 
-from .models import Appointment
-# Register your models here.
+from appointments.models import Appointment
 
 
 class AppointmentAdmin(admin.ModelAdmin):

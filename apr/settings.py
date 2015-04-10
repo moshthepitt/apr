@@ -38,6 +38,8 @@ INSTALLED_APPS = (
     # custom
     'appointments',
     'users',
+    'doctors',
+    'venues',
     'core',
 )
 

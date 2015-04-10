@@ -6,11 +6,15 @@ from core import labels
 
 
 class Client(models.Model):
+    """
+    This models stores clients in the sense that it is clients who come to any appointments
+    """
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
+    phone = models.CharField(_('Phone Number'), max_length=255, blank=True)
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this client should be treated as '
                                                 'active.'))

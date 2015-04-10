@@ -1,3 +1,8 @@
+"""
+"Labels" allow us the flexibility of have different names for everything defined here
+ e.g. in one set up a "Doctor" may be known as a "Lawyer"
+"""
+
 from django.utils.translation import ugettext as _
 
 APPOINTMENT = _("Appointment")
@@ -8,10 +13,10 @@ SELECT_CLIENT = _("Select Patient")
 CREATE_CLIENT = _("Create New Patient")
 CLIENT_ID = _("File Number")
 
-PRACTIONER = _("Doctor")
-PRACTIONER_PLURAL = _("Doctors")
+DOCTOR = _("Doctor")
+DOCTOR_PLURAL = _("Doctors")
 
 VENUE = _("Clinic")
-VENUE_PLURAL = _("Clinic")
+VENUE_PLURAL = _("Clinics")
 
 DESCRIPTION = _("Treatment")

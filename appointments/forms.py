@@ -33,11 +33,11 @@ class AppointmentForm(forms.Form):
     )
     end_date = forms.CharField(
         label=_("End date"),
-        required=True
+        required=False
     )
     end_time = forms.CharField(
         label=_("End time"),
-        required=True
+        required=False
     )
     description = forms.CharField(
         label=getattr(labels, 'DESCRIPTION', _("Description")),
