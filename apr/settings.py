@@ -28,7 +28,9 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'django.contrib.sites',
+    'django.contrib.flatpages',
+    'django.contrib.humanize',
     # third party
     'compressor',
     'schedule',
@@ -76,6 +78,20 @@ TEMPLATE_DIRS = [
     os.path.join(BASE_DIR, 'templates'),
 ]
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.messages.context_processors.messages",
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.request",
+    "django.core.context_processors.media",
+    "django.core.context_processors.debug",
+
+    "allauth.account.context_processors.account",
+    "allauth.socialaccount.context_processors.socialaccount",
+
+    "doctors.context_processors.doctor_processor",
+    "venues.context_processors.venue_processor",
+)
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 STATICFILES_FINDERS = (
@@ -86,7 +102,7 @@ STATICFILES_FINDERS = (
 )
 
 # COMPRESSOR
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter',  'compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter', 'compressor.filters.cssmin.CSSMinFilter']
 
 STATIC_URL = '/static/'
 

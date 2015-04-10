@@ -6,6 +6,27 @@
 	<link rel="stylesheet" href="{% static 'fullcalendar/css/fullcalendar.min.css' %}" type="text/css" />
 {% endblock %}
 {% block main_content %}
+	<div class="row">
+		<div class="col-md-12">
+			<div class="col-md-4">
+				<select class="form-control">
+				  <option>{% trans "Select doctor" %}</option>			  
+				  {% for doctor in active_doctors %}
+				  	<option value="{{doctor.pk}}">{{doctor}}</option>
+				  {% endfor %}
+				</select>	
+			</div>
+
+			<div class="col-md-4">
+				<select class="form-control">
+				  <option>{% trans "Select venue" %}</option>			  
+				  {% for venue in active_venues %}
+				  	<option value="{{venue.pk}}">{{venue}}</option>
+				  {% endfor %}
+				</select>			
+			</div>
+		</div>
+	</div>
 	<div id="calendar" class="row"></div>
 {% endblock %}
 {% block extrajs %}
@@ -18,7 +39,7 @@
 				header: {
 					left: 'prev,next,today',
 					center: 'title',
-					right: 'month,basicWeek,basicDay'
+					right: 'month,agendaWeek,agendaDay'
 				},
 				defaultDate: '{% now "c" %}',
 				editable: false,
@@ -29,6 +50,7 @@
 					$('#calendar').fullCalendar('changeView', 'agendaDay');
 					$('#calendar').fullCalendar('gotoDate', date);
 				},
+				defaultView: "month",
 				height: "auto",
 				minTime: "08:00",
 				maxTime: "19:00",
