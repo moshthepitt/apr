@@ -4,6 +4,7 @@ South==1.0.2
 argparse==1.2.1
 coverage==3.7.1
 django-ajaxerrors==1.1
+django-allauth==0.19.1
 django-annoying==0.8.1
 django-appconf==1.0.1
 django-compressor==1.4
@@ -13,9 +14,13 @@ django-phonenumber-field==0.7.2
 django-scheduler==0.7.4
 future==0.14.3
 icalendar==3.9.0
+oauthlib==0.7.2
 phonenumbers==7.0.4
 python-dateutil==2.4.2
+python-openid==2.2.5
 pytz==2015.2
+requests==2.6.0
+requests-oauthlib==0.4.2
 six==1.9.0
 vobject==0.8.1rc0
 wsgiref==0.1.2

@@ -34,7 +34,8 @@ INSTALLED_APPS = (
     'schedule',
     'crispy_forms',
     'django_select2',
-
+    'allauth',
+    'allauth.account',
     # custom
     'appointments',
     'users',
