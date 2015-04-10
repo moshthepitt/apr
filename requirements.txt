@@ -3,14 +3,17 @@ Django-Select2==4.2.2
 South==1.0.2
 argparse==1.2.1
 coverage==3.7.1
+django-ajaxerrors==1.1
 django-annoying==0.8.1
 django-appconf==1.0.1
 django-compressor==1.4
 django-crispy-forms==1.4.0
 django-jsonview==0.4.3
+django-phonenumber-field==0.7.2
 django-scheduler==0.7.4
 future==0.14.3
 icalendar==3.9.0
+phonenumbers==7.0.4
 python-dateutil==2.4.2
 pytz==2015.2
 six==1.9.0
