@@ -8,9 +8,19 @@ from dateutil import parser
 from schedule.models import Event
 
 from users.models import Client
+from doctors.models import Doctor
+from venues.models import Venue
 from appointments.models import Appointment
 
 from core import labels
+
+
+class DoctorModelChoiceField(forms.ModelChoiceField):
+    pass
+
+
+class VenueModelChoiceField(forms.ModelChoiceField):
+    pass
 
 
 class AppointmentForm(forms.Form):
@@ -38,6 +48,14 @@ class AppointmentForm(forms.Form):
     end_time = forms.CharField(
         label=_("End time"),
         required=False
+    )
+    doctor = DoctorModelChoiceField(
+        label=getattr(labels, 'DOCTOR', _("Doctor")),
+        queryset=Doctor.objects.all(),
+    )
+    venue = VenueModelChoiceField(
+        label=getattr(labels, 'VENUE', _("Venue")),
+        queryset=Venue.objects.all(),
     )
     description = forms.CharField(
         label=getattr(labels, 'DESCRIPTION', _("Description")),
@@ -83,6 +101,14 @@ class AppointmentForm(forms.Form):
                     css_class='form-group row form-inline'
                 ),
                 Div(
+                    'doctor',
+                    css_class='form-group'
+                ),
+                Div(
+                    'venue',
+                    css_class='form-group'
+                ),
+                Div(
                     'description',
                     Field('client', id="id-create-appointment-client"),
                     css_class='form-group'
@@ -118,6 +144,8 @@ class AppointmentForm(forms.Form):
         event = self.create_event(user)
         new_appointment = Appointment(
             client=Client.objects.get(pk=self.cleaned_data['client']),
+            doctor=self.cleaned_data['doctor'],
+            venue=self.cleaned_data['venue'],
             event=event,
             creator=user
         )
