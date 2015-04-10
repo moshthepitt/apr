@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
+from phonenumber_field.modelfields import PhoneNumberField
+
 from core import labels
 
 
@@ -13,7 +15,7 @@ class Doctor(models.Model):
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
-    phone = models.CharField(_('Phone Number'), max_length=255, blank=True)
+    phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this doctor should be treated as '
                                                 'active.'))

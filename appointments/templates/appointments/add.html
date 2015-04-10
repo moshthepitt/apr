@@ -2,29 +2,35 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
 {% endblock %}
+
 {% block title %}{% trans "Create appointment" %} | APR{% endblock %}
+
 {% block content %}
-	<div class="row" id="get-client">
-		<div class="col-md-6">
-			{% crispy SelectClientForm %}
-		</div>
-		<div class="col-md-6">
-			{% crispy AddClientForm %}
-		</div>		
-	</div>	
-	<div class="row" id="create-event" style="display:none;">
-		{% crispy AppointmentForm %}
+<div class="row" id="get-client">
+	<div class="col-md-6">
+		{% crispy SelectClientForm %}
 	</div>
+	<div class="col-md-6">
+		{% crispy AddClientForm %}
+	</div>		
+</div>	
+<div class="row" id="create-event" style="display:none;">
+	{% crispy AppointmentForm %}
+</div>
 {% endblock %}
+
 {% block extrajs %}
 	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 	<script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
 	<script src="{% static 'js/datepair.min.js' %}"></script>
 	<script src="{% static 'js/jquery.datepair.min.js' %}"></script>
+	<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
 	<script>
 		$(document).ready(function() {
 			//id-add-client-form
@@ -32,23 +38,23 @@
 				event.preventDefault();
 				var add_client_form = '#id-add-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_add_client_form' %}",
-			    type: "POST",
-			    data: $(add_client_form).serialize(),
-			    dataType: 'json',
-			    success: function(data) {				    	
-		        if (!(data['success'])) {
-	            $(add_client_form).replaceWith(data['form_html']);
-		        }
-		        else {
-	            document.getElementById('id-create-appointment-client').value = data['client_id'];
-	            $('#get-client').hide();
-	            $('#create-event').show();
-		        }
-			    },
-			    error: function () {
-		        $(add_client_form).find('.error-message').show()
-			    }
+					url: "{% url 'appointments:process_add_client_form' %}",
+					type: "POST",
+					data: $(add_client_form).serialize(),
+					dataType: 'json',
+					success: function(data) {				    	
+						if (!(data['success'])) {
+							$(add_client_form).replaceWith(data['form_html']);
+						}
+						else {
+							document.getElementById('id-create-appointment-client').value = data['client_id'];
+							$('#get-client').hide();
+							$('#create-event').show();
+						}
+					},
+					error: function () {
+						$(add_client_form).find('.error-message').show()
+					}
 				});
 			});	
 			//select-user-form
@@ -56,144 +62,182 @@
 				event.preventDefault();
 				var select_client_form = '#id-select-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_select_client_form' %}",
-			    type: "POST",
-			    data: $(select_client_form).serialize(),
-			    dataType: 'json',
-			    success: function(data) {				    	
-		        if (!(data['success'])) {
-	            $(select_client_form).replaceWith(data['form_html']);
-		        }
-		        else {
-	            document.getElementById('id-create-appointment-client').value = data['client_id'];
-	            $('#get-client').hide();
-	            $('#create-event').show();
-		        }
-			    },
-			    error: function () {
-		        $(select_client_form).find('.error-message').show()
-			    }
+					url: "{% url 'appointments:process_select_client_form' %}",
+					type: "POST",
+					data: $(select_client_form).serialize(),
+					dataType: 'json',
+					success: function(data) {				    	
+						if (!(data['success'])) {
+							$(select_client_form).replaceWith(data['form_html']);
+						}
+						else {
+							document.getElementById('id-create-appointment-client').value = data['client_id'];
+							$('#get-client').hide();
+							$('#create-event').show();
+						}
+					},
+					error: function () {
+						$(select_client_form).find('.error-message').show()
+					}
 				});
 			});	
 			//date time selects
 			// initialize input widgets first
-	    $('#id-datetime-pairs .time').timepicker({
-        'showDuration': true,
-        'timeFormat': 'g:ia'
-	    });
-	    $('#id-datetime-pairs .date').datepicker({
-        'format': 'dd-mm-yyyy',
-        'autoclose': true
-	    });
-	    // initialize datepair
-	    $('#id-datetime-pairs').datepair();		
-  		//add-event-form
-  		$('#id-event-form').submit(function(event) {
-  			event.preventDefault();
-  			var add_event_form = '#id-event-form';
-  			$.ajax({
-  		    url: "{% url 'appointments:process_select_client_form' %}",
-  		    type: "POST",
-  		    data: $(add_event_form).serialize(),
-  		    dataType: 'json',
-  		    success: function(data) {				    	
-  	        if (!(data['success'])) {
-              $(add_event_form).replaceWith(data['form_html']);
-  	        }
-  	        else {
-              console.log("sex");
-  	        }
-  		    },
-  		    error: function () {
-  	        $(add_event_form).find('.error-message').show()
-  		    }
-  			});
-  		});	
-		});
+			$('#id-datetime-pairs .time').timepicker({
+				'showDuration': true,
+				'timeFormat': 'g:ia'
+			});
+			$('#id-datetime-pairs .date').datepicker({
+				'format': 'dd-mm-yyyy',
+				'autoclose': true
+			});
+		    // initialize datepair
+		    $('#id-datetime-pairs').datepair();		
+	  		//add-event-form
+	  		$('#id-event-form').submit(function(event) {
+	  			event.preventDefault();
+	  			var add_event_form = '#id-event-form';
+	  			$.ajax({
+	  				url: "{% url 'appointments:process_select_client_form' %}",
+	  				type: "POST",
+	  				data: $(add_event_form).serialize(),
+	  				dataType: 'json',
+	  				success: function(data) {				    	
+	  					if (!(data['success'])) {
+	  						$(add_event_form).replaceWith(data['form_html']);
+	  					}
+	  					else {
+	  						console.log("sex");
+	  					}
+	  				},
+	  				error: function () {
+	  					$(add_event_form).find('.error-message').show()
+	  				}
+	  			});
+	  		});	
+
+	  		$("#id_phone").intlTelInput({
+	  			autoFormat: true,
+	  			nationalMode: false,
+	  		  	preferredCountries: ['ke'],
+	  		  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+	  		});
+	  	});
 		$(document).ajaxStop(function() {
 			//id-add-client-form
 			$('#id-add-client-form').submit(function(event) {
 				event.preventDefault();
+				$('#div_id_phone').removeClass('has-success');
 				var add_client_form = '#id-add-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_add_client_form' %}",
-			    type: "POST",
-			    data: $(add_client_form).serialize(),
-			    dataType: 'json',
-			    success: function(data) {				    	
-		        if (!(data['success'])) {
-	            $(add_client_form).replaceWith(data['form_html']);
-		        }
-		        else {
-	            document.getElementById('id-create-appointment-client').value = data['client_id'];
-	            $('#get-client').hide();
-	            $('#create-event').show();
-		        }
-			    },
-			    error: function () {
-		        $(add_client_form).find('.error-message').show()
-			    }
+					url: "{% url 'appointments:process_add_client_form' %}",
+					type: "POST",
+					data: $(add_client_form).serialize(),
+					dataType: 'json',
+					success: function(data) {				    	
+						if (!(data['success'])) {
+							$(add_client_form).replaceWith(data['form_html']);
+						}
+						else {
+							document.getElementById('id-create-appointment-client').value = data['client_id'];
+							$('#get-client').hide();
+							$('#create-event').show();
+						}
+					},
+					error: function () {
+						$(add_client_form).find('.error-message').show();
+					}
 				});
 			});	
+
 			//select-user-form
 			$('#id-select-client-form').submit(function(event) {
 				event.preventDefault();
 				var select_client_form = '#id-select-client-form';
 				$.ajax({
-			    url: "{% url 'appointments:process_add_event_form' %}",
-			    type: "POST",
-			    data: $(select_client_form).serialize(),
-			    dataType: 'json',
-			    success: function(data) {				    	
-		        if (!(data['success'])) {
-	            $(select_client_form).replaceWith(data['form_html']);
-		        }
-		        else {
-	            document.getElementById('id-create-appointment-client').value = data['client_id'];
-	            $('#get-client').hide();
-	            $('#create-event').show();
-		        }
-			    },
-			    error: function () {
-		        $(select_client_form).find('.error-message').show()
-			    }
+					url: "{% url 'appointments:process_add_event_form' %}",
+					type: "POST",
+					data: $(select_client_form).serialize(),
+					dataType: 'json',
+					success: function(data) {				    	
+						if (!(data['success'])) {
+							$(select_client_form).replaceWith(data['form_html']);
+						}
+						else {
+							document.getElementById('id-create-appointment-client').value = data['client_id'];
+							$('#get-client').hide();
+							$('#create-event').show();
+						}
+					},
+					error: function () {
+						$(select_client_form).find('.error-message').show()
+					}
 				});
 			});	
+
 			//date time selects
+
 			// initialize input widgets first
-	    $('#id-datetime-pairs .time').timepicker({
-	    	'scrollDefault': 'now',
-        'showDuration': true,
-        'timeFormat': 'g:ia'
-	    });
-	    $('#id-datetime-pairs .date').datepicker({
-        'format': 'dd-mm-yyyy',
-        'autoclose': true
-	    });
-	    // initialize datepair
-	    $('#id-datetime-pairs').datepair();		
-  		//add-event-form
-  		$('#id-event-form').submit(function(event) {
-  			event.preventDefault();
-  			var add_event_form = '#id-event-form';
-  			$.ajax({
-  		    url: "{% url 'appointments:process_add_event_form' %}",
-  		    type: "POST",
-  		    data: $(add_event_form).serialize(),
-  		    dataType: 'json',
-  		    success: function(data) {				    	
-  	        if (!(data['success'])) {
-              $(add_event_form).replaceWith(data['form_html']);
-  	        }
-  	        else {
-              console.log("sex");
-  	        }
-  		    },
-  		    error: function () {
-  	        $(add_event_form).find('.error-message').show()
-  		    }
-  			});
-  		});	
+			$('#id-datetime-pairs .time').timepicker({
+				'scrollDefault': 'now',
+				'showDuration': true,
+				'timeFormat': 'g:ia'
+			});
+			$('#id-datetime-pairs .date').datepicker({
+				'format': 'dd-mm-yyyy',
+				'autoclose': true
+			});
+
+		    // initialize datepair
+		    $('#id-datetime-pairs').datepair();	
+
+			//add-event-form
+			$('#id-event-form').submit(function(event) {
+				event.preventDefault();
+				var add_event_form = '#id-event-form';
+				$.ajax({
+					url: "{% url 'appointments:process_add_event_form' %}",
+					type: "POST",
+					data: $(add_event_form).serialize(),
+					dataType: 'json',
+					success: function(data) {				    	
+						if (!(data['success'])) {
+							$(add_event_form).replaceWith(data['form_html']);
+						}
+						else {
+							console.log("An error occurred");
+						}
+					},
+					error: function () {
+						$(add_event_form).find('.error-message').show()
+					}
+				});
+			});	
+
+			$("#id_phone").intlTelInput({
+				autoFormat: true,
+				nationalMode: false,
+			  	preferredCountries: ['ke'],
+			  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+			});
+		});		
+
+		// on blur: validate
+		var telInput = $("#id_phone");
+		telInput.blur(function() {
+		  if ($.trim(telInput.val())) {
+		    if (telInput.intlTelInput("isValidNumber")) {		      
+		      $('#div_id_phone').addClass('has-success');
+		      $("#id_full_phone").val($("#id_phone").intlTelInput("getNumber"));
+		    } else {
+		      telInput.addClass("error");
+		      $('#div_id_phone').addClass('has-error');
+		    }
+		  }
+		});
+		// on keydown: reset
+		telInput.keydown(function() {
+		  $('#div_id_phone').removeClass('has-error');
 		});
 	</script>
 {% endblock %}
