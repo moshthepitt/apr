@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django_select2',
     'allauth',
     'allauth.account',
+    # 'pagination',
     # custom
     'appointments',
     'users',

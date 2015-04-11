@@ -14,6 +14,10 @@ class Venue(models.Model):
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Venue"))
         verbose_name_plural = getattr(labels, 'VENUE_PLURAL', _("Venues"))
+        ordering = ['name']
+
+    def meta(self):
+        return self._meta
 
     def __str__(self):
         return self.name

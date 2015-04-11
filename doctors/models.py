@@ -25,9 +25,13 @@ class Doctor(models.Model):
     class Meta:
         verbose_name = getattr(labels, 'DOCTOR', _("Doctor"))
         verbose_name_plural = getattr(labels, 'DOCTOR', _("Doctors"))
+        ordering = ['first_name']
 
     def __unicode__(self):
         return self.get_full_name()
+
+    def meta(self):
+        return self._meta
 
     def get_full_name(self):
         """

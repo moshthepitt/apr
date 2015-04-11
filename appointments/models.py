@@ -29,3 +29,9 @@ class Appointment(models.Model):
 
     def __unicode__(self):
         return _("Appointment: %s - %s - %s") % (self.client, self.doctor, self.event)
+
+    def meta(self):
+        return self._meta
+
+    class Meta:
+        ordering = ['-event__start']

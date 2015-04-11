@@ -51,9 +51,13 @@ class Client(models.Model):
             return self.get_full_name()
         return "%s" % self.email
 
+    def meta(self):
+        return self._meta
+
     class Meta:
         verbose_name = getattr(labels, 'CLIENT', _("Client"))
         verbose_name_plural = getattr(labels, 'CLIENT_PLURAL', _("Clients"))
+        ordering = ['client_id']
 
 
 class UserProfile(models.Model):

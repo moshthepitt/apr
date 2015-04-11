@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 {% load staticfiles %}
 {% load compress %}
-
+{% load i18n %}
 <html lang="en">
   <head> 
     <meta charset="utf-8">
@@ -59,7 +59,14 @@
         {% block main_content %}{% endblock %}
         </div>
         <div class="col-md-3" id="sidebar">        
-        {% block sidebar_content %}{% endblock %}
+        {% block sidebar_content %}
+          {% block general_sidebar %}{% endblock %}
+          <div class="widget" id="links">   
+            <div class="input-group col-md-12">
+              <a href="{% url 'appointments:add' %}">{% trans "Add Appointment" %}</a>
+            </div>
+          </div>
+        {% endblock %}
         </div>
       </div>
       {% endblock %}

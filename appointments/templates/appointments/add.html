@@ -12,17 +12,29 @@
 {% block title %}{% trans "Create appointment" %} | APR{% endblock %}
 
 {% block main_content %}
-<div class="row" id="get-client">
-	<div class="col-md-6">
-		{% crispy SelectClientForm %}
-	</div>
-	<div class="col-md-6">
-		{% crispy AddClientForm %}
-	</div>		
-</div>	
-<div class="row" id="create-event" style="display:none;">
-	{% crispy AppointmentForm %}
-</div>
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Create appointment" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div class="row" id="get-client">
+	    	<div class="col-md-6">
+	    		{% crispy SelectClientForm %}
+	    	</div>
+	    	<div class="col-md-6">
+	    		{% crispy AddClientForm %}
+	    	</div>		
+	    </div>	
+	    <div class="row" id="create-event" style="display:none;">
+	    	{% crispy AppointmentForm %}
+	    </div>
+	  </div>
+	</div>	
+
+
 {% endblock %}
 
 {% block extrajs %}

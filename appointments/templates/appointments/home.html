@@ -20,8 +20,8 @@
 	</div>	
 
 {% endblock %}
-{% block sidebar_content %}
-	<div class="widget" id="custom-search-input">
+{% block general_sidebar %}
+	<div class="widget" id="filter-venues">
 	  <h3>{% trans "Clinics" %}</h3>
 	  <div class="input-group col-md-12">
 	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
@@ -32,7 +32,7 @@
 	    </select>
 	  </div>
 	</div>
-	<div class="widget" id="custom-search-input">
+	<div class="widget" id="filter-doctors">
 	  <h3>{% trans "Doctors" %}</h3>
 	  <div class="input-group col-md-12">
 	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
@@ -42,7 +42,7 @@
 	      {% endfor %}
 	    </select>
 	  </div>
-	</div>
+	</div>	
 {% endblock%}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
