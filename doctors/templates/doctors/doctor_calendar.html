@@ -1,4 +1,7 @@
 {% extends "appointments/home.html" %}
+{% load i18n %}
+{% block title %}{{object}} {% trans "Calendar" %}{% endblock %}
+{% block calendar_title %}{{object}} {% trans "Calendar" %}{% endblock %}
 
 {% block event_feed_js %}
 <script type="text/javascript">

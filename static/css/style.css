@@ -8,3 +8,37 @@
   padding-top: 20px;
   border-top: 1px solid #e5e5e5;
 }
+
+/*#main-content h1 {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top:20;
+  margin-bottom: 20px;
+  padding-bottom: 5px;
+  border-bottom:1px solid #999999;
+}*/
+
+#main-content .panel-default {
+	border:none;
+	margin-top:20px;
+}
+
+.fc-toolbar h2{
+	font-size: 18px;
+}
+
+#sidebar {
+	margin-top:20px;
+}
+
+#sidebar h3{
+  font-size: 18px;
+  font-weight: 500;
+  margin-top:0;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+}
+
+#sidebar .widget{
+  margin-bottom:20px;
+}

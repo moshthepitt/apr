@@ -5,30 +5,45 @@
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'fullcalendar/css/fullcalendar.min.css' %}" type="text/css" />
 {% endblock %}
+{% block title %}{% trans "Calendar" %}{% endblock %}
 {% block main_content %}
-	<div class="row">
-		<div class="col-md-12">
-			<div class="col-md-4">
-				<select class="form-control">
-				  <option>{% trans "Select doctor" %}</option>			  
-				  {% for doctor in active_doctors %}
-				  	<option value="{{doctor.pk}}">{{doctor}}</option>
-				  {% endfor %}
-				</select>	
-			</div>
 
-			<div class="col-md-4">
-				<select class="form-control">
-				  <option>{% trans "Select venue" %}</option>			  
-				  {% for venue in active_venues %}
-				  	<option value="{{venue.pk}}">{{venue}}</option>
-				  {% endfor %}
-				</select>			
-			</div>
-		</div>
-	</div>
-	<div id="calendar" class="row"></div>
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Calendar" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div id="calendar" class="row"></div>
+	  </div>
+	</div>	
+
 {% endblock %}
+{% block sidebar_content %}
+	<div class="widget" id="custom-search-input">
+	  <h3>{% trans "Clinics" %}</h3>
+	  <div class="input-group col-md-12">
+	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
+	      <option value="#">{% trans "Select Clinic" %}</option>
+	      {% for venue in active_venues %}
+	        <option value="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</option>
+	      {% endfor %}
+	    </select>
+	  </div>
+	</div>
+	<div class="widget" id="custom-search-input">
+	  <h3>{% trans "Doctors" %}</h3>
+	  <div class="input-group col-md-12">
+	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
+	      <option value="#">{% trans "Select Doctor" %}</option>
+	      {% for doctor in active_doctors %}
+	        <option value="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</option>
+	      {% endfor %}
+	    </select>
+	  </div>
+	</div>
+{% endblock%}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
 	<script src="{% static 'fullcalendar/js/fullcalendar.min.js' %}"></script>
