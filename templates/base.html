@@ -29,7 +29,7 @@
   <body data-color="grey" class="flat"><div id="wrapper">
     <div id="header">
       <h1><a href="{% url 'home' %}">APR</a></h1> 
-       
+       <a id="menu-trigger" href="#"><i class="fa fa-bars"></i></a>
     </div>
     <div id="user-nav">
       <ul class="btn-group">     
@@ -46,11 +46,32 @@
       <ul>
         {% if request.user.is_authenticated %}
         <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> <span>Calendar</span></a></li>
+        <li><a href="{% url 'appointments:appointments' %}"><i class="fa fa-th-list"></i> <span>Appointments List</span></a></li>
         <li><a href="{% url 'appointments:add' %}"><i class="fa fa-plus"></i> <span>Add Appointment</span></a></li>
         
         {% else %}
         <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span>Login</span></a></li>
         {% endif %}
+
+        {% if request.user.is_authenticated %}
+        <li class="submenu">
+          <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Clinics" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            {% for venue in active_venues %}
+            <li><a href="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+        <li class="submenu">
+          <a href="#"><i class="fa fa-stethoscope"></i> <span>{% trans "Doctors" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            {% for doctor in active_doctors %}
+            <li><a href="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</a></li>
+            {% endfor %}
+          </ul>
+        </li> 
+        {% endif %}
+        
         {% block sidebar_content %}
           {% block general_sidebar %}{% endblock %}
         {% endblock %}

@@ -20,26 +20,6 @@
 	</div>	
 
 {% endblock %}
-{% block general_sidebar %}
-	{% if request.user.is_authenticated %}
-	<li class="submenu">
-	  <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Clinics" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
-	  <ul>
-	    {% for venue in active_venues %}
-	    <li><a href="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</a></li>
-	    {% endfor %}
-	  </ul>
-	</li>
-	<li class="submenu">
-	  <a href="#"><i class="fa fa-stethoscope"></i> <span>{% trans "Doctors" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
-	  <ul>
-	    {% for doctor in active_doctors %}
-	    <li><a href="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</a></li>
-	    {% endfor %}
-	  </ul>
-	</li>	
-	{% endif %}
-{% endblock%}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
 	<script src="{% static 'fullcalendar/js/fullcalendar.min.js' %}"></script>
@@ -65,6 +45,9 @@
 				height: "auto",
 				minTime: "08:00",
 				maxTime: "19:00",
+				eventClick: function(calEvent, jsEvent, view) {
+					window.location.href = "/appointments/view/" + calEvent.id;
+				}
 			});		
 		});
 	</script>

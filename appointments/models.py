@@ -3,6 +3,7 @@ from schedule.models import Event
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from users.models import Client
 from doctors.models import Doctor
@@ -32,6 +33,9 @@ class Appointment(models.Model):
 
     def meta(self):
         return self._meta
+
+    def get_absolute_url(self):
+        return reverse('appointments:appointment', args=[self.pk])
 
     class Meta:
         ordering = ['-event__start']

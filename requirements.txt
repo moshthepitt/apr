@@ -10,6 +10,7 @@ django-appconf==1.0.1
 django-compressor==1.4
 django-crispy-forms==1.4.0
 django-jsonview==0.4.3
+django-pagination==1.0.7
 django-phonenumber-field==0.7.2
 django-scheduler==0.7.4
 future==0.14.3

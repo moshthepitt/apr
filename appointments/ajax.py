@@ -24,7 +24,7 @@ def event_feed(request):
             to = timezone.make_aware(
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None), fro, to)
-            occurences = [{'id': x.pk,
+            occurences = [{'id': x.event.appointment_set.first().pk,
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
                            'start': timezone.localtime(x.start).isoformat(),
@@ -47,8 +47,8 @@ def venue_event_feed(request, pk):
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(
                 Event.objects.exclude(appointment=None).filter(appointment__venue=venue), fro, to)
-            occurences = [{'id': x.pk,
-                           'title': x.title,
+            occurences = [{'id': x.event.appointment_set.first().pk,
+                           'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
                            'start': timezone.localtime(x.start).isoformat(),
                            'end': timezone.localtime(x.end).isoformat()
@@ -70,8 +70,8 @@ def doctor_event_feed(request, pk):
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(
                 Event.objects.exclude(appointment=None).filter(appointment__doctor=doctor), fro, to)
-            occurences = [{'id': x.pk,
-                           'title': x.title,
+            occurences = [{'id': x.event.appointment_set.first().pk,
+                           'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
                            'start': timezone.localtime(x.start).isoformat(),
                            'end': timezone.localtime(x.end).isoformat()

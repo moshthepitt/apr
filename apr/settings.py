@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django_select2',
     'allauth',
     'allauth.account',
-    # 'pagination',
+    'pagination',
     # custom
     'appointments',
     'users',
@@ -55,6 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'pagination.middleware.PaginationMiddleware',
 )
 
 ROOT_URLCONF = 'apr.urls'
@@ -85,6 +86,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.request",
     "django.core.context_processors.media",
     "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
 
     "allauth.account.context_processors.account",
     "allauth.socialaccount.context_processors.socialaccount",

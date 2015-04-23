@@ -25,6 +25,9 @@
 			height: "auto",
 			minTime: "08:00",
 			maxTime: "19:00",
+			eventClick: function(calEvent, jsEvent, view) {
+				window.location.href = "/appointments/view/" + calEvent.id;
+			}
 		});		
 	});
 </script>

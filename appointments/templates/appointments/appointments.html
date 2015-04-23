@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 {% load i18n %}
-{% load staticfiles %}
+{% load pagination_tags %}
 
-
-{% block title %}{{object}} {% trans "Appointments" %} | APR{% endblock %}
+{% block title %}{{object|default_if_none:""}} {% trans "Appointments" %} | APR{% endblock %}
 
 {% block main_content %}
 
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
-	    {% block calendar_title %}{{object}} {% trans "Appointments" %}{% endblock %}
+	    {% block calendar_title %}{{object|default_if_none:""}} {% trans "Appointments" %}{% endblock %}
 	    </h3>
 	  </div>
 	  <div class="panel-body">
@@ -25,10 +24,11 @@
 	    					<th>{% trans "Doctor" %}</th>
 	    					<th>{% trans "Clinic" %}</th>
 	    					<th>{% trans "Date" %}</th>
+	    					<th></th>
 	    				</tr>
 	    			</thead>
 	    			<tbody>
-	    				
+	    				{# {% autopaginate object_list %} #}
 	    				{% for object in object_list %}
 	    					<tr>
 	    						<td>{{object.client.client_id}}</td>
@@ -37,13 +37,13 @@
 	    						<td>{{object.doctor}}</td>
 	    						<td>{{object.venue}}</td>
 	    						<td>{{object.event.start}}</td>
+	    						<td><a href="{{object.get_absolute_url}}">View</a></td>
 	    					</tr>
 	    				{% endfor %}
 	    			</tbody>
 	    		</table>
 	    	</div>
-
-	    	
+	    	{# <div class="clearfix text-center">{% paginate %}</div>	    	 #}
 	    {% else %}
 	    	<p>{% trans "No appointments" %}</p>
 	    {% endif %}
