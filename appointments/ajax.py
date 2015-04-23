@@ -4,6 +4,8 @@ from django.http import HttpResponse, Http404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 from crispy_forms.utils import render_crispy_form
 from jsonview.decorators import json_view
@@ -116,6 +118,7 @@ def process_add_event_form(request):
     form = AppointmentForm(request.POST or None)
     if form.is_valid():
         form.create_appointment(request.user)
+        messages.add_message(request, messages.SUCCESS, _('Successfully added appointment'))
         return {
             'success': True,
         }
