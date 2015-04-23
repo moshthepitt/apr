@@ -1,9 +1,12 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from django.contrib.auth.decorators import login_required
+
+from apr.views import home
 
 urlpatterns = patterns('',
-    url(r'^$', 'apr.views.home', name='home'),
+    url(r'^$', login_required(home), name='home'),
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),
 
     url(r'^admin/', include(admin.site.urls)),

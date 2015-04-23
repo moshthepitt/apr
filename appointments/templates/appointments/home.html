@@ -21,28 +21,24 @@
 
 {% endblock %}
 {% block general_sidebar %}
-	<div class="widget" id="filter-venues">
-	  <h3>{% trans "Clinics" %}</h3>
-	  <div class="input-group col-md-12">
-	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
-	      <option value="#">{% trans "Select Clinic" %}</option>
-	      {% for venue in active_venues %}
-	        <option value="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</option>
-	      {% endfor %}
-	    </select>
-	  </div>
-	</div>
-	<div class="widget" id="filter-doctors">
-	  <h3>{% trans "Doctors" %}</h3>
-	  <div class="input-group col-md-12">
-	    <select class="form-control input-sm" onchange="location = this.options[this.selectedIndex].value;">
-	      <option value="#">{% trans "Select Doctor" %}</option>
-	      {% for doctor in active_doctors %}
-	        <option value="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</option>
-	      {% endfor %}
-	    </select>
-	  </div>
-	</div>	
+	{% if request.user.is_authenticated %}
+	<li class="submenu">
+	  <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Clinics" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+	  <ul>
+	    {% for venue in active_venues %}
+	    <li><a href="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</a></li>
+	    {% endfor %}
+	  </ul>
+	</li>
+	<li class="submenu">
+	  <a href="#"><i class="fa fa-stethoscope"></i> <span>{% trans "Doctors" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+	  <ul>
+	    {% for doctor in active_doctors %}
+	    <li><a href="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</a></li>
+	    {% endfor %}
+	  </ul>
+	</li>	
+	{% endif %}
 {% endblock%}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>

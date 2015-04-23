@@ -25,7 +25,7 @@ def event_feed(request):
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None), fro, to)
             occurences = [{'id': x.pk,
-                           'title': x.title,
+                           'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
                            'start': timezone.localtime(x.start).isoformat(),
                            'end': timezone.localtime(x.end).isoformat()
