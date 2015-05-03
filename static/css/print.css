@@ -1,0 +1,41 @@
+.fc {
+	max-width: 100% !important;
+}
+
+/* Event display */
+.panel-body {
+	padding:0;
+}
+.panel {
+	border:none;
+}
+
+/* Hidden items */
+.panel-heading,
+.fc-resourceDay-view .fc-day-grid,
+.fc-agenda-view .fc-day-grid {
+	display:none;
+}
+
+/* Buttons */
+.fc-button-group,
+.fc button {
+	display: none; /* don't display any button-related controls */
+}
+
+
+/* Vertical Scroller & Containers */
+
+/* kill the scrollbars and allow natural height */
+.fc-scroller,
+.fc-day-grid-container,    /* these divs might be assigned height, which we need to cleared */
+.fc-time-grid-container {  /* */
+	overflow: visible !important;
+	height: auto !important;
+}
+
+/* kill the horizontal border/padding used to compensate for scrollbars */
+.fc-row {
+	border: 0 !important;
+	margin: 0 !important;
+}

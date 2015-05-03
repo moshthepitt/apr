@@ -9,13 +9,13 @@
   {% block meta_keywords %}<meta name="keywords" content="" />{% endblock %}
   {% block meta_description %}<meta name="description" content="" />{% endblock %}
   {% block other_meta %}{% endblock %}
-  <title>{% block title %}APR{% endblock %}</title>
+  <title>{% block title %}{{site.name}}{% endblock %}</title>
 
   {% compress css %}
   <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/bootstrap.min.css' %}" />
   <link type="text/css" rel="stylesheet" href="{% static 'unicorn/css/font-awesome.min.css' %}" />
   <link type="text/css" rel="stylesheet" href="{% static 'unicorn/css/unicorn.css' %}" />
-  <!-- link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" /-->   
+  <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/style.css' %}" />   
   {% block extracss %}{% endblock %}
   {% endcompress %}
   
@@ -27,30 +27,30 @@
     <![endif]-->
   </head> 
   <body data-color="grey" class="flat"><div id="wrapper">
-    <div id="header">
-      <h1><a href="{% url 'home' %}">APR</a></h1> 
+    <div id="header" class="hidden-print">
+      <h1><a href="{% url 'home' %}">{{site.name}}</a></h1> 
        <a id="menu-trigger" href="#"><i class="fa fa-bars"></i></a>
     </div>
-    <div id="user-nav">
+    <div id="user-nav" class="hidden-print">
       <ul class="btn-group">     
         {% if request.user.is_authenticated %}   
-        <li class="btn"><a title="" href="{% url 'account_change_password' %}"><i class="fa fa-adjust"></i> <span class="text">Change Password</span></a></li>
-        <li class="btn"><a title="" href="{% url 'account_logout' %}"><i class="fa fa-sign-out"></i> <span class="text">Logout</span></a></li>
+        <li class="btn"><a title="" href="{% url 'account_change_password' %}"><i class="fa fa-adjust"></i> <span class="text">{% trans "Change Password" %}</span></a></li>
+        <li class="btn"><a title="" href="{% url 'account_logout' %}"><i class="fa fa-sign-out"></i> <span class="text">{% trans "Logout" %}</span></a></li>
         {% else %}
-        <li class="btn"><a title="" href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span class="text">Login</span></a></li>
+        <li class="btn"><a title="" href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span class="text">{% trans "Login" %}</span></a></li>
         {% endif %}
       </ul>
     </div>    
 
-    <div id="sidebar">
+    <div id="sidebar" class="hidden-print">
       <ul>
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> <span>Calendar</span></a></li>
-        <li><a href="{% url 'appointments:appointments' %}"><i class="fa fa-th-list"></i> <span>Appointments List</span></a></li>
-        <li><a href="{% url 'appointments:add' %}"><i class="fa fa-plus"></i> <span>Add Appointment</span></a></li>
+        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>
+        <li><a href="{% url 'appointments:appointments' %}"><i class="fa fa-th-list"></i> <span>{% trans "Appointments List" %}</span></a></li>
+        <li><a href="{% url 'appointments:add' %}"><i class="fa fa-plus"></i> <span>{% trans "Add Appointment" %}</span></a></li>
         
         {% else %}
-        <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span>Login</span></a></li>
+        <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span>{% trans "Login" %}</span></a></li>
         {% endif %}
 
         {% if request.user.is_authenticated %}
@@ -76,15 +76,15 @@
           {% block general_sidebar %}{% endblock %}
         {% endblock %}
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out"></i> <span>Logout</span></a></li>
+        <li><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out"></i> <span>{% trans "Logout" %}</span></a></li>
         {% endif %}
       </ul>      
         
     </div>
 
     <div id="content">
-      <div id="content-header">
-        <h1>{% block title2 %}APR{% endblock %}</h1>
+      <div id="content-header" class="hidden-print">
+        <h1>{% block title2 %}{{site.name}}{% endblock %}</h1>
       </div>
       
       
@@ -110,7 +110,7 @@
     </div>
     <div class="row">
       <div id="footer" class="col-xs-12">
-        &copy; APR {% now "Y" %}
+        &copy; {{site.name}} {% now "Y" %}
       </div>
     </div>
 

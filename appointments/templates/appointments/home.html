@@ -3,7 +3,8 @@
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% block extracss %}
-	<link rel="stylesheet" href="{% static 'fullcalendar-resourceview/css/fullcalendar.min.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'fullcalendar-resourceview/css/fullcalendar.min.css' %}" media="all" type="text/css" />
+	<link rel="stylesheet" href="{% static 'css/print.css' %}" media="print" type="text/css" />
 {% endblock %}
 {% block title %}{% trans "Calendar" %}{% endblock %}
 {% block main_content %}

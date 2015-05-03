@@ -12,7 +12,7 @@ class HomeView(FormView):
 
     def get_context_data(self, **kwargs):
         context = super(HomeView, self).get_context_data(**kwargs)
-        context['venues'] = Venue.objects.all()
+        context['venues'] = Venue.objects.all()[:3]
         return context
 
 home = HomeView.as_view()
