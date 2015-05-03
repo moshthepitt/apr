@@ -10,18 +10,26 @@
 			header: {
 				left: 'prev,next,today',
 				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
+				right: 'month,agendaWeek,resourceDay'
 			},
 			defaultDate: '{% now "c" %}',
 			editable: false,
 			eventLimit: true, // allow "more" link when too many events
+			resources: [
+				{% for venue in venues %}
+					{
+						'id': '{{venue.id}}',
+						'name': '{{venue.name}}'
+					},
+				{% endfor %}
+			],
 			events: "{% url 'appointments:doctor_event_feed' pk=object.pk %}",
 			slotEventOverlap: false,
 			dayClick: function(date, allDay, jsEvent, view) {
-				$('#calendar').fullCalendar('changeView', 'agendaDay');
+				$('#calendar').fullCalendar('changeView', 'resourceDay');
 				$('#calendar').fullCalendar('gotoDate', date);
 			},
-			defaultView: "agendaDay",
+			defaultView: "resourceDay",
 			height: "auto",
 			minTime: "06:00",
 			maxTime: "19:00",
