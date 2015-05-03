@@ -51,7 +51,6 @@ class AppointmentListView(ListView):
         self.object = None
         if 'app_label' in kwargs and 'model_name' in kwargs and kwargs['app_label'] in allowed_apps:
             object_type = get_object_or_404(ContentType, app_label=kwargs['app_label'], model=kwargs['model_name'])
-            print object_type
             try:
                 this_object = object_type.get_object_for_this_type(pk=kwargs['pk'])
                 self.object = this_object

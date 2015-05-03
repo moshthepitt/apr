@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from core import labels
+from doctors.models import Doctor
 
 
 class Client(models.Model):
@@ -63,7 +64,25 @@ class Client(models.Model):
 class UserProfile(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, verbose_name=_("User"))
+
+    def is_doctor(self):
+        "Checks if this userprofile is connected to a Doctor object"
+        return self.user.doctor_set.exists()
+
+    def make_doctor(self, creator):
+        """
+            Creates a Doctor object attached to this userprofile
+            Inputs:
+                creator = a User object that represents the person who will
+                be marked as having 'created' the Doctor object
+        """
+        if not Doctor.objects.filter(user=self.user).exists():
+            doctor = Doctor(user=self.user, creator=creator)
+            doctor.first_name = self.user.first_name
+            doctor.last_name = self.user.last_name
+            doctor.email = self.user.email
+            doctor.save()
 
     def __unicode__(self):
         return _("%s's profile") % self.user
