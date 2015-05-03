@@ -65,6 +65,7 @@ class AppointmentForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
+        # crispy forms stuff
         self.helper = FormHelper()
         self.helper.render_hidden_fields = True
         self.helper.form_id = 'id-event-form'
