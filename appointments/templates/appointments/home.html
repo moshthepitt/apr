@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% load staticfiles %}
 {% block extracss %}
-	<link rel="stylesheet" href="{% static 'fullcalendar/css/fullcalendar.min.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'fullcalendar-resourceview/css/fullcalendar.min.css' %}" type="text/css" />
 {% endblock %}
 {% block title %}{% trans "Calendar" %}{% endblock %}
 {% block main_content %}
@@ -22,7 +22,7 @@
 {% endblock %}
 {% block extrajs %}
 	<script src="{% static 'js/moment.min.js' %}"></script>
-	<script src="{% static 'fullcalendar/js/fullcalendar.min.js' %}"></script>
+	<script src="{% static 'fullcalendar-resourceview/js/fullcalendar.min.js' %}"></script>
 	{% block event_feed_js %}
 	<script type="text/javascript">
 	    $(document).ready(function() {	
@@ -35,15 +35,25 @@
 				defaultDate: '{% now "c" %}',
 				editable: false,
 				eventLimit: true, // allow "more" link when too many events
+
+				resources: [
+					{% for venue in venues %}
+						{
+							'id': '{{venue.id}}',
+							'name': '{{venue.name}}'
+						},
+					{% endfor %}
+				],
+
 				events: "{% url 'appointments:event_feed' %}",
 				slotEventOverlap: false,
 				dayClick: function(date, allDay, jsEvent, view) {
-					$('#calendar').fullCalendar('changeView', 'agendaDay');
+					$('#calendar').fullCalendar('changeView', 'resourceDay');
 					$('#calendar').fullCalendar('gotoDate', date);
 				},
 				defaultView: "month",
 				height: "auto",
-				minTime: "08:00",
+				minTime: "06:00",
 				maxTime: "19:00",
 				eventClick: function(calEvent, jsEvent, view) {
 					window.location.href = "/appointments/view/" + calEvent.id;

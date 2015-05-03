@@ -1,6 +1,9 @@
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+# sites
+SITE_ID = 1
+
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 

@@ -30,7 +30,8 @@ def event_feed(request):
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
                            'start': timezone.localtime(x.start).isoformat(),
-                           'end': timezone.localtime(x.end).isoformat()
+                           'end': timezone.localtime(x.end).isoformat(),
+                           'resources': [x.event.appointment_set.first().venue.pk]
                            }
                           for x in period.get_occurrences()]
         data = occurences

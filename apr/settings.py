@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'pagination',
+    'debug_toolbar',
     # custom
     'appointments',
     'users',
