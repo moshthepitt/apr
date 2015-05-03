@@ -34,7 +34,23 @@ def event_feed(request):
                            'resources': [x.event.appointment_set.first().venue.pk]
                            }
                           for x in period.get_occurrences()]
-        data = occurences
+            breaks = [
+                {
+                    'start': 'T10:00:00',
+                    'end': 'T10:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                },
+                {
+                    'start': 'T13:30:00',
+                    'end': 'T14:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                }
+            ]
+        data = occurences + breaks
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -58,7 +74,23 @@ def venue_event_feed(request, pk):
                            'resources': [x.event.appointment_set.first().venue.pk]
                            }
                           for x in period.get_occurrences()]
-        data = occurences
+            breaks = [
+                {
+                    'start': 'T10:00:00',
+                    'end': 'T10:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                },
+                {
+                    'start': 'T13:30:00',
+                    'end': 'T14:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                }
+            ]
+        data = occurences + breaks
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -82,7 +114,23 @@ def doctor_event_feed(request, pk):
                            'resources': [x.event.appointment_set.first().venue.pk]
                            }
                           for x in period.get_occurrences()]
-        data = occurences
+            breaks = [
+                {
+                    'start': 'T10:00:00',
+                    'end': 'T10:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                },
+                {
+                    'start': 'T13:30:00',
+                    'end': 'T14:30:00',
+                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'rendering': 'background',
+                    'resources': [x.id for x in Venue.objects.all()]
+                }
+            ]
+        data = occurences + breaks
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -121,7 +169,8 @@ def process_add_event_form(request):
     form = AppointmentForm(request.POST or None)
     if form.is_valid():
         form.create_appointment(request.user)
-        messages.add_message(request, messages.SUCCESS, _('Successfully added appointment'))
+        messages.add_message(
+            request, messages.SUCCESS, _('Successfully added appointment'))
         return {
             'success': True,
         }

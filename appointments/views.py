@@ -8,7 +8,6 @@ from django.http import Http404
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
-from doctors.models import Doctor
 
 
 class AddEventView(TemplateView):
@@ -18,11 +17,7 @@ class AddEventView(TemplateView):
         context = super(AddEventView, self).get_context_data(**kwargs)
         context['SelectClientForm'] = SelectClientForm()
         context['AddClientForm'] = AddClientForm()
-        # limit selection of Doctors to just current Doctor if the currently logged in user is a Doctor
-        if self.request.user.userprofile.is_doctor():
-            context['AppointmentForm'] = AppointmentForm()
-        else:
-            context['AppointmentForm'] = AppointmentForm()
+        context['AppointmentForm'] = AppointmentForm()
         return context
 
 
