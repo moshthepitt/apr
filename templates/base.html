@@ -83,25 +83,18 @@
     </div>
 
     <div id="content">
-      <div id="content-header" class="hidden-print">
-        <h1>{% block title2 %}{{site.name}}{% endblock %}</h1>
+      <div class="col-xs-12">
+        {% block messages %}
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
+              {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}        
+        {% endblock %}
       </div>
-      
-      
-        <div class="col-xs-12">
-          {% block messages %}
-          {% if messages %}
-              {% for message in messages %}
-              <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
-                {{ message }}
-              </div>
-              {% endfor %}
-          {% endif %}        
-          {% endblock %}
-        </div>
-      
-
       <div class="row">
         <div class="col-xs-12">
           {% block main_content %}{% endblock %}
