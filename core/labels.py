@@ -13,6 +13,7 @@ SELECT_CLIENT = _("Select Patient")
 CREATE_CLIENT = _("Create New Patient")
 CLIENT_ID = _("File Number")
 
+DOCTOR_TITLE = _("Dr.")
 DOCTOR = _("Doctor")
 DOCTOR_PLURAL = _("Doctors")
 
