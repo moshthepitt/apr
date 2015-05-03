@@ -8,16 +8,20 @@ from core import labels
 
 
 class Doctor(models.Model):
+
     """
     This model stores the "doctors" in the sense that clients make appointments to see doctors, typically
     """
+    user = models.ForeignKey(User, verbose_name=_("User"), null=True, default=None, blank=True,
+                             on_delete=models.PROTECT, help_text=_("This user will be able to log in as this doctor"))
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
+    creator = models.ForeignKey(User, verbose_name=_(
+        "Creator"), on_delete=models.PROTECT, related_name="doctor_creator")
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this doctor should be treated as '
                                                 'active.'))
@@ -37,5 +41,6 @@ class Doctor(models.Model):
         """
         Returns the title prefix, first_name plus the last_name, with a space in between.
         """
-        full_name = '%s %s %s' % (labels.DOCTOR_TITLE, self.first_name, self.last_name)
+        full_name = '%s %s %s' % (
+            labels.DOCTOR_TITLE, self.first_name, self.last_name)
         return full_name.strip()
