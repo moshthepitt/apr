@@ -38,14 +38,14 @@ def event_feed(request):
                 {
                     'start': 'T10:00:00',
                     'end': 'T10:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 },
                 {
                     'start': 'T13:30:00',
                     'end': 'T14:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 }
@@ -78,14 +78,14 @@ def venue_event_feed(request, pk):
                 {
                     'start': 'T10:00:00',
                     'end': 'T10:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 },
                 {
                     'start': 'T13:30:00',
                     'end': 'T14:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 }
@@ -118,14 +118,14 @@ def doctor_event_feed(request, pk):
                 {
                     'start': 'T10:00:00',
                     'end': 'T10:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 },
                 {
                     'start': 'T13:30:00',
                     'end': 'T14:30:00',
-                    'dow': [1, 2, 3, 4, 5, 6, 7],
+                    'dow': [0, 1, 2, 3, 4, 5, 6],
                     'rendering': 'background',
                     'resources': [x.id for x in Venue.objects.all()]
                 }
