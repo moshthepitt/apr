@@ -17,8 +17,8 @@
 
 /* Hidden items */
 .panel-heading,
-.fc-resourceDay-view .fc-day-grid,
-.fc-agenda-view .fc-day-grid {
+/*.fc-resourceDay-view .fc-day-grid,*/
+/*.fc-agenda-view .fc-day-grid*/ {
 	display:none;
 }
 

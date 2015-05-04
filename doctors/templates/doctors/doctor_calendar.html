@@ -19,7 +19,7 @@
 				{% for venue in venues %}
 					{
 						'id': '{{venue.id}}',
-						'name': '{{venue.name}}'
+						'name': '{{venue.name|upper}}'
 					},
 				{% endfor %}
 			],

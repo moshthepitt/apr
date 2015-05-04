@@ -1,3 +1,16 @@
 .fc h2 {
   font-size:22px;
 }
+
+.fc-agenda-view .fc-day-grid .fc-row .fc-content-skeleton {
+  padding-bottom: 0!important;
+}
+
+.top-info {
+	margin:0 auto;
+	padding:5px 10px;
+}
+
+.top-title {
+	font-weight:bold;
+}

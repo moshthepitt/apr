@@ -6,13 +6,13 @@
 	<link rel="stylesheet" href="{% static 'fullcalendar-resourceview/css/fullcalendar.min.css' %}" media="all" type="text/css" />
 	<link rel="stylesheet" href="{% static 'css/print.css' %}" media="print" type="text/css" />
 {% endblock %}
-{% block title %}{% trans "Calendar" %}{% endblock %}
+{% block title %}{% trans "Upper Hill Dental Centre Calendar" %}{% endblock %}
 {% block main_content %}
 
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
-	    {% block calendar_title %}{% trans "Calendar" %}{% endblock %}
+	    {% block calendar_title %}{% trans "Upper Hill Dental Centre Calendar" %}{% endblock %}
 	    </h3>
 	  </div>
 	  <div class="panel-body">
@@ -41,7 +41,7 @@
 					{% for venue in venues %}
 						{
 							'id': '{{venue.id}}',
-							'name': '{{venue.name}}'
+							'name': '{{venue.name|upper}}'
 						},
 					{% endfor %}
 				],				
@@ -57,8 +57,25 @@
 				maxTime: "19:00",
 				eventClick: function(calEvent, jsEvent, view) {
 					window.location.href = "/appointments/view/" + calEvent.id;
+				},
+				allDayText: "",
+				eventAfterAllRender: function(view) {
+					if (view.name == "resourceDay") {
+						$('.fc-day-grid .fc-content-skeleton td').each(function(i, obj) {
+							if (i > 0) {
+								// $(this).text("sex" + view.start.format());
+								$(this).html('<div class="top-info">' +
+									  '<div><span class="top-title">07:00 - 02:00</span>: Dr. Oramis</div>' +
+									  '<div><span class="top-title">02:00 - 06:00</span>: Dr. Oramis</div>' +
+									  '<div><span class="top-title">DSAS</span>: </div>' +
+									'</div>'
+								);
+							}							
+						});
+					}					
 				}
-			});		
+			});	
+			
 		});
 	</script>
 	{% endblock %}
