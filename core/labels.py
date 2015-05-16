@@ -17,6 +17,9 @@ DOCTOR_TITLE = _("Dr.")
 DOCTOR = _("Doctor")
 DOCTOR_PLURAL = _("Doctors")
 
+ASSISTANT = _("Nurse")
+ASSISTANT_PLURAL = _("Nurses")
+
 VENUE = _("Clinic")
 VENUE_PLURAL = _("Clinics")
 
