@@ -44,6 +44,7 @@ INSTALLED_APPS = (
     'appointments',
     'users',
     'doctors',
+    'assistants',
     'venues',
     'core',
 )
@@ -77,26 +78,43 @@ USE_L10N = True
 USE_TZ = True
 
 # Templates
-TEMPLATE_DIRS = [
-    os.path.join(BASE_DIR, 'templates'),
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                # default
+                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.debug',
+                'django.template.context_processors.i18n',
+                'django.template.context_processors.media',
+                'django.template.context_processors.static',
+                'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
+
+                # custom
+                "allauth.account.context_processors.account",
+                "allauth.socialaccount.context_processors.socialaccount",
+
+                'core.context_processors.site_processor',
+                'core.context_processors.debug_processor',
+                "doctors.context_processors.doctor_processor",
+                "venues.context_processors.venue_processor",
+                "assistants.context_processors.assistant_processor",
+            ],
+            # 'loaders': [
+            #     'django.template.loaders.filesystem.Loader',
+            #     'django.template.loaders.app_directories.Loader',
+            #     'django.template.loaders.eggs.Loader',
+            # ],
+        },
+    },
 ]
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.messages.context_processors.messages",
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.request",
-    "django.core.context_processors.media",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-
-    "allauth.account.context_processors.account",
-    "allauth.socialaccount.context_processors.socialaccount",
-
-    'core.context_processors.site_processor',
-    'core.context_processors.debug_processor',
-    "doctors.context_processors.doctor_processor",
-    "venues.context_processors.venue_processor",
-)
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
