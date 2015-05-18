@@ -19,6 +19,7 @@
 	    			<thead>
 	    				<tr>
 	    					<th>{% trans "File No." %}</th>
+	    					<th>{% trans "Appointment" %}</th>
 	    					<th>{% trans "Patient" %}</th>
 	    					<th>{% trans "Phone" %}</th>
 	    					<th>{% trans "Doctor" %}</th>
@@ -32,12 +33,16 @@
 	    				{% for object in object_list %}
 	    					<tr>
 	    						<td>{{object.client.client_id}}</td>
+	    						<td>{{object.event.title}}</td>
 	    						<td>{{object.client}}</td>
 	    						<td>{{object.client.phone}}</td>
 	    						<td>{{object.doctor}}</td>
 	    						<td>{{object.venue}}</td>
 	    						<td>{{object.event.start}}</td>
-	    						<td><a href="{{object.get_absolute_url}}">View</a></td>
+	    						<td>
+	    							<a href="{{object.get_absolute_url}}">View</a> |
+	    							<a href="{% url 'appointments:appointment_delete' pk=object.pk %}">Delete</a>
+	    						</td>
 	    					</tr>
 	    				{% endfor %}
 	    			</tbody>

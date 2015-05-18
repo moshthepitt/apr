@@ -1,6 +1,8 @@
+from django.core.urlresolvers import reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import DeleteView
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.http import Http404
@@ -8,6 +10,11 @@ from django.http import Http404
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
+
+
+class AppointmentDelete(DeleteView):
+    model = Appointment
+    success_url = reverse_lazy('appointments:appointments')
 
 
 class AddEventView(TemplateView):

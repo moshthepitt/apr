@@ -39,3 +39,7 @@ class Appointment(models.Model):
 
     class Meta:
         ordering = ['-event__start']
+
+
+# ### S I G N A L S ####
+from appointments import signals
