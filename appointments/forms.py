@@ -152,3 +152,24 @@ class AppointmentForm(forms.Form):
         )
         new_appointment.save()
         return new_appointment
+
+    def edit_event(self, event):
+        event.start = timezone.make_aware(
+            parser.parse(
+                "%s %s" % (self.cleaned_data['start_date'], self.cleaned_data['start_time']), dayfirst=True),
+            timezone.get_current_timezone()
+        )
+        event.end = timezone.make_aware(
+            parser.parse(
+                "%s %s" % (self.cleaned_data['end_date'], self.cleaned_data['end_time']), dayfirst=True),
+            timezone.get_current_timezone()
+        )
+        event.title = self.cleaned_data['title']
+        event.description = self.cleaned_data['description']
+        event.save()
+
+    def edit_appointment(self, appointment):
+        self.edit_event(appointment.event)
+        appointment.doctor = self.cleaned_data['doctor']
+        appointment.venue = self.cleaned_data['venue']
+        appointment.save()

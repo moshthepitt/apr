@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" type="text/css" />
+{% endblock %}
+
+{% block title %}{% trans "Edit" %} {{object.event.title}} | {{site.name}}{% endblock %}
+
+{% block main_content %}
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Edit" %} {{object.event.title}}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div class="row" id="create-event">
+	    	{% crispy form %}
+	    </div>
+	  </div>
+	</div>	
+
+
+{% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
+	<script src="{% static 'js/datepair.min.js' %}"></script>
+	<script src="{% static 'js/jquery.datepair.min.js' %}"></script>
+	<script>
+		$(document).ready(function() {			
+			//date time selects
+			// initialize input widgets first
+			$('#id-datetime-pairs .time').timepicker({
+				'showDuration': true,
+				'timeFormat': 'g:ia'
+			});
+			$('#id-datetime-pairs .date').datepicker({
+				'format': 'dd-mm-yyyy',
+				'autoclose': true
+			});
+
+		    // initialize datepair
+		    $('#id-datetime-pairs').datepair();	
+	  	});	
+	</script>
+{% endblock %}

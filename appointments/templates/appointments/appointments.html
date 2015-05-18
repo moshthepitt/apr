@@ -41,6 +41,7 @@
 	    						<td>{{object.event.start}}</td>
 	    						<td>
 	    							<a href="{{object.get_absolute_url}}">View</a> |
+	    							<a href="{% url 'appointments:appointment_edit' pk=object.pk %}">Edit</a> |
 	    							<a href="{% url 'appointments:appointment_delete' pk=object.pk %}">Delete</a>
 	    						</td>
 	    					</tr>

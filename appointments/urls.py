@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from appointments.ajax import event_feed, venue_event_feed, doctor_event_feed
 from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form
 from appointments.views import AddEventView, AppointmentView, AppointmentListView, AppointmentDelete
+from appointments.views import AppointmentEdit
 from venues.views import VenueView
 from doctors.views import DoctorView
 
@@ -20,6 +21,7 @@ urlpatterns = patterns('',
     url(r'^appointments/(?P<app_label>[\w-]+)/(?P<model_name>[\w-]+)/(?P<pk>\d+)/$', login_required(AppointmentListView.as_view()), name='appointments_filter'),
     url(r'^appointments/$', login_required(AppointmentListView.as_view()), name='appointments'),
     url(r'^view/(?P<pk>\d+)/$', login_required(AppointmentView.as_view()), name='appointment'),
+    url(r'^edit/(?P<pk>\d+)/$', login_required(AppointmentEdit.as_view()), name='appointment_edit'),
     url(r'^delete/(?P<pk>\d+)/$', login_required(AppointmentDelete.as_view()), name='appointment_delete'),
     url(r'^venue/(?P<pk>\d+)/$', login_required(VenueView.as_view()), name='venue'),
     url(r'^doctor/(?P<pk>\d+)/$', login_required(DoctorView.as_view()), name='doctor'),
