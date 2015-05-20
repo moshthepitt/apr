@@ -33,10 +33,10 @@ class OpeningHour(models.Model):
     class Meta:
         verbose_name = getattr(labels, 'OPENING_HOUR', _("Opening Hour"))
         verbose_name_plural = getattr(labels, 'OPENING_HOUR_PLURAL', _("Opening Hours"))
-        ordering = ['weekday']
+        ordering = ['venue__name', 'weekday', 'from_hour']
 
     def __unicode__(self):
-        return "{} {} {}".format(self.get_weekday_display, self.from_hour, self.to_hour)
+        return "{} {} {} {}".format(self.venue, self.get_weekday_display(), self.from_hour, self.to_hour)
 
     def meta(self):
         return self._meta

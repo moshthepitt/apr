@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'allauth.account',
     'pagination',
     'debug_toolbar',
+    'datatableview',
     # custom
     'appointments',
     'users',

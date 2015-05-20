@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
+from django.utils.translation import ugettext as _
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
@@ -8,11 +9,17 @@ from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
+from datatableview.views import DatatableView
+
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
 
 from core import labels
+
+from datatableview.utils import FIELD_TYPES
+from phonenumber_field.modelfields import PhoneNumberField
+FIELD_TYPES['text'].append(PhoneNumberField)
 
 
 class AppointmentEdit(FormView):
@@ -91,3 +98,24 @@ class AppointmentListView(ListView):
             except:
                 raise Http404
         return super(AppointmentListView, self).dispatch(*args, **kwargs)
+
+
+class AppointmentDatatableView(DatatableView):
+    model = Appointment
+    template_name = "appointments/appointments_table2.html"
+    datatable_options = {
+        'structure_template': "datatableview/bootstrap_structure.html",
+        'columns': [
+            'client__client_id',
+            'event__title',
+            'client',
+            (_("Phone"), 'client__phone'),
+            'doctor',
+            'venue',
+            (_("Date"), 'event__start', 'get_date'),
+        ],
+        'search_fields': ['client__first_name', 'client__last_name', 'doctor__first_name', 'doctor__last_name', 'venue__name'],
+    }
+
+    def get_date(self, instance, *args, **kwargs):
+        return instance.event.start.strftime("%d %b %Y %-I:%M%p")

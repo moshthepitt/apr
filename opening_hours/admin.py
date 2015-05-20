@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+from opening_hours.models import OpeningHour
+
+
+class OpeningHourAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(OpeningHour, OpeningHourAdmin)
