@@ -47,6 +47,7 @@ INSTALLED_APPS = (
     'assistants',
     'venues',
     'customers',
+    'opening_hours',
     'core',
 )
 

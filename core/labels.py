@@ -24,3 +24,6 @@ VENUE = _("Clinic")
 VENUE_PLURAL = _("Clinics")
 
 DESCRIPTION = _("Treatment")
+
+OPENING_HOUR = _("Opening Hour")
+OPENING_HOUR_PLURAL = _("Opening Hours")
