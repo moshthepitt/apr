@@ -6,7 +6,7 @@ from venues.models import Venue
 from core import labels
 
 
-class OpeningHours(models.Model):
+class OpeningHour(models.Model):
     MONDAY = 1
     TUESDAY = 2
     WEDNESDAY = 3
