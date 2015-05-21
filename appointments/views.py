@@ -1,7 +1,8 @@
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse_lazy, reverse
 from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.utils.html import format_html
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
@@ -38,7 +39,8 @@ class AppointmentEdit(FormView):
 
     def form_valid(self, form):
         form.edit_appointment(self.object)
-        messages.add_message(self.request, messages.SUCCESS, 'Successfully saved {}'.format(labels.APPOINTMENT))
+        messages.add_message(
+            self.request, messages.SUCCESS, 'Successfully saved {}'.format(labels.APPOINTMENT))
         return super(AppointmentEdit, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
@@ -91,7 +93,8 @@ class AppointmentListView(ListView):
         allowed_apps = ['users', 'doctors', 'venues']
         self.object = None
         if 'app_label' in kwargs and 'model_name' in kwargs and kwargs['app_label'] in allowed_apps:
-            object_type = get_object_or_404(ContentType, app_label=kwargs['app_label'], model=kwargs['model_name'])
+            object_type = get_object_or_404(
+                ContentType, app_label=kwargs['app_label'], model=kwargs['model_name'])
             try:
                 this_object = object_type.get_object_for_this_type(pk=kwargs['pk'])
                 self.object = this_object
@@ -106,16 +109,23 @@ class AppointmentDatatableView(DatatableView):
     datatable_options = {
         'structure_template': "datatableview/bootstrap_structure.html",
         'columns': [
-            'client__client_id',
+            (labels.CLIENT_ID, 'client__client_id'),
             (labels.APPOINTMENT, 'event__title'),
             'client',
             (_("Phone"), 'client__phone'),
             'doctor',
             'venue',
             (_("Date"), 'event__start', 'get_date'),
+            (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['client__first_name', 'client__last_name', 'doctor__first_name', 'doctor__last_name', 'venue__name'],
+        'unsortable_columns': ['id'],
     }
 
     def get_date(self, instance, *args, **kwargs):
         return instance.event.start.strftime("%d %b %Y %-I:%M%p")
+
+    def get_actions(self, instance, *args, **kwargs):
+        return format_html(
+            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('appointments:appointment_edit', args=[instance.pk]), reverse('appointments:appointment_delete', args=[instance.pk])
+        )
