@@ -38,5 +38,23 @@ class OpeningHour(models.Model):
     def __unicode__(self):
         return "{} {} {} {}".format(self.venue, self.get_weekday_display(), self.from_hour, self.to_hour)
 
+    def get_day_0_6(self):
+        """
+        returns the day number, where Sun = 0...Sat = 6
+        """
+        if self.weekday == self.SUNDAY:
+            return 0
+        return self.weekday
+
+    @property
+    def iso_fro(self):
+        """ISO from hour"""
+        return self.from_hour.isoformat()
+
+    @property
+    def iso_to(self):
+        """ISO to hour"""
+        return self.to_hour.isoformat()
+
     def meta(self):
         return self._meta

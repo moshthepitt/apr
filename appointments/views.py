@@ -107,7 +107,7 @@ class AppointmentDatatableView(DatatableView):
         'structure_template': "datatableview/bootstrap_structure.html",
         'columns': [
             'client__client_id',
-            'event__title',
+            (labels.APPOINTMENT, 'event__title'),
             'client',
             (_("Phone"), 'client__phone'),
             'doctor',
