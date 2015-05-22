@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from users.models import Client
 from doctors.models import Doctor
 from venues.models import Venue
+from customers.models import Customer
 
 from core import labels
 
@@ -20,6 +21,7 @@ class Appointment(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     client = models.ForeignKey(
         Client, verbose_name=getattr(labels, 'CLIENT', _("Client")), on_delete=models.PROTECT)
     doctor = models.ForeignKey(Doctor, verbose_name=getattr(

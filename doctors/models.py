@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from customers.models import Customer
+
 from core import labels
 
 
@@ -22,6 +24,7 @@ class Doctor(models.Model):
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
     creator = models.ForeignKey(User, verbose_name=_(
         "Creator"), on_delete=models.PROTECT, related_name="doctor_creator")
+    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this doctor should be treated as '
                                                 'active.'))

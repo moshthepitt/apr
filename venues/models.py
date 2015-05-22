@@ -4,12 +4,15 @@ from django.contrib.auth.models import User
 
 from core import labels
 
+from customers.models import Customer
+
 
 class Venue(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     name = models.CharField(_('Venue name'), max_length=255, blank=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
 
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Venue"))

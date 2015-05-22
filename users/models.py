@@ -5,7 +5,9 @@ from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
 from core import labels
+
 from doctors.models import Doctor
+from customers.models import Customer
 
 
 class Client(models.Model):
@@ -35,6 +37,7 @@ class Client(models.Model):
                                     help_text=_('Designates whether this client should be treated as '
                                                 'active.'))
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
+    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
 
     def get_full_name(self):
         """
