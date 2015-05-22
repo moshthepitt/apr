@@ -17,8 +17,6 @@ class Customer(models.Model):
     name = models.CharField(_('Customer name'), max_length=255, blank=False)
     email = models.EmailField(_('Email address'), blank=True)
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
-    creator = models.ForeignKey(User, verbose_name=_(
-        "Creator"), on_delete=models.PROTECT, related_name="customer_creator")
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this assistant should be treated as '
                                                 'active.'))

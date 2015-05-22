@@ -3,10 +3,11 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
-from apr.views import home
+from apr.views import home, dashboard
 
 urlpatterns = patterns('',
-    url(r'^$', login_required(home), name='home'),
+    url(r'^$', home, name='home'),
+    url(r'^$', login_required(dashboard), name='dashboard'),
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),
 
     url(r'^admin/', include(admin.site.urls)),

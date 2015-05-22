@@ -11,6 +11,7 @@ from customers.models import Customer
 
 
 class Client(models.Model):
+
     """
     This models stores clients in the sense that it is clients who come to any appointments
     """
@@ -25,7 +26,8 @@ class Client(models.Model):
 
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
-    client_id = models.CharField(getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True)
+    client_id = models.CharField(
+        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True)
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True)
@@ -68,10 +70,16 @@ class UserProfile(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     user = models.OneToOneField(User, verbose_name=_("User"))
+    customer = models.ForeignKey(Customer, verbose_name=_(
+        "Customer"), on_delete=models.PROTECT, blank=True, null=True, default=None)
 
     def is_doctor(self):
         "Checks if this userprofile is connected to a Doctor object"
         return self.user.doctor_set.exists()
+
+    def is_customer(self):
+        "Checks if this userprofile is the 'owner' of a Customer object"
+        return self.user.customer_set.exists()
 
     def make_doctor(self, creator):
         """
