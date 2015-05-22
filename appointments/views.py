@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 
 from datatableview.views import DatatableView
@@ -44,13 +44,33 @@ class AppointmentEdit(FormView):
         return super(AppointmentEdit, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
         self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'])
+
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.object.customer:
+            raise Http404
+
         return super(AppointmentEdit, self).dispatch(*args, **kwargs)
 
 
 class AppointmentDelete(DeleteView):
     model = Appointment
     success_url = reverse_lazy('appointments:appointments')
+
+    def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object():
+            raise Http404
+
+        return super(AppointmentDelete, self).dispatch(*args, **kwargs)
 
 
 class AddEventView(TemplateView):
@@ -63,10 +83,28 @@ class AddEventView(TemplateView):
         context['AppointmentForm'] = AppointmentForm()
         return context
 
+    def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
+        return super(AddEventView, self).dispatch(*args, **kwargs)
+
 
 class AppointmentView(DetailView):
     model = Appointment
     template_name = "appointments/appointment_detail.html"
+
+    def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object():
+            raise Http404
+
+        return super(AppointmentView, self).dispatch(*args, **kwargs)
 
 
 class AppointmentListView(ListView):
@@ -74,7 +112,7 @@ class AppointmentListView(ListView):
     template_name = "appointments/appointments.html"
 
     def get_queryset(self):
-        queryset = Appointment.objects.all()
+        queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
         if self.object:
             if self.object.meta().model_name == "client":
                 queryset = queryset.filter(client=self.object)
@@ -90,6 +128,10 @@ class AppointmentListView(ListView):
         return context
 
     def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
         allowed_apps = ['users', 'doctors', 'venues']
         self.object = None
         if 'app_label' in kwargs and 'model_name' in kwargs and kwargs['app_label'] in allowed_apps:
@@ -129,3 +171,14 @@ class AppointmentDatatableView(DatatableView):
         return format_html(
             '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('appointments:appointment_edit', args=[instance.pk]), reverse('appointments:appointment_delete', args=[instance.pk])
         )
+
+    def get_queryset(self):
+        queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
+        return queryset
+
+    def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            return redirect('customer_redirect')
+
+        return super(AppointmentView, self).dispatch(*args, **kwargs)

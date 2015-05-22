@@ -148,7 +148,8 @@ class AppointmentForm(forms.Form):
             doctor=self.cleaned_data['doctor'],
             venue=self.cleaned_data['venue'],
             event=event,
-            creator=user
+            creator=user,
+            customer=user.userprofile.customer
         )
         new_appointment.save()
         return new_appointment

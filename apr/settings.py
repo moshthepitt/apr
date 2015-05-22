@@ -104,6 +104,7 @@ TEMPLATES = [
                 "allauth.account.context_processors.account",
                 "allauth.socialaccount.context_processors.socialaccount",
 
+                "customers.context_processors.current_customer_processor",
                 'core.context_processors.site_processor',
                 'core.context_processors.debug_processor',
                 "doctors.context_processors.doctor_processor",

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'fullcalendar-resourceview/css/fullcalendar.min.css' %}" media="all" type="text/css" />
+	<link rel="stylesheet" href="{% static 'css/print.css' %}" media="print" type="text/css" />
+{% endblock %}
+{% block title %}{% trans "Upper Hill Dental Centre Calendar" %}{% endblock %}
+{% block main_content %}
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Upper Hill Dental Centre Calendar" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div id="calendar" class="row"></div>
+	  </div>
+	</div>	
+
+{% endblock %}
+{% block extrajs %}
+	<script src="{% static 'js/moment.min.js' %}"></script>
+	<script src="{% static 'fullcalendar-resourceview/js/fullcalendar.min.js' %}"></script>
+	
+	{% block event_feed_js %}
+	<script type="text/javascript">
+	    $(document).ready(function() {	
+			$('#calendar').fullCalendar({
+				header: {
+					left: 'prev,next,today',
+					center: 'title',
+					right: 'month,agendaWeek,resourceDay'
+				},
+				defaultDate: '{% now "c" %}',
+				editable: false,
+				eventLimit: true, // allow "more" link when too many events
+				resources: [
+					{% for venue in venues %}
+						{
+							'id': '{{venue.id}}',
+							'name': '{{venue.name|upper}}'
+						},
+					{% endfor %}
+				],				
+				events: "{% url 'appointments:event_feed' %}",
+				slotEventOverlap: false,
+				dayClick: function(date, allDay, jsEvent, view) {
+					$('#calendar').fullCalendar('changeView', 'resourceDay');
+					$('#calendar').fullCalendar('gotoDate', date);
+				},
+				defaultView: "month",
+				height: "auto",
+				minTime: "06:00",
+				maxTime: "19:00",
+				eventClick: function(calEvent, jsEvent, view) {
+					window.location.href = "/appointments/view/" + calEvent.id;
+				},
+				allDayText: "",
+				eventAfterAllRender: function(view) {
+					if (view.name == "resourceDay") {
+						$('.fc-day-grid .fc-content-skeleton td').each(function(i, obj) {
+							if (i > 0) {
+								// $(this).text("sex" + view.start.format());
+								$(this).html('<div class="top-info">' +
+									  '<div><span class="top-title">07:00 - 02:00</span>: Dr. Oramis</div>' +
+									  '<div><span class="top-title">02:00 - 06:00</span>: Dr. Oramis</div>' +
+									  '<div><span class="top-title">DSAS</span>: </div>' +
+									'</div>'
+								);
+							}							
+						});
+					}					
+				}
+			});	
+			
+		});
+	</script>
+	{% endblock %}
+{% endblock %}
