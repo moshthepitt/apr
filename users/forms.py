@@ -61,7 +61,8 @@ class AddClientForm(forms.ModelForm):
             client_id=self.cleaned_data['client_id'],
             payment=self.cleaned_data['payment'],
             insurance_company=self.cleaned_data['insurance_company'],
-            creator=user
+            creator=user,
+            customer=user.userprofile.customer
         )
         new_client.save()
         return new_client

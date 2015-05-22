@@ -13,6 +13,9 @@ class Venue(models.Model):
     name = models.CharField(_('Venue name'), max_length=255, blank=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
+    is_active = models.BooleanField(_('Active'), default=True,
+                                    help_text=_('Designates whether this venue should be treated as '
+                                                'active.'))
 
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Venue"))

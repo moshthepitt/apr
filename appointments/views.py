@@ -15,6 +15,8 @@ from datatableview.views import DatatableView
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
+from venues.models import Venue
+from doctors.models import Doctor
 
 from core import labels
 
@@ -67,7 +69,7 @@ class AppointmentDelete(DeleteView):
             return redirect('customer_redirect')
 
         # if this appointment does not belong to the current customer then raise 404
-        if self.request.user.userprofile.customer != self.get_object():
+        if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
 
         return super(AppointmentDelete, self).dispatch(*args, **kwargs)
@@ -80,7 +82,10 @@ class AddEventView(TemplateView):
         context = super(AddEventView, self).get_context_data(**kwargs)
         context['SelectClientForm'] = SelectClientForm()
         context['AddClientForm'] = AddClientForm()
-        context['AppointmentForm'] = AppointmentForm()
+        appointment_form = AppointmentForm()
+        appointment_form.fields['doctor'].queryset = Doctor.objects.filter(customer=self.request.user.userprofile.customer)
+        appointment_form.fields['venue'].queryset = Venue.objects.filter(customer=self.request.user.userprofile.customer)
+        context['AppointmentForm'] = appointment_form
         return context
 
     def dispatch(self, *args, **kwargs):
@@ -101,7 +106,7 @@ class AppointmentView(DetailView):
             return redirect('customer_redirect')
 
         # if this appointment does not belong to the current customer then raise 404
-        if self.request.user.userprofile.customer != self.get_object():
+        if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
 
         return super(AppointmentView, self).dispatch(*args, **kwargs)
@@ -181,4 +186,4 @@ class AppointmentDatatableView(DatatableView):
         if not self.request.user.userprofile.customer:
             return redirect('customer_redirect')
 
-        return super(AppointmentView, self).dispatch(*args, **kwargs)
+        return super(AppointmentDatatableView, self).dispatch(*args, **kwargs)
