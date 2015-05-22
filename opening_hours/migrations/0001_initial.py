@@ -7,12 +7,12 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('venues', '0003_auto_20150423_1814'),
+        ('venues', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='OpeningHours',
+            name='OpeningHour',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('weekday', models.IntegerField(verbose_name='Weekday', choices=[(1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), (5, 'Friday'), (6, 'Saturday'), (7, 'Sunday')])),
@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
                 ('venue', models.ForeignKey(verbose_name='Clinic', to='venues.Venue')),
             ],
             options={
-                'ordering': ['weekday'],
+                'ordering': ['venue__name', 'weekday', 'from_hour'],
                 'verbose_name': 'Opening Hour',
                 'verbose_name_plural': 'Opening Hours',
             },

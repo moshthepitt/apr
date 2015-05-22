@@ -10,6 +10,7 @@ import phonenumber_field.modelfields
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('customers', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -26,6 +27,7 @@ class Migration(migrations.Migration):
                 ('phone', phonenumber_field.modelfields.PhoneNumberField(max_length=255, verbose_name='Phone Number', blank=True)),
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this assistant should be treated as active.', verbose_name='Active')),
                 ('creator', models.ForeignKey(related_name='assistant_creator', on_delete=django.db.models.deletion.PROTECT, verbose_name='Creator', to=settings.AUTH_USER_MODEL)),
+                ('customer', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Customer', to='customers.Customer')),
             ],
             options={
                 'ordering': ['first_name'],
