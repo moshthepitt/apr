@@ -25,7 +25,7 @@ def event_feed(request):
                 parser.parse(request.GET['start']), timezone.get_current_timezone())
             to = timezone.make_aware(
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
-            period = Period(Event.objects.exclude(appointment=None), fro, to)
+            period = Period(Event.objects.exclude(appointment=None).filter(appointment__customer=request.user.userprofile.customer), fro, to)
             occurences = [{'id': x.event.appointment_set.first().pk,
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
@@ -65,7 +65,7 @@ def venue_event_feed(request, pk):
             to = timezone.make_aware(
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(
-                Event.objects.exclude(appointment=None).filter(appointment__venue=venue), fro, to)
+                Event.objects.exclude(appointment=None).filter(appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
             occurences = [{'id': x.event.appointment_set.first().pk,
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
@@ -105,7 +105,7 @@ def doctor_event_feed(request, pk):
             to = timezone.make_aware(
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
             period = Period(
-                Event.objects.exclude(appointment=None).filter(appointment__doctor=doctor), fro, to)
+                Event.objects.exclude(appointment=None).filter(appointment__customer=request.user.userprofile.customer).filter(appointment__doctor=doctor), fro, to)
             occurences = [{'id': x.event.appointment_set.first().pk,
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',

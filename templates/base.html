@@ -45,7 +45,7 @@
     <div id="sidebar" class="hidden-print">
       <ul>
         {% if request.user.is_authenticated %}
-        <li><a href="{% url 'home' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>
+        <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>
         <li><a href="{% url 'appointments:appointments' %}"><i class="fa fa-th-list"></i> <span>{% trans "Appointments List" %}</span></a></li>
         <li><a href="{% url 'appointments:add' %}"><i class="fa fa-plus"></i> <span>{% trans "Add Appointment" %}</span></a></li>
         
