@@ -23,110 +23,127 @@
   {% block extrahead %}{% endblock %}
 
   <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-      <![endif]-->
-    </head>
+  <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
 
-    <body>
-
-      
-        <nav class="navbar navbar-default" role="navigation">
-          <div class="row">
-            <div class="container">
-              <div class="col-md-12">
-              <!-- Brand and toggle get grouped for better mobile display -->
-              <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                  <span class="sr-only">{% trans "Toggle navigation" %}</span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="javascript:void(0)">AppointWare</a>
-              </div>
-
-              <!-- Collect the nav links, forms, and other content for toggling -->
-              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="javascript:void(0)">{% trans "Pricing" %}</a></li>
-                  <li><a href="javascript:void(0)" class="btn btn-success">{% trans "Sign Up" %}</a></li>
-                  <li><a href="javascript:void(0)">{% trans "Sign In" %}</a></li>
-                </ul>
-              </div><!-- /.navbar-collapse -->
-              </div>
+  <body>
+    <nav class="navbar navbar-default" role="navigation">
+      <div class="row">
+        <div class="container">
+          <div class="col-md-12">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                <span class="sr-only">{% trans "Toggle navigation" %}</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="javascript:void(0)">AppointWare</a>
             </div>
-          </div>
-        </nav>
 
-        {% block messages %}
-        {% if messages %}
-        {% for message in messages %}
-        <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
-        <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
-          {{ message }}
-        </div>
-        {% endfor %}
-        {% endif %}        
-        {% endblock %}
-
-        {% block all_content %} 
-        <div class="row content-section bluish-bg">
-          <div class="container">
-            <div class="col-md-8">
-              <h3>Your clients will never miss another appointment</h3>
-              <p>AppointWare sends out automated reminders to your clients, so that they come on time and you get paid.</p>
-              <p>If you run a service business such as a salon, dental clinic, or a law firm then you know that your time is extremely valuable.  You have to keep a strict schedule so that your can earn more, because <strong>every minute that you do not spend with a client means less money</strong> for your business.</p>
-              <p>Your clients are also busy people and they sometimes forget about their appointments with you.  This causes disruptions in your schedule, costs you revenue, and may hurt your professional relationship with clients.  AppointWare helps you solve this problem but letting you easily remind clients of their appointments.  This <strong>increases both revenue and customer satisfaction</strong>.</p>
-            </div>
-            <div class="col-md-4">
-              <h3>Benefits</h3>
-              <ul>
-                <li>Increase your revenue</li>
-                <li>Reduce costs of manual scheduling</li>
-                <li>Save time</li>
-                <li>Decrease disruptions caused by last-minute cancellations</li>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+              <ul class="nav navbar-nav navbar-right">
+                <li><a href="javascript:void(0)">{% trans "Pricing" %}</a></li>
+                <li><a href="javascript:void(0)" class="btn btn-success">{% trans "Sign Up" %}</a></li>
+                <li><a href="javascript:void(0)">{% trans "Sign In" %}</a></li>
               </ul>
-              <br/>
-              <p><a href="" class="btn btn-lg btn-primary ">Get Started Now</a></p>
-            </div>
+            </div><!-- /.navbar-collapse -->
           </div>
         </div>
-        <div class="row content-section">
-          <div class="container">
-            <div class="col-md-12">
-              <p>AppointWare lets you send reminders to your clients automatically!  On our easy-to-use website, you can simply type in the client's contact information and appointment details and we shall do the rest.   We send out appointment reminders by email and/or by SMS.  That's it - there is no special software or hardware to buy and install, just use your regular computer or phone.</p>
+      </div>
+    </nav>
 
-              <p>
-              Our customers have reported that using AppointWare results in decreased cancellations and no-shows.  Many customers save a full-time employee (or more) who used to spend time with bulky phone calls and ridiculous spreadsheets to handle appointment reminders manually.
-              </p>              
-            </div>
-            <div class="col-md-12 text-center">
-              <br/>
-              <p><a href="" class="btn btn-lg btn-success">Start Your Free Trial</a></p>
-            </div>
+    {% block messages %}
+    {% if messages %}
+    <div class="row content-section normalfy">
+      <div class="container">
+        <div class="col-md-12">
+          {% for message in messages %}
+          <div class="alert alert-{% if message.tags %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">{% trans "Close" %}</span></button>
+            {{ message }}
           </div>
+          {% endfor %}
         </div>
-        {% endblock %}
+      </div>
+    </div>   
+    {% endif %}        
+    {% endblock %}
 
-        <footer class="footer">
-          <div class="container">
-            <div class="row">
-              <div class="col-md-12"><p>&copy; {{ site.name }} {% now "Y" %}</p></div>
-            </div>          
-          </div>
-        </footer>
+    {% block all_content %} 
+    <div class="row content-section bluish-bg">
+      <div class="container">
+        <div class="col-md-8">
+          <h3>{% trans "Your clients will never miss another appointment" %}</h3>
+          <p>{% trans "AppointWare sends out automated reminders to your clients, so that they come on time and you get paid." %}</p>
+          <p>
+            {% blocktrans %}
+            If you run a service business such as a salon, dental clinic, or a law firm then you know that your time is extremely valuable.  You have to keep a strict schedule so that your can earn more, because <strong>every minute that you do not spend with a client means less money</strong> for your business.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans %}
+            Your clients are also busy people and they sometimes forget about their appointments with you.  This causes disruptions in your schedule, costs you revenue, and may hurt your professional relationship with clients.  AppointWare helps you solve this problem but letting you easily remind clients of their appointments.  This <strong>increases both revenue and customer satisfaction</strong>.
+            {% endblocktrans %}
+          </p>
+        </div>
+        <div class="col-md-4">
+          <h3>{% trans "Benefits" %}</h3>
+          <ul>
+            <li>{% trans "Increase your revenue" %}</li>
+            <li>{% trans "Reduce costs of manual scheduling" %}</li>
+            <li>{% trans "Save time" %}</li>
+            <li>{% trans "Decrease disruptions caused by last-minute cancellations" %}</li>
+          </ul>
+          <br/>
+          <p><a href="" class="btn btn-lg btn-primary ">{% trans "Get Started Now" %}</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="row content-section">
+      <div class="container">
+        <div class="col-md-12">
+          <p>
+            {% blocktrans %}
+            AppointWare lets you send reminders to your clients automatically!  On our easy-to-use website, you can simply type in the client's contact information and appointment details and we shall do the rest.   We send out appointment reminders by email and/or by SMS.  That's it - there is no special software or hardware to buy and install, just use your regular computer or phone.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans %}
+            Our customers have reported that using AppointWare results in decreased cancellations and no-shows.  Many customers save a full-time employee (or more) who used to spend time with bulky phone calls and ridiculous spreadsheets to handle appointment reminders manually.
+            {% endblocktrans %}
+          </p>              
+        </div>
+        <div class="col-md-12 text-center">
+          <br/>
+          <p><a href="" class="btn btn-lg btn-success">{% trans "Start Your Free Trial" %}</a></p>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <footer class="footer">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12"><p>&copy; {{ site.name }} {% now "Y" %}</p></div>
+        </div>          
+      </div>
+    </footer>
 
 
-      {% compress js %}
-      <script src="{% static 'js/jquery.min.js' %}"></script>
-      <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-      <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
-      {% block extrajs %}{% endblock %}
-      {% endcompress %}
+    {% compress js %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+    {% block extrajs %}{% endblock %}
+    {% endcompress %}
 
-      {% block extrafooter %}{% endblock %}
-    </body>
-    </html>
+    {% block extrafooter %}{% endblock %}
+  </body>
+</html>

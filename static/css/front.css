@@ -85,6 +85,11 @@ nav {
   padding: 50px 0;
 }
 
+.content-section.normalfy {
+  min-height: 20px;
+  padding: 0;
+}
+
 .grey-bg {
   background-color: #F9F9F9;
 }
