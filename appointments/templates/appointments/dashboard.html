@@ -53,8 +53,8 @@
 				},
 				defaultView: "month",
 				height: "auto",
-				minTime: "06:00",
-				maxTime: "19:00",
+				minTime: "{{CUSTOMER.global_opening_time.iso_fro|default_if_none:'06:00'}}",
+				maxTime: "{{CUSTOMER.global_closing_time.iso_to|default_if_none:'19:00'}}",
 				eventClick: function(calEvent, jsEvent, view) {
 					window.location.href = "/appointments/view/" + calEvent.id;
 				},
@@ -63,7 +63,6 @@
 					if (view.name == "resourceDay") {
 						$('.fc-day-grid .fc-content-skeleton td').each(function(i, obj) {
 							if (i > 0) {
-								// $(this).text("sex" + view.start.format());
 								$(this).html('<div class="top-info">' +
 									  '<div><span class="top-title">07:00 - 02:00</span>: Dr. Oramis</div>' +
 									  '<div><span class="top-title">02:00 - 06:00</span>: Dr. Oramis</div>' +

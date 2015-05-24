@@ -31,3 +31,15 @@ class Customer(models.Model):
 
     def meta(self):
         return self._meta
+
+    def global_opening_time(self):
+        """
+        returns the customer's opening time object with earliest from_hour
+        """
+        return self.openinghour_set.order_by('from_hour').first()
+
+    def global_closing_time(self):
+        """
+        returns the customer's closing time object with latest to_hour
+        """
+        return self.openinghour_set.order_by('to_hour').last()

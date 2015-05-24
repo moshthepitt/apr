@@ -58,5 +58,15 @@ class OpeningHour(models.Model):
         """ISO to hour"""
         return self.to_hour.isoformat()
 
+    @property
+    def pretty_fro(self):
+        """Formatted from hour"""
+        return self.from_hour.strftime("%H:%M")
+
+    @property
+    def pretty_to(self):
+        """Formatted to hour"""
+        return self.to_hour.strftime("%H:%M")
+
     def meta(self):
         return self._meta
