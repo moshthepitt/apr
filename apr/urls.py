@@ -18,6 +18,9 @@ urlpatterns = patterns('',
 
     # utils
     url(r'^customer-redirector/$', CustomerRedirect.as_view(), name='customer_redirect'),
+
+    # flat pages
+    url(r'^page/', include('django.contrib.flatpages.urls')),
 )
 
 if settings.DEBUG:

@@ -1,12 +1,27 @@
-{% extends "base.html" %}
-{% block title %}{{ flatpage.title }}{% endblock %}
-{% block main_content %}
-    <div class="header_title clearfix">
-       <div class="titlepadding">
-           <h2>{{ flatpage.title }}</h2>
-       </div>
+{% extends "front-base.html" %}
+{% load i18n %}
+
+{% block title %}{{ flatpage.title }} | AppointWare{% endblock %}
+
+{% block all_content %}
+	<div id="main-page">
+	    <div class="row content-section">
+	      <div class="container">
+	        <div class="col-md-9">
+	        	<h3>{{ flatpage.title }}</h3>
+	         	<div class="page-content">{{ flatpage.content }}</div>
+	      	</div>
+	      	<div id="sidebar" class="col-md-3">
+	      		<div class="widget">
+	      			<h4 class="widget-title">{% trans "Try It,  Risk Free" %}</h4>
+	      			<p><a href="" class="btn btn-success">{% trans "Start Your Free Trial" %}</a></p>
+	      			<p>
+	      				{% blocktrans %}
+	      				You can try AppointWare for 30 days absolutely free. If it doesn't work out, simply top using it.  It is free to try!
+	      				{% endblocktrans %}
+	      			</p>
+	      		</div>
+	      	</div>
+	    </div>
     </div>
-    <div class="content">
-    	<div class="checkout">{{ flatpage.content }}</div>
-		</div>
 {% endblock %}

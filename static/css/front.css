@@ -98,6 +98,23 @@ nav {
   background-color: #E9EEF1;
 }
 
+#main-page {
+  min-height:600px;
+}
+
+#main-page .content-section {
+  margin-bottom:30px;
+  padding:0px;
+}
+
+#sidebar {
+  margin-top:20px;
+}
+
+.widget {
+  margin-bottom:20px;
+  border-bottom:1px solid #f9f9f9;
+}
 
 /* Footer */
 footer {
