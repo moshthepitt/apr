@@ -15,6 +15,7 @@ from datatableview.views import DatatableView
 from users.forms import SelectClientForm, AddClientForm
 from appointments.forms import AppointmentForm
 from appointments.models import Appointment
+from users.models import Client
 from venues.models import Venue
 from doctors.models import Doctor
 
@@ -80,7 +81,9 @@ class AddEventView(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(AddEventView, self).get_context_data(**kwargs)
-        context['SelectClientForm'] = SelectClientForm()
+        client_form = SelectClientForm()
+        client_form.fields['client'].queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
         appointment_form = AppointmentForm()
         appointment_form.fields['doctor'].queryset = Doctor.objects.filter(customer=self.request.user.userprofile.customer)

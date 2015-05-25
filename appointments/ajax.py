@@ -1,4 +1,5 @@
 import json
+from datetime import datetime
 from dateutil import parser
 from django.http import HttpResponse, Http404
 from django.utils import timezone
@@ -25,7 +26,8 @@ def event_feed(request):
                 parser.parse(request.GET['start']), timezone.get_current_timezone())
             to = timezone.make_aware(
                 parser.parse(request.GET['end']), timezone.get_current_timezone())
-            period = Period(Event.objects.exclude(appointment=None).filter(appointment__customer=request.user.userprofile.customer), fro, to)
+            period = Period(Event.objects.exclude(appointment=None).filter(
+                appointment__customer=request.user.userprofile.customer), fro, to)
             occurences = [{'id': x.event.appointment_set.first().pk,
                            'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
                            'className': 'event-info',
@@ -176,3 +178,27 @@ def process_add_event_form(request):
         }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
+
+# NEW STYLE
+
+
+def printable_event_feed(request):
+    if request.method == 'GET':
+        if 'start' in request.GET and 'end' in request.GET:
+            fro = timezone.make_aware(
+                datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
+            to = timezone.make_aware(
+                datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
+            period = Period(Event.objects.exclude(appointment=None).filter(
+                appointment__customer=request.user.userprofile.customer), fro, to)
+            data = [{'id': x.event.appointment_set.first().pk,
+                     'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
+                     'userId': [x.event.appointment_set.first().venue.pk],
+                     'start': x.start.isoformat(),
+                     'end': x.end.isoformat(),
+                     }
+                    for x in period.get_occurrences()]
+            print data
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    # if all fails
+    raise Http404

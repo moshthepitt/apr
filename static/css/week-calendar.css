@@ -1,0 +1,7 @@
+.ui-widget.wc-container *,
+.ui-widget.wc-container *:before,
+.ui-widget.wc-container *:after {
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	box-sizing: content-box; 
+}

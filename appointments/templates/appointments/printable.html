@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
+	<link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
+	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
+{% endblock %}
+{% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block main_content %}
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	  	<div id="wowow" class="row"></div>
+	    <div id="calendar" class="row"></div>
+	  </div>
+	</div>	
+
+{% endblock %}
+{% block extrajs %}
+	<script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
+	<script src="{% static 'jquery-week-calendar/js/date.js' %}"></script>
+	<script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
+	
+	{% block event_feed_js %}
+		<script type='text/javascript'>
+			$(document).ready(function() {
+				$('#calendar').weekCalendar({
+					timeslotsPerHour: 2,
+					timeslotHeight: 20,
+					defaultEventLength: 2,
+					// displayFreeBusys: true,
+					// defaultFreeBusy: {free: true},
+					readonly : true,
+					daysToShow: 1,
+					businessHours: {
+						start: 6,
+		                end: 19,
+		                limitDisplay: true
+	               	},
+	               	height: function($calendar) {
+	                	return $(window).height() - $('h1').outerHeight(true);
+	               	},
+	               	minBodyHeight: 1080,   
+	               	users: [
+						{% for venue in venues %}
+							{
+								'id': {{venue.id}},
+								'name': '{{venue.name|upper}}'
+							},
+						{% endfor %}
+					],		
+	               	showAsSeparateUser: true,	
+	               	data: "{% url 'appointments:printable_event_feed' %}",
+	               	getUserId: function(user, index, calendar) {
+					    return user.id;
+					},
+					getUserName: function(user, index, calendar) {
+					    return user.name;
+					},
+				});
+			});
+		</script>
+	{% endblock %}
+{% endblock %}

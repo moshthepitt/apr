@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
+	<link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
+{% endblock %}
+{% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block main_content %}
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	  	<div id="wowow" class="row"></div>
+	    <div id="calendar" class="row"></div>
+	  </div>
+	</div>	
+
+{% endblock %}
+{% block extrajs %}
+	<script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+	<script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
+	<script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
+	
+	{% block event_feed_js %}
+		 <script type='text/javascript'>
+		  var year = new Date().getFullYear();
+		  var month = new Date().getMonth();
+		  var day = new Date().getDate();
+		  var eventData = {
+		    events : [
+		      {'id':1, 'start': new Date(year, month, day, 12), 'end': new Date(year, month, day, 13, 35),'title':'Lunch with Mike'},
+		      {'id':2, 'start': new Date(year, month, day, 14), 'end': new Date(year, month, day, 14, 45),'title':'Dev Meeting'},
+		      {'id':3, 'start': new Date(year, month, day + 1, 18), 'end': new Date(year, month, day + 1, 18, 45),'title':'Hair cut'},
+		      {'id':4, 'start': new Date(year, month, day - 1, 8), 'end': new Date(year, month, day - 1, 9, 30),'title':'Team breakfast'},
+		      {'id':5, 'start': new Date(year, month, day + 1, 14), 'end': new Date(year, month, day + 1, 15),'title':'Product showcase'}
+		    ]
+		  };
+		  $(document).ready(function() {
+		    $('#calendar').weekCalendar({
+		      // timeslotsPerHour: 4,
+		      // timeslotHeigh: 30,
+		      hourLine: false,
+		      data: eventData,
+
+		      timeslotsPerHour: 4,
+				timeslotHeight: 20,
+				defaultEventLength: 4,
+				displayFreeBusys: true,
+				defaultFreeBusy: {free: true},
+				readonly : false,
+				daysToShow: 5,
+				newEventText: "New Appointment",
+				businessHours: {start: 8,
+				                end: 18,
+				                limitDisplay: true
+				               },
+
+		      height: function($calendar) {
+		        return $(window).height() - $('h1').outerHeight(true);
+		      },
+
+
+		      height: function(calendar){
+		          return $(window).height();
+		        },
+		        minBodyHeight: 880,
+
+		      eventRender : function(calEvent, $event) {
+		        if (calEvent.end.getTime() < new Date().getTime()) {
+		          $event.css('backgroundColor', '#aaa');
+		          $event.find('.time').css({'backgroundColor': '#999', 'border':'1px solid #888'});
+		        }
+		      },
+		      eventNew: function(calEvent, $event) {
+		        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+		      },
+		      eventDrop: function(calEvent, $event) {
+		        displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		      },
+		      eventResize: function(calEvent, $event) {
+		        displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		      },
+		      eventClick: function(calEvent, $event) {
+		        displayMessage('<strong>Clicked Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		      },
+		      eventMouseover: function(calEvent, $event) {
+		        displayMessage('<strong>Mouseover Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		      },
+		      eventMouseout: function(calEvent, $event) {
+		        displayMessage('<strong>Mouseout Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+		      },
+		      noEvents: function() {
+		        displayMessage('There are no events for this week');
+		      }
+		    });
+		    function displayMessage(message) {
+		      $('#message').html(message).fadeIn();
+		    }
+		    $('<div id="message" class="ui-corner-all"></div>').prependTo($('#wowow'));
+		  });
+		</script>
+	{% endblock %}
+{% endblock %}
