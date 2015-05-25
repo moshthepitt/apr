@@ -31,6 +31,7 @@ class OpeningHour(models.Model):
     weekday = models.IntegerField(_("Weekday"), choices=WEEKDAYS)
     from_hour = models.TimeField(_("From Hour"), )
     to_hour = models.TimeField(_("To Hour"), )
+    break_time = models.BooleanField(_("Break"), help_text=_("Does this time represent a break e.g. lunch break"), default=False)
 
     class Meta:
         verbose_name = getattr(labels, 'OPENING_HOUR', _("Opening Hour"))

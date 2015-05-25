@@ -3,13 +3,20 @@ import datetime
 from opening_hours.models import OpeningHour
 
 
-def bulk_create_opening_hours(times, customer):
+def bulk_create_opening_hours(times, customer, break_time=False):
     """
     convenience function to bulk create opening hours
     Inputs:
         times => a list of tuples, each tuple being (from_hour, to_hour)
                 from_hour and to_hour are datetime.time objects
         customer => Customer object
+        example code:
+            import datetime
+            from opening_hours.utils import bulk_create_opening_hours
+            a = (datetime.time(hour=10, minute=0), datetime.time(hour=11, minute=0))
+            b = (datetime.time(hour=13, minute=0), datetime.time(hour=14, minute=0))
+            times = [a, b]
+            bulk_create_opening_hours(times, customer, break_time=False)
     """
     venues = customer.venue_set.all()
     for venue in venues:
@@ -21,7 +28,8 @@ def bulk_create_opening_hours(times, customer):
                     customer=customer,
                     weekday=weekday,
                     from_hour=t[0],
-                    to_hour=t[1]
+                    to_hour=t[1],
+                    break_time=break_time
                 )
                 opening_hour.save()
 
