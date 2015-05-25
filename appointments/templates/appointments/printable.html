@@ -17,8 +17,7 @@
 	    </h3>
 	  </div>
 	  <div class="panel-body">
-	  	<div id="wowow" class="row"></div>
-	    <div id="calendar" class="row"></div>
+	    <div id="calendar" class="printable row"></div>
 	  </div>
 	</div>	
 
@@ -41,8 +40,16 @@
 					readonly : true,
 					daysToShow: 1,
 					businessHours: {
-						start: 6,
-		                end: 19,
+						{% if CUSTOMER.global_opening_time.from_hour.hour %}
+							start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+						{% else %}
+							start: 8,
+						{% endif %}
+						{% if CUSTOMER.global_opening_time.from_hour.hour %}
+		                	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+		                {% else %}
+		                	end: 17,
+		                {% endif %}
 		                limitDisplay: true
 	               	},
 	               	height: function($calendar) {
@@ -66,6 +73,8 @@
 					    return user.name;
 					},
 				});
+				$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "appointments/snippets/venue-headers.html" %}{% endfilter %}');
+				$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "appointments/snippets/notes.html" %}{% endfilter %}');
 			});
 		</script>
 	{% endblock %}

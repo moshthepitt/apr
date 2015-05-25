@@ -5,3 +5,28 @@
 	-moz-box-sizing: content-box;
 	box-sizing: content-box; 
 }
+
+.ui-widget-header.wc-toolbar {
+	display:none;
+}
+
+.printable .wc-header {
+	background:#fff;
+}
+
+.printable .wc-header .ui-state-active, 
+.printable .wc-header .ui-widget-content .ui-state-active, 
+.printable .wc-header .ui-widget-header .ui-state-active
+.printable .wc-header .ui-widget-content {
+  border: none;
+}
+
+.wc-user-header.printable-top {
+	text-align: left;
+}
+.venue-headers {
+	margin-bottom:15px;
+}
+.notes-table {
+	margin-top:15px;
+}
