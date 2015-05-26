@@ -52,10 +52,10 @@ class Client(models.Model):
         "Returns the short name for the client."
         return self.first_name
 
-    def __unicode__(self):
+    def __str__(self):
         if self.get_full_name():
             return self.get_full_name()
-        return "%s" % self.email
+        return "{}".format(self.email)
 
     def meta(self):
         return self._meta
@@ -95,7 +95,7 @@ class UserProfile(models.Model):
             doctor.email = self.user.email
             doctor.save()
 
-    def __unicode__(self):
+    def __str__(self):
         return _("%s's profile") % self.user
 
 

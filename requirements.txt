@@ -15,10 +15,12 @@ django-jsonview==0.4.3
 django-pagination==1.0.7
 django-phonenumber-field==0.7.2
 django-scheduler==0.7.5
+django-wkhtmltopdf==2.0.2
 future==0.14.3
 icalendar==3.9.0
 oauthlib==0.7.2
 phonenumbers==7.0.4
+psycopg2==2.6
 python-dateutil==2.4.2
 python-openid==2.2.5
 pytz==2015.4

@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'pagination',
     'debug_toolbar',
     'datatableview',
+    'wkhtmltopdf',
     # custom
     'appointments',
     'users',

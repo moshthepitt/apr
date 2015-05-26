@@ -1,0 +1,93 @@
+{% load i18n %}
+{% load staticfiles %}
+{% load compress %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{CUSTOMER.name|default_if_none:"AppointWare"}}</title>
+    <!-- Bootstrap core CSS -->
+    {% compress css inline %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/readable.bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
+    <link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
+    <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
+    <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/pdf.css' %}" />
+    {% endcompress %}
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+      
+      <div class="row">
+      <div class="col-md-12"><div id="calendar" class="printable row"></div></div>
+      </div>
+
+
+    </div> <!-- /container -->
+    {% compress js inline %}
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
+    <script src="{% static 'jquery-week-calendar/js/date.js' %}"></script>
+    <script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script type='text/javascript'>
+      $(document).ready(function() {
+        $('#calendar').weekCalendar({
+          timeslotsPerHour: 2,
+          timeslotHeight: 20,
+          defaultEventLength: 2,
+          // displayFreeBusys: true,
+          // defaultFreeBusy: {free: true},
+          readonly : true,
+          daysToShow: 1,
+          businessHours: {
+            {% if CUSTOMER.global_opening_time.from_hour.hour %}
+              start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+            {% else %}
+              start: 8,
+            {% endif %}
+            {% if CUSTOMER.global_opening_time.from_hour.hour %}
+                      end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+                    {% else %}
+                      end: 17,
+                    {% endif %}
+                    limitDisplay: true
+                  },
+                  height: function($calendar) {
+                    return $(window).height() - $('h1').outerHeight(true);
+                  },
+                  minBodyHeight: 1080,   
+                  users: [
+            {% for venue in venues %}
+              {
+                'id': {{venue.id}},
+                'name': '{{venue.name|upper}}'
+              },
+            {% endfor %}
+          ],    
+                  showAsSeparateUser: true, 
+                  data: "{% url 'appointments:printable_event_feed' %}",
+                  getUserId: function(user, index, calendar) {
+              return user.id;
+          },
+          getUserName: function(user, index, calendar) {
+              return user.name;
+          },
+        });
+        $('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "appointments/snippets/venue-headers.html" %}{% endfilter %}');
+        $('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "appointments/snippets/notes.html" %}{% endfilter %}');
+      });
+    </script>
+    {% endcompress %}
+  </body>
+</html>

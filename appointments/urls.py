@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from appointments.ajax import event_feed, venue_event_feed, doctor_event_feed, printable_event_feed
+from appointments.ajax import event_feed, venue_event_feed, doctor_event_feed, printable_event_feed, calendar_event_feed
 from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form
 from appointments.views import AddEventView, AppointmentView, AppointmentListView, AppointmentDelete
 from appointments.views import AppointmentEdit, AppointmentDatatableView
@@ -14,7 +14,8 @@ urlpatterns = patterns('',
     url(r'^feed/doctor/(?P<pk>\d+)/$', doctor_event_feed, name='doctor_event_feed'),
     url(r'^feed/venue/(?P<pk>\d+)/$', venue_event_feed, name='venue_event_feed'),
     url(r'^all-feed/$', event_feed, name='event_feed'),
-    url(r'^printable-feed/$', printable_event_feed, name='printable_event_feed'),
+    url(r'^printable-feed/$', login_required(printable_event_feed), name='printable_event_feed'),
+    url(r'^calendar-feed/$', login_required(calendar_event_feed), name='calendar_event_feed'),
     url(r'^add-client-form/$', login_required(process_add_client_form), name='process_add_client_form'),
     url(r'^select-client-form/$', login_required(process_select_client_form), name='process_select_client_form'),
     url(r'^add-event-form/$', login_required(process_add_event_form), name='process_add_event_form'),
