@@ -204,16 +204,44 @@ class SimpleAppointmentForm(forms.Form):
         queryset=Doctor.objects.all(),
         required=False
     )
+    doctor_id = forms.IntegerField(
+        label=getattr(labels, 'DOCTOR', _("Doctor")),
+        required=False,
+        widget=forms.HiddenInput
+    )
     venue = VenueModelChoiceField(
         label=getattr(labels, 'VENUE', _("Venue")),
         queryset=Venue.objects.all(),
         required=False
+    )
+    venue_id = forms.IntegerField(
+        label=getattr(labels, 'VENUE', _("Venue")),
+        required=False,
+        widget=forms.HiddenInput
     )
     description = forms.CharField(
         label=getattr(labels, 'DESCRIPTION', _("Description")),
         required=False,
         widget=forms.Textarea
     )
+
+    def add_new(self, user):
+        client = Client.objects.get(pk=self.cleaned_data['client'])
+        event = Event(
+            start=parser.parse(self.cleaned_data['start_datetime']),
+            end=parser.parse(self.cleaned_data['end_datetime']),
+            title="{}'s appointment".format(client.get_full_name()),
+            creator=user
+        )
+        event.save()
+        appointment = Appointment(
+            client=client,
+            venue=Venue.objects.get(pk=self.cleaned_data['venue_id']),
+            event=event,
+            creator=user,
+            customer=user.userprofile.customer
+        )
+        appointment.save()
 
     def save_edit(self):
         try:
@@ -240,3 +268,37 @@ class SimpleAppointmentForm(forms.Form):
             return True
         except Appointment.DoesNotExist:
             return False
+
+    def __init__(self, *args, **kwargs):
+        super(SimpleAppointmentForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-simple-add-appointment-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset(
+                getattr(labels, 'CREATE_APPOINTMENT', _('Add Appointment')),
+                'client',
+                'start_datetime',
+                'end_datetime',
+                'title',
+                'doctor',
+                'venue',
+                'description'
+            ),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='btn-primary')
+            )
+        )
+
+
+def hidden_appointment_form_helper():
+    helper = FormHelper()
+    helper.form_id = 'id-hidden-add-appointment-form'
+    helper.form_method = 'post'
+    helper.layout = Layout(
+        Field('client', id="appointment-client-id"),
+        Field('start_datetime', id="appointment-start-id"),
+        Field('end_datetime', id="appointment-end-id"),
+        Field('venue_id', id="appointment-venue-id")
+    )
+    return helper

@@ -6,6 +6,7 @@
 from django.utils.translation import ugettext as _
 
 APPOINTMENT = _("Appointment")
+CREATE_APPOINTMENT = _("Add Appointment")
 
 CLIENT = _("Patient")
 CLIENT_PLURAL = _("Patients")

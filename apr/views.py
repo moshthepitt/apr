@@ -5,7 +5,9 @@ from django.shortcuts import redirect
 
 from wkhtmltopdf.views import PDFTemplateView
 
-from appointments.forms import AppointmentForm
+from appointments.forms import AppointmentForm, SimpleAppointmentForm, hidden_appointment_form_helper
+from users.forms import SelectClientForm, AddClientForm
+from users.models import Client
 from venues.models import Venue
 
 
@@ -17,6 +19,12 @@ class DashboardView(FormView):
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer)
+        client_form = SelectClientForm()
+        client_form.fields['client'].queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        context['SelectClientForm'] = client_form
+        context['AddClientForm'] = AddClientForm()
+        context['AppointmentForm'] = SimpleAppointmentForm()
+        context['AppointmentFormHelper'] = hidden_appointment_form_helper
         return context
 
     def dispatch(self, *args, **kwargs):

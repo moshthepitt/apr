@@ -7,6 +7,7 @@
 	<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
 	<link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
+	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
 {% endblock %}
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
@@ -23,9 +24,35 @@
 	  </div>
 	  <div class="panel-body">
 	  	<div id="wowow" class="row"></div>
-	    <div id="calendar" class="row"></div>
+	    <div id="calendar" class="row"></div>	    
 	  </div>
 	</div>	
+
+	<!-- Modal -->
+	<div class="modal fade" id="add-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="add-appointment-modalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="add-appointment-modalLabel">Modal title</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div id="add-appointment-form" style="display:none;">{% crispy AppointmentForm AppointmentFormHelper %}</div>
+	        <div id="select-client">	
+	        	{% crispy SelectClientForm %}
+	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >Or Add New Client</a>
+	        </div>
+	        <div id="add-client" style="display:none;">	        	
+	        	{% crispy AddClientForm %}
+	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >Or Select Existing Client</a>
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
 {% endblock %}
 {% block extrajs %}
@@ -34,9 +61,82 @@
 	<script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
 	<script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
 	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
+	<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
 	
 	{% block event_feed_js %}
 	 	<script type='text/javascript'>
+	 		//id-add-client-form
+	 		$(document).on('submit','#id-add-client-form',function(event){
+	 			event.preventDefault();
+	 			var add_client_form = '#id-add-client-form';
+	 			$.ajax({
+	 				url: "{% url 'appointments:process_add_client_form' %}",
+	 				type: "POST",
+	 				data: $(add_client_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (!(data['success'])) {
+	 						$(add_client_form).replaceWith(data['form_html']);
+	 					}
+	 					else {
+	 						document.getElementById('appointment-client-id').value = data['client_id'];
+	 						$('#id-hidden-add-appointment-form').submit();
+	 					}
+	 				},
+	 				error: function () {
+	 					$(add_client_form).find('.error-message').show()
+	 				}
+	 			});
+	 		});
+
+	 		//select-user-form
+	 		$(document).on('submit','#id-select-client-form',function(event){
+	 			event.preventDefault();
+	 			var select_client_form = '#id-select-client-form';
+	 			$.ajax({
+	 				url: "{% url 'appointments:process_select_client_form' %}",
+	 				type: "POST",
+	 				data: $(select_client_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (!(data['success'])) {
+	 						$(select_client_form).replaceWith(data['form_html']);
+	 					}
+	 					else {
+	 						document.getElementById('appointment-client-id').value = data['client_id'];
+	 						$('#id-hidden-add-appointment-form').submit();
+	 					}
+	 				},
+	 				error: function () {
+	 					$(select_client_form).find('.error-message').show()
+	 				}
+	 			});
+	 		});
+
+	 		//select-user-form
+	 		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
+	 			event.preventDefault();
+	 			var appointment_form = '#id-hidden-add-appointment-form';
+	 			$.ajax({
+	 				url: "{% url 'appointments:add_event' %}",
+	 				type: "POST",
+	 				data: $(appointment_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (data) {
+	 						console.log(data);
+	 						$('#add-appointment-modal').modal("hide");
+	 					}
+	 					else {
+	 						console.log(data);
+	 					}
+	 				},
+	 				error: function () {
+	 					console.log("Error creating appointment");
+	 				}
+	 			});
+	 		});
+
 	 		$(document).ready(function() {
 	 			$('#calendar').weekCalendar({
 	 				timeslotsPerHour: 2,
@@ -81,7 +181,10 @@
 	 				},
 	 				eventNew: function(calEvent, $event) {
  				        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
- 				        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+ 				        document.getElementById('appointment-start-id').value = calEvent.start.toString();
+ 				        document.getElementById('appointment-end-id').value = calEvent.end.toString();
+ 				        document.getElementById('appointment-venue-id').value = calEvent.userId;
+ 				        $('#add-appointment-modal').modal();
 	 				},
 	 				eventDrop: function(calEvent, $event) {
 	 					editEvent(calEvent);
@@ -120,7 +223,53 @@
 					    }
 					);
 				}
+
+				$('body').on("click touchstart", ".client-toggler", function(e){
+				   $("#select-client, #add-client").toggle();
+				});
+
+				$('.modal').on('shown.bs.modal', function() {
+					//Make sure the modal and backdrop are siblings (changes the DOM)
+					$(this).before($('.modal-backdrop'));
+					//Make sure the z-index is higher than the backdrop
+					$(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
+				});
+
+				$("#id_phone").intlTelInput({
+					autoFormat: true,
+					nationalMode: false,
+				  	preferredCountries: ['ke'],
+				  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+				});
 	 		});
+
+			$(document).ajaxStop(function() {
+				$("#id_phone").intlTelInput({
+					autoFormat: true,
+					nationalMode: false,
+				  	preferredCountries: ['ke'],
+				  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+				});
+			});
+
+			// on blur: validate
+			var telInput = $("#id_phone");
+			telInput.blur(function() {
+			  if ($.trim(telInput.val())) {
+			    if (telInput.intlTelInput("isValidNumber")) {		      
+			      $('#div_id_phone').addClass('has-success');
+			      $("#id_full_phone").val($("#id_phone").intlTelInput("getNumber"));
+			    } else {
+			      telInput.addClass("error");
+			      $('#div_id_phone').addClass('has-error');
+			    }
+			  }
+			});
+
+			// on keydown: reset
+			telInput.keydown(function() {
+			  $('#div_id_phone').removeClass('has-error');
+			});	
 	 	</script>		
 	{% endblock %}
 {% endblock %}

@@ -39,6 +39,11 @@ class Appointment(models.Model):
     def get_absolute_url(self):
         return reverse('appointments:appointment', args=[self.pk])
 
+    def get_doctor_id(self):
+        if self.doctor:
+            return self.doctor.id
+        return None
+
     def get_form_data(self):
         """
         returns a dictionary that can be used to populate initial data from appointments.AppointmentForm
@@ -50,7 +55,7 @@ class Appointment(models.Model):
             start_time=self.event.start.strftime('%-H:%M%p'),
             end_date=self.event.end.strftime('%d-%m-%Y'),
             end_time=self.event.end.strftime('%-H:%M%p'),
-            doctor=self.doctor.id,
+            doctor=self.get_doctor_id(),
             venue=self.venue.id,
             description=self.event.description,
         )

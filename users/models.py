@@ -30,8 +30,8 @@ class Client(models.Model):
         getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True)
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
-    email = models.EmailField(_('Email address'), blank=True)
-    phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
+    email = models.EmailField(_('Email address'), blank=True, help_text=_("Needed to send reminders by email"))
+    phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True, help_text=_("Needed to send reminders by SMS"))
     payment = models.CharField(_("Payment Method"), max_length=1, choices=PAYMENT_CHOICES, blank=False, help_text=_(
         "How will payment be made?"))
     insurance_company = models.CharField(_('Insurance Company'), max_length=255, blank=True)

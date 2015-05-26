@@ -236,9 +236,24 @@ def edit_event(request):
     """
     success = False
     if request.is_ajax() and request.method == 'POST':
-        print request.POST
         form = SimpleAppointmentForm(request.POST)
         if form.is_valid():
             success = form.save_edit()
+
+    return HttpResponse(json.dumps(success), content_type="application/json")
+
+
+@login_required
+def add_event(request):
+    """
+    Simple method to record one user rating of a video
+    does not allow inactive users to rate anything
+    """
+    success = False
+    if request.is_ajax() and request.method == 'POST':
+        print request.POST
+        form = SimpleAppointmentForm(request.POST)
+        if form.is_valid():
+            success = form.add_new(request.user)
 
     return HttpResponse(json.dumps(success), content_type="application/json")
