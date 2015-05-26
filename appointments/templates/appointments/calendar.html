@@ -18,7 +18,7 @@
 	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 	    </h3>
 	    <div class="btn-group pull-right">
-            <a href="#" class="btn btn-primary btn-sm" id="choose-date">{% trans "Go To Date" %}</a>
+            <a href="#" class="btn btn-primary" id="choose-date">{% trans "Go To Date" %}</a>
 	    </div>
 	  </div>
 	  <div class="panel-body">
@@ -29,7 +29,7 @@
 
 {% endblock %}
 {% block extrajs %}
-	
+	<script src="{% static 'js/jquery.cookie.js' %}"></script>
 	<script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
 	<script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
 	<script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
@@ -44,7 +44,7 @@
 	 				defaultEventLength: 2,
 	 				// displayFreeBusys: true,
 	 				// defaultFreeBusy: {free: true},
-	 				readonly : true,
+	 				readonly : false,
 	 				daysToShow: 5,
 	 				businessHours: {
  					{% if CUSTOMER.global_opening_time.from_hour.hour %}
@@ -63,14 +63,14 @@
                  	return $(window).height() - $('h1').outerHeight(true);
                 	},
                 	minBodyHeight: 1080,   
-      //           	users: [
- 					// {% for venue in venues %}
- 					// 	{
- 					// 		'id': {{venue.id}},
- 					// 		'name': '{{venue.name|upper}}'
- 					// 	},
- 					// {% endfor %}
-	 				// ],		
+                	users: [
+ 					{% for venue in venues %}
+ 						{
+ 							'id': {{venue.id}},
+ 							'name': '{{venue.name|upper}}'
+ 						},
+ 					{% endfor %}
+	 				],		
                 	showAsSeparateUser: true,	
                 	data: "{% url 'appointments:calendar_event_feed' %}",
                 	getUserId: function(user, index, calendar) {
@@ -79,15 +79,47 @@
 	 				getUserName: function(user, index, calendar) {
 	 				    return user.name;
 	 				},
+	 				eventNew: function(calEvent, $event) {
+ 				        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+ 				        alert('You\'ve added a new event. You would capture this event, add the logic for creating a new event with your own fields, data and whatever backend persistence you require.');
+	 				},
+	 				eventDrop: function(calEvent, $event) {
+	 					editEvent(calEvent);
+	 				    displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+	 				},
+	 				eventResize: function(calEvent, $event) {
+	 					editEvent(calEvent);
+	 				    displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+	 				},
+	 				noEvents: function() {
+	 				    displayMessage('There are no events for this week');
+	 				}
 	 			});
 
 				$('#choose-date').datepicker()
 					.on('changeDate', function(ev){
-						console.log(ev.date);
-
 						var dn = new Date(ev.date);
 						$('#calendar').weekCalendar("gotoWeek", dn);
 					});
+				function displayMessage(message) {
+				    $('#wowow').html(message).fadeIn();
+				}
+
+				function editEvent(calEvent) {
+					var csrftoken = $.cookie('csrftoken');
+					$.post("{% url 'appointments:edit_event' %}", {
+					        csrfmiddlewaretoken: csrftoken,
+					        id: calEvent.id,
+					        client: calEvent.clientId,
+					        start_datetime: calEvent.start, 
+					        end_datetime: calEvent.end, 
+					        venue: calEvent.userId,
+					    },
+					    function(data) {
+					        console.log(data);
+					    }
+					);
+				}
 	 		});
 	 	</script>		
 	{% endblock %}

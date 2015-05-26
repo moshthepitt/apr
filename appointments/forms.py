@@ -123,12 +123,12 @@ class AppointmentForm(forms.Form):
     def create_event(self, user):
         start = timezone.make_aware(
             parser.parse(
-                "%s %s" % (self.cleaned_data['start_date'], self.cleaned_data['start_time']), dayfirst=True),
+                "{} {}".format(self.cleaned_data['start_date'], self.cleaned_data['start_time']), dayfirst=True),
             timezone.get_current_timezone()
         )
         end = timezone.make_aware(
             parser.parse(
-                "%s %s" % (self.cleaned_data['end_date'], self.cleaned_data['end_time']), dayfirst=True),
+                "{} {}".format(self.cleaned_data['end_date'], self.cleaned_data['end_time']), dayfirst=True),
             timezone.get_current_timezone()
         )
         new_event = Event(
@@ -174,3 +174,69 @@ class AppointmentForm(forms.Form):
         appointment.doctor = self.cleaned_data['doctor']
         appointment.venue = self.cleaned_data['venue']
         appointment.save()
+
+
+class SimpleAppointmentForm(forms.Form):
+    id = forms.IntegerField(
+        label=_("ID"),
+        required=False,
+        widget=forms.HiddenInput
+    )
+    client = forms.IntegerField(
+        label=getattr(labels, 'CLIENT', _("Client")),
+        required=True,
+        widget=forms.HiddenInput
+    )
+    title = forms.CharField(
+        label=_("Title"),
+        required=False
+    )
+    start_datetime = forms.CharField(
+        label=_("Start date"),
+        required=True
+    )
+    end_datetime = forms.CharField(
+        label=_("End date"),
+        required=False
+    )
+    doctor = DoctorModelChoiceField(
+        label=getattr(labels, 'DOCTOR', _("Doctor")),
+        queryset=Doctor.objects.all(),
+        required=False
+    )
+    venue = VenueModelChoiceField(
+        label=getattr(labels, 'VENUE', _("Venue")),
+        queryset=Venue.objects.all(),
+        required=False
+    )
+    description = forms.CharField(
+        label=getattr(labels, 'DESCRIPTION', _("Description")),
+        required=False,
+        widget=forms.Textarea
+    )
+
+    def save_edit(self):
+        try:
+            appointment = Appointment.objects.get(pk=int(self.cleaned_data['id']))
+            # appointment
+            try:
+                client = Client.objects.get(pk=self.cleaned_data['client'])
+                appointment.client = client
+            except Client.DoesNotExist:
+                pass
+            if 'doctor' in self.cleaned_data and self.cleaned_data['doctor']:
+                appointment.doctor = self.cleaned_data['doctor']
+            if 'venue' in self.cleaned_data and self.cleaned_data['venue']:
+                appointment.venue = self.cleaned_data['venue']
+            appointment.save()
+            # event
+            if 'title' in self.cleaned_data and self.cleaned_data['title']:
+                appointment.event.title = self.cleaned_data['title']
+            appointment.event.start = parser.parse(self.cleaned_data['start_datetime'])
+            appointment.event.end = parser.parse(self.cleaned_data['end_datetime'])
+            if 'description' in self.cleaned_data and self.cleaned_data['description']:
+                appointment.event.description = self.cleaned_data['description']
+            appointment.event.save()
+            return True
+        except Appointment.DoesNotExist:
+            return False

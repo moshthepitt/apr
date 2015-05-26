@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from dateutil import parser
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, Http404
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
@@ -14,7 +15,8 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm
-from appointments.forms import AppointmentForm
+from appointments.forms import AppointmentForm, SimpleAppointmentForm
+from appointments.models import Appointment
 from venues.models import Venue
 from doctors.models import Doctor
 
@@ -196,6 +198,7 @@ def calendar_event_feed(request):
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
+                     'clientId': x.event.appointment_set.first().client.pk
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -217,8 +220,25 @@ def printable_event_feed(request):
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
+                     'clientId': x.event.appointment_set.first().client.pk
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
+
+
+@login_required
+def edit_event(request):
+    """
+    Simple method to record one user rating of a video
+    does not allow inactive users to rate anything
+    """
+    success = False
+    if request.is_ajax() and request.method == 'POST':
+        print request.POST
+        form = SimpleAppointmentForm(request.POST)
+        if form.is_valid():
+            success = form.save_edit()
+
+    return HttpResponse(json.dumps(success), content_type="application/json")

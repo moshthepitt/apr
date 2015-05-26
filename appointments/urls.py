@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from appointments.ajax import event_feed, venue_event_feed, doctor_event_feed, printable_event_feed, calendar_event_feed
-from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form
+from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form, edit_event
 from appointments.views import AddEventView, AppointmentView, AppointmentListView, AppointmentDelete
 from appointments.views import AppointmentEdit, AppointmentDatatableView
 from venues.views import VenueView
@@ -29,4 +29,7 @@ urlpatterns = patterns('',
     url(r'^delete/(?P<pk>\d+)/$', login_required(AppointmentDelete.as_view()), name='appointment_delete'),
     url(r'^venue/(?P<pk>\d+)/$', login_required(VenueView.as_view()), name='venue'),
     url(r'^doctor/(?P<pk>\d+)/$', login_required(DoctorView.as_view()), name='doctor'),
+
+    #edit
+    url(r'^edit-feed/$', login_required(edit_event), name='edit_event'),
 )
