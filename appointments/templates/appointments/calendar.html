@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
 	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'jquery.growl/css/jquery.growl.css' %}" type="text/css" />
 {% endblock %}
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
@@ -23,7 +24,6 @@
 	    </div>
 	  </div>
 	  <div class="panel-body">
-	  	<div id="wowow" class="row"></div>
 	    <div id="calendar" class="row"></div>	    
 	  </div>
 	</div>	
@@ -62,6 +62,7 @@
 	<script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
 	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 	<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
+	<script src="{% static 'jquery.growl/js/jquery.growl.js' %}"></script>	
 	
 	{% block event_feed_js %}
 	 	<script type='text/javascript'>
@@ -126,6 +127,11 @@
 	 					if (data) {
 	 						console.log(data);
 	 						$('#add-appointment-modal').modal('hide');
+	 						$.growl.notice({ 
+	 							location: 'br',
+	 							title: "Added Appointment", 
+	 							message: 'Start: ' + document.getElementById('appointment-start-id').value + '<br/>End: ' + document.getElementById('appointment-end-id').value 
+	 						});
 	 					} else {
 	 						console.log(data);
 	 					}
@@ -188,7 +194,6 @@
  				        }
  				    },
 	 				eventNew: function(calEvent, $event) {
- 				        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
  				        document.getElementById('appointment-start-id').value = calEvent.start.toString();
  				        document.getElementById('appointment-end-id').value = calEvent.end.toString();
  				        document.getElementById('appointment-venue-id').value = calEvent.userId;
@@ -196,14 +201,32 @@
 	 				},
 	 				eventDrop: function(calEvent, $event) {
 	 					editEvent(calEvent);
-	 				    displayMessage('<strong>Moved Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+	 				    $.growl.notice({ 
+	 				    	location: 'br',
+	 				    	title: "Changed Appointment", 
+	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
+	 				    });
 	 				},
 	 				eventResize: function(calEvent, $event) {
 	 					editEvent(calEvent);
-	 				    displayMessage('<strong>Resized Event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
+	 				    $.growl.notice({ 
+	 				    	location: 'br',
+	 				    	title: "Changed Appointment", 
+	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
+	 				    });
+	 				},
+	 				eventClick: function(calEvent, $event) {	 				        
+	 				    $.growl.notice({ 
+	 				    	location: 'br',
+	 				    	title: "Clicked Appointment", 
+	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
+	 				    });
 	 				},
 	 				noEvents: function() {
-	 				    displayMessage('There are no events for this week');
+	 				    $.growl.notice({ 
+	 				    	location: 'br',
+	 				    	message: 'There are no appointments to show!'
+	 				    });
 	 				}
 	 			});
 
@@ -212,9 +235,6 @@
 						var dn = new Date(ev.date);
 						$('#calendar').weekCalendar("gotoWeek", dn);
 					});
-				function displayMessage(message) {
-				    $('#wowow').html(message).fadeIn();
-				}
 
 				function editEvent(calEvent) {
 					var csrftoken = $.cookie('csrftoken');
@@ -282,6 +302,12 @@
 			telInput.keydown(function() {
 			  $('#div_id_phone').removeClass('has-error');
 			});	
+
+			function updateCalendarPeriodically() {
+				$('#calendar').weekCalendar('refresh');
+			}
+
+			var interval = setInterval(updateCalendarPeriodically, 300000);
 	 	</script>		
 	{% endblock %}
 {% endblock %}
