@@ -331,3 +331,14 @@ class EventInfoForm(forms.ModelForm):
                 Submit('submit', 'Submit', css_class='btn-primary')
             )
         )
+
+
+class IDForm(forms.Form):
+    """
+    contains just the id field
+    """
+    id = forms.IntegerField(
+        label=_("ID"),
+        required=True,
+        widget=forms.HiddenInput
+    )

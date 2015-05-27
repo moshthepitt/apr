@@ -222,6 +222,35 @@
 	 			});
 	 		});
 
+	 		//delete appointment form
+	 		$(document).on('submit','#delete-appointment-form',function(event){
+	 			event.preventDefault();
+	 			var delete_appointment_form = '#delete-appointment-form';
+	 			var appointment_id = $('#appointment-info-box').data("appointment-id");
+	 			var url = '{% url "appointments:delete_appointment" 0 %}'.replace (0, appointment_id);
+	 			$.ajax({
+	 				url: url,
+	 				type: "POST",
+	 				data: $(delete_appointment_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (data) {
+	 						console.log(data);
+	 						$('#edit-appointment-modal').modal('hide');
+	 						$.growl.notice({ 
+	 							location: 'br',
+	 							message: 'Successfully deleted appointment' 
+	 						});
+	 					} else {
+	 						console.log(data);
+	 					}
+	 				},
+	 				error: function () {
+	 					console.log("Error deleting appointment");
+	 				}
+	 			});
+	 		});
+
 	 		$(document).ready(function() {
 	 			$('#calendar').weekCalendar({
 	 				timeslotsPerHour: 4,
@@ -334,6 +363,18 @@
 				   $("#select-client, #add-client").toggle();
 				});
 
+				$('body').on("click touchstart", "#show-edit-contact-details", function(e){
+				   $("#appointment-info-motherload, #edit-contact-details").toggle();
+				});
+
+				$('body').on("click touchstart", "#show-edit-event-details", function(e){
+				   $("#appointment-info-motherload, #edit-event-details").toggle();
+				});
+
+				$('body').on("click touchstart", "#delete-appointment", function(e){
+				   $("#appointment-info-motherload, #delete-appointment-confirmation").toggle();
+				});
+
 				$('.modal').on('shown.bs.modal', function() {
 					//Make sure the modal and backdrop are siblings (changes the DOM)
 					$(this).before($('.modal-backdrop'));
@@ -344,6 +385,10 @@
 				$('#add-appointment-modal').on('hide.bs.modal', function (e) {
 				  	$('#calendar').weekCalendar('refresh');
 				})
+
+				$('#edit-appointment-modal').on('hide.bs.modal', function (e) {
+				  	$('#calendar').weekCalendar('refresh');
+				})				
 
 				$("#id_phone").intlTelInput({
 					autoFormat: true,

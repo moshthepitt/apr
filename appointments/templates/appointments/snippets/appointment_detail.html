@@ -1,20 +1,29 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
-<div class="row client" id="appointment-info-box" data-appointment-id="{{object.id}}" data-event-id="{{object.event.id}}" data-client-id="{{object.client.id}}">
-	<div class="col-md-12 no-padding">		
-		<h4>{{object.event.start}}</h4>
-		<h5>{% trans "Contact Details" %}</h5>
-		<ul class="list-unstyled">
-			<li><span class="appointment-label"><strong>{% trans "Name" %}:</strong></span> <span class="appointment-info">{{object.client.get_full_name}}</span></li>
-			<li><span class="appointment-label"><strong>{% trans "Phone" %}:</strong></span> <span class="appointment-info">{{object.client.phone}}</span></li>
-			<li><span class="appointment-label"><strong>{% trans "Email" %}:</strong></span> <span class="appointment-info">{{object.client.email}}</span></li>
-		</ul>
-		<h5>{% trans "Appointment Details" %}</h5>
-		<ul class="list-unstyled">
-			<li><span class="appointment-label"><strong>{% trans "Title" %}:</strong></span> <span class="appointment-info">{{object.event.title}}</span></li>
-			<li><span class="appointment-label"><strong>{% trans "Schedule" %}:</strong></span> <span class="appointment-info">{{object.venue}}</span></li>
-			<li><span class="appointment-label"><strong>{% trans "Notes" %}:</strong></span> <span class="appointment-info">{{object.event.description}}</span></li>
-		</ul>
+<div id="appointment-info-motherload">
+	<div class="row client" id="appointment-info-box" data-appointment-id="{{object.id}}" data-event-id="{{object.event.id}}" data-client-id="{{object.client.id}}">
+		<div class="col-md-12 no-padding">		
+			<h4>{{object.event.start}}</h4>
+			<h5>{% trans "Contact Details" %}</h5>
+			<ul class="list-unstyled">
+				<li><span class="appointment-label"><strong>{% trans "Name" %}:</strong></span> <span class="appointment-info">{{object.client.get_full_name}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "Phone" %}:</strong></span> <span class="appointment-info">{{object.client.phone}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "Email" %}:</strong></span> <span class="appointment-info">{{object.client.email}}</span></li>
+			</ul>
+			<h5>{% trans "Appointment Details" %}</h5>
+			<ul class="list-unstyled">
+				<li><span class="appointment-label"><strong>{% trans "Title" %}:</strong></span> <span class="appointment-info">{{object.event.title}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "Schedule" %}:</strong></span> <span class="appointment-info">{{object.venue}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "Notes" %}:</strong></span> <span class="appointment-info">{{object.event.description}}</span></li>
+			</ul>
+		</div>
+	</div>
+	<div class="row actions">
+		<div class="col-md-12 no-padding">
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm" id="show-edit-contact-details">{% trans "Edit Contact Details" %}</a>
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm" id="show-edit-event-details">{% trans "Edit Appointment Details" %}</a>
+			<a href="javascript:void(0)" class="btn btn-primary btn-sm" id="delete-appointment">{% trans "Delete" %}</a>
+		</div>
 	</div>
 </div>
 <div class="row" id="edit-contact-details" style="display:none;">
@@ -27,10 +36,13 @@
 		{% crispy event_info_form %}
 	</div>
 </div>
-<div class="row actions">
+
+<div class="row" id="delete-appointment-confirmation" style="display:none;">
 	<div class="col-md-12 no-padding">
-		<a href="javascript:void(0)" class="btn btn-primary btn-sm">{% trans "Edit Contact Details" %}</a>
-		<a href="javascript:void(0)" class="btn btn-primary btn-sm">{% trans "Edit Appointment Details" %}</a>
-		<a href="javascript:void(0)" class="btn btn-primary btn-sm">{% trans "Delete" %}</a>
+		<form id="delete-appointment-form" action="" method="post">{% csrf_token %}
+		    <p>{% trans "Are you sure you want to delete" %} "{{ object }}"?</p>
+		    <input type="hidden" value="{{object.id}}" name="id" />
+		    <input type="submit" class="btn btn-danger" value="Confirm" />
+		</form>
 	</div>
 </div>

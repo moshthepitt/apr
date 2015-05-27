@@ -15,7 +15,8 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm
-from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm
+from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm, IDForm
+from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
 from doctors.models import Doctor
@@ -260,10 +261,6 @@ def printable_event_feed(request):
 
 @login_required
 def edit_event(request):
-    """
-    Simple method to record one user rating of a video
-    does not allow inactive users to rate anything
-    """
     success = False
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
@@ -274,14 +271,21 @@ def edit_event(request):
 
 @login_required
 def add_event(request):
-    """
-    Simple method to record one user rating of a video
-    does not allow inactive users to rate anything
-    """
     success = False
     if request.is_ajax() and request.method == 'POST':
-        print request.POST
         form = SimpleAppointmentForm(request.POST)
         if form.is_valid():
             success = form.add_new(request.user)
+    return HttpResponse(json.dumps(success), content_type="application/json")
+
+
+@login_required
+def delete_appointment(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    success = False
+    if request.is_ajax() and request.method == 'POST':
+        form = IDForm(request.POST)
+        if form.is_valid() and form.cleaned_data['id'] == appointment.pk:
+            appointment.delete()
+            success = True
     return HttpResponse(json.dumps(success), content_type="application/json")
