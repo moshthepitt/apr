@@ -229,7 +229,8 @@ def calendar_event_feed(request):
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().client.pk
+                     'clientId': x.event.appointment_set.first().client.pk,
+                     'status': x.event.appointment_set.first().status
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")
