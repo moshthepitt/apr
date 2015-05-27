@@ -123,13 +123,12 @@
 	 					if (!(data['success'])) {
 	 						$(edit_client_form).replaceWith(data['form_html']);
 	 					}
-	 					else {
-	 						console.log(data);	 						
+	 					else {	 						
 	 						$('#edit-appointment-modal').modal('hide');
 	 						$.growl.notice({ 
 	 							location: 'br',
-	 							title: "Updated Contact Details", 
-	 							message: 'Successfully updated contact details' 
+	 							title: "{% trans 'Updated Contact Details' %}", 
+	 							message: '{% trans "Successfully updated contact details" %}' 
 	 						});
 	 					}
 	 				},
@@ -154,13 +153,12 @@
 	 					if (!(data['success'])) {
 	 						$(edit_event_form).replaceWith(data['form_html']);
 	 					}
-	 					else {
-	 						console.log(data);	 						
+	 					else { 						
 	 						$('#edit-appointment-modal').modal('hide');
 	 						$.growl.notice({ 
 	 							location: 'br',
-	 							title: "Updated Appointment Details", 
-	 							message: 'Successfully updated appointment details' 
+	 							title: "{% trans 'Updated Appointment Details' %}", 
+	 							message: '{% trans "Successfully updated appointment details" %}' 
 	 						});
 	 					}
 	 				},
@@ -205,19 +203,24 @@
 	 				dataType: 'json',
 	 				success: function(data) {				    	
 	 					if (data) {
-	 						console.log(data);
 	 						$('#add-appointment-modal').modal('hide');
 	 						$.growl.notice({ 
 	 							location: 'br',
-	 							title: "Added Appointment", 
-	 							message: 'Start: ' + document.getElementById('appointment-start-id').value + '<br/>End: ' + document.getElementById('appointment-end-id').value 
+	 							title: "{% trans 'Added Appointment' %}", 
+	 							message: {% blocktrans %}'Start: ' + document.getElementById('appointment-start-id').value + '<br/>End: ' + document.getElementById('appointment-end-id').value{% endblocktrans %}
 	 						});
 	 					} else {
-	 						console.log(data);
+	 						$.growl.error({ 
+	 							location: 'br',
+	 							message: '{% trans "An error occurred" %}' 
+	 						});
 	 					}
 	 				},
 	 				error: function () {
-	 					console.log("Error creating appointment");
+	 					$.growl.error({ 
+	 						location: 'br',
+	 						message: '{% trans "An error occurred" %}' 
+	 					});
 	 				}
 	 			});
 	 		});
@@ -235,18 +238,23 @@
 	 				dataType: 'json',
 	 				success: function(data) {				    	
 	 					if (data) {
-	 						console.log(data);
 	 						$('#edit-appointment-modal').modal('hide');
 	 						$.growl.notice({ 
 	 							location: 'br',
-	 							message: 'Successfully deleted appointment' 
+	 							message: '{% trans "Successfully deleted appointment" %}' 
 	 						});
 	 					} else {
-	 						console.log(data);
+	 						$.growl.error({ 
+	 							location: 'br',
+	 							message: '{% trans "An error occurred" %}' 
+	 						});
 	 					}
 	 				},
 	 				error: function () {
-	 					console.log("Error deleting appointment");
+	 					$.growl.error({ 
+	 						location: 'br',
+	 						message: '{% trans "An error occurred" %}' 
+	 					});
 	 				}
 	 			});
 	 		});
@@ -310,19 +318,9 @@
 	 				},
 	 				eventDrop: function(calEvent, $event) {
 	 					editEvent(calEvent);
-	 				    $.growl.notice({ 
-	 				    	location: 'br',
-	 				    	title: "Changed Appointment", 
-	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
-	 				    });
 	 				},
 	 				eventResize: function(calEvent, $event) {
 	 					editEvent(calEvent);
-	 				    $.growl.notice({ 
-	 				    	location: 'br',
-	 				    	title: "Changed Appointment", 
-	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
-	 				    });
 	 				},
 	 				eventClick: function(calEvent, $event) {
 	 					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
@@ -330,9 +328,9 @@
 	 				    $('#edit-appointment-modal').modal();
 	 				},
 	 				noEvents: function() {
-	 				    $.growl.notice({ 
+	 				    $.growl.warning({ 
 	 				    	location: 'br',
-	 				    	message: 'There are no appointments to show!'
+	 				    	message: '{% trans "There are no appointments to show!" %}'
 	 				    });
 	 				}
 	 			});
@@ -354,7 +352,18 @@
 					        venue: calEvent.userId,
 					    },
 					    function(data) {
-					        console.log(data);
+					        if(data) {
+					        	$.growl.notice({ 
+					        		location: 'br',
+					        		title: "{% trans 'Updated Appointment Details' %}", 
+					        		message: '{% trans "Successfully updated appointment details" %}' 
+					        	});
+					        } else {
+					        	$.growl.error({ 
+					        		location: 'br',
+					        		message: '{% trans "An error occurred" %}' 
+					        	});
+					        }
 					    }
 					);
 				}

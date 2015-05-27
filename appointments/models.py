@@ -18,6 +18,20 @@ class Appointment(models.Model):
     """
     An appointment is an Event which has a Client and optionally a Doctor & Venue
     """
+    SCHEDULED = 'scheduled'
+    CONFIRMED = 'confirmed'
+    CANCELED = 'canceled'
+    NOTIFIED = 'notified'
+    NOSHOW = 'noshow'
+
+    STATUS_CHOICES = (
+        (SCHEDULED, _('Scheduled')),
+        (CONFIRMED, _('Confirmed')),
+        (CANCELED, _('Canceled')),
+        (NOTIFIED, _('Notified')),
+        (NOSHOW, _('No Show')),
+    )
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
@@ -29,6 +43,7 @@ class Appointment(models.Model):
     venue = models.ForeignKey(Venue, verbose_name=getattr(
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, verbose_name=_("Event"), on_delete=models.PROTECT)
+    status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
 
     def __unicode__(self):
         return _("Appointment: %s - %s - %s") % (self.client, self.doctor, self.event)
