@@ -226,22 +226,26 @@ class SimpleAppointmentForm(forms.Form):
     )
 
     def add_new(self, user):
-        client = Client.objects.get(pk=self.cleaned_data['client'])
-        event = Event(
-            start=parser.parse(self.cleaned_data['start_datetime']),
-            end=parser.parse(self.cleaned_data['end_datetime']),
-            title="{}'s appointment".format(client.get_full_name()),
-            creator=user
-        )
-        event.save()
-        appointment = Appointment(
-            client=client,
-            venue=Venue.objects.get(pk=self.cleaned_data['venue_id']),
-            event=event,
-            creator=user,
-            customer=user.userprofile.customer
-        )
-        appointment.save()
+        try:
+            client = Client.objects.get(pk=self.cleaned_data['client'])
+            event = Event(
+                start=parser.parse(self.cleaned_data['start_datetime']),
+                end=parser.parse(self.cleaned_data['end_datetime']),
+                title="{}'s appointment".format(client.get_full_name()),
+                creator=user
+            )
+            event.save()
+            appointment = Appointment(
+                client=client,
+                venue=Venue.objects.get(pk=self.cleaned_data['venue_id']),
+                event=event,
+                creator=user,
+                customer=user.userprofile.customer
+            )
+            appointment.save()
+            return True
+        except Client.DoesNotExist:
+            return False
 
     def save_edit(self):
         try:

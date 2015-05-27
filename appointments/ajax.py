@@ -239,7 +239,6 @@ def edit_event(request):
         form = SimpleAppointmentForm(request.POST)
         if form.is_valid():
             success = form.save_edit()
-
     return HttpResponse(json.dumps(success), content_type="application/json")
 
 
@@ -255,5 +254,5 @@ def add_event(request):
         form = SimpleAppointmentForm(request.POST)
         if form.is_valid():
             success = form.add_new(request.user)
-
+    print success
     return HttpResponse(json.dumps(success), content_type="application/json")

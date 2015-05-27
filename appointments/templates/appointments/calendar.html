@@ -34,21 +34,21 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="add-appointment-modalLabel">Modal title</h4>
+	        <h4 class="modal-title" id="add-appointment-modalLabel">{% trans "Add New Appointment" %}</h4>
 	      </div>
 	      <div class="modal-body">
 	      	<div id="add-appointment-form" style="display:none;">{% crispy AppointmentForm AppointmentFormHelper %}</div>
 	        <div id="select-client">	
 	        	{% crispy SelectClientForm %}
-	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >Or Add New Client</a>
+	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Add New Client" %}</a>
 	        </div>
 	        <div id="add-client" style="display:none;">	        	
 	        	{% crispy AddClientForm %}
-	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >Or Select Existing Client</a>
+	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Select Existing Client" %}</a>
 	        </div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
 	      </div>
 	    </div>
 	  </div>
@@ -125,9 +125,8 @@
 	 				success: function(data) {				    	
 	 					if (data) {
 	 						console.log(data);
-	 						$('#add-appointment-modal').modal("hide");
-	 					}
-	 					else {
+	 						$('#add-appointment-modal').modal('hide');
+	 					} else {
 	 						console.log(data);
 	 					}
 	 				},
@@ -139,9 +138,9 @@
 
 	 		$(document).ready(function() {
 	 			$('#calendar').weekCalendar({
-	 				timeslotsPerHour: 2,
+	 				timeslotsPerHour: 4,
 	 				timeslotHeight: 20,
-	 				defaultEventLength: 2,
+	 				defaultEventLength: 4,
 	 				// displayFreeBusys: true,
 	 				// defaultFreeBusy: {free: true},
 	 				readonly : false,
@@ -162,7 +161,7 @@
                 	height: function($calendar) {
                  	return $(window).height() - $('h1').outerHeight(true);
                 	},
-                	minBodyHeight: 1080,   
+                	minBodyHeight: 1200,   
                 	users: [
  					{% for venue in venues %}
  						{
@@ -179,6 +178,15 @@
 	 				getUserName: function(user, index, calendar) {
 	 				    return user.name;
 	 				},
+	 				eventRender: function(calEvent, $event) {
+ 				        if (calEvent.end.getTime() < new Date().getTime()) {
+ 				          	$event.css('backgroundColor', '#aaa');
+ 				          	$event.find('.time').css({
+ 				            	backgroundColor: '#999',
+ 				            	border:'1px solid #888'
+ 				          	});
+ 				        }
+ 				    },
 	 				eventNew: function(calEvent, $event) {
  				        displayMessage('<strong>Added event</strong><br/>Start: ' + calEvent.start + '<br/>End: ' + calEvent.end);
  				        document.getElementById('appointment-start-id').value = calEvent.start.toString();
@@ -228,12 +236,16 @@
 				   $("#select-client, #add-client").toggle();
 				});
 
-				$('.modal').on('shown.bs.modal', function() {
+				$('#add-appointment-modal').on('shown.bs.modal', function() {
 					//Make sure the modal and backdrop are siblings (changes the DOM)
 					$(this).before($('.modal-backdrop'));
 					//Make sure the z-index is higher than the backdrop
 					$(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
 				});
+
+				$('#add-appointment-modal').on('hide.bs.modal', function (e) {
+				  	$('#calendar').weekCalendar('refresh');
+				})
 
 				$("#id_phone").intlTelInput({
 					autoFormat: true,
