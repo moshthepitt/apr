@@ -28,7 +28,7 @@
 	  </div>
 	</div>	
 
-	<!-- Modal -->
+	<!-- Add Appointment Modal -->
 	<div class="modal fade" id="add-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="add-appointment-modalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
@@ -48,7 +48,25 @@
 	        </div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" id="modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+	        <button type="button" id="add-appointment-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+
+	<!-- Edit Appointment Modal -->
+	<div class="modal fade" id="edit-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="edit-appointment-modalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="edit-appointment-modalLabel">{% trans "View Appointment" %}</h4>
+	      </div>
+	      <div class="modal-body">
+	      	<div id="view-appointment-content"></div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" id="edit-appointment-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
 	      </div>
 	    </div>
 	  </div>
@@ -90,6 +108,68 @@
 	 			});
 	 		});
 
+	 		//edit-client-form
+	 		$(document).on('submit','#id-edit-client-form',function(event){
+	 			event.preventDefault();
+	 			var edit_client_form = '#id-edit-client-form';
+	 			var client_id = $('#appointment-info-box').data("client-id");
+	 			var url = '{% url "appointments:process_edit_client_form" 0 %}'.replace (0, client_id);
+	 			$.ajax({
+	 				url: url,
+	 				type: "POST",
+	 				data: $(edit_client_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (!(data['success'])) {
+	 						$(edit_client_form).replaceWith(data['form_html']);
+	 					}
+	 					else {
+	 						console.log(data);	 						
+	 						$('#edit-appointment-modal').modal('hide');
+	 						$.growl.notice({ 
+	 							location: 'br',
+	 							title: "Updated Contact Details", 
+	 							message: 'Successfully updated contact details' 
+	 						});
+	 					}
+	 				},
+	 				error: function () {
+	 					$(edit_client_form).find('.error-message').show()
+	 				}
+	 			});
+	 		});
+
+	 		//id-event-info-form
+	 		$(document).on('submit','#id-event-info-form',function(event){
+	 			event.preventDefault();
+	 			var edit_event_form = '#id-event-info-form';
+	 			var event_id = $('#appointment-info-box').data("event-id");
+	 			var url = '{% url "appointments:process_edit_event_form" 0 %}'.replace (0, event_id);
+	 			$.ajax({
+	 				url: url,
+	 				type: "POST",
+	 				data: $(edit_event_form).serialize(),
+	 				dataType: 'json',
+	 				success: function(data) {				    	
+	 					if (!(data['success'])) {
+	 						$(edit_event_form).replaceWith(data['form_html']);
+	 					}
+	 					else {
+	 						console.log(data);	 						
+	 						$('#edit-appointment-modal').modal('hide');
+	 						$.growl.notice({ 
+	 							location: 'br',
+	 							title: "Updated Appointment Details", 
+	 							message: 'Successfully updated appointment details' 
+	 						});
+	 					}
+	 				},
+	 				error: function () {
+	 					$(edit_event_form).find('.error-message').show()
+	 				}
+	 			});
+	 		});
+
 	 		//select-user-form
 	 		$(document).on('submit','#id-select-client-form',function(event){
 	 			event.preventDefault();
@@ -114,7 +194,7 @@
 	 			});
 	 		});
 
-	 		//select-user-form
+	 		//add-appointment-form
 	 		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
 	 			event.preventDefault();
 	 			var appointment_form = '#id-hidden-add-appointment-form';
@@ -215,12 +295,10 @@
 	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
 	 				    });
 	 				},
-	 				eventClick: function(calEvent, $event) {	 				        
-	 				    $.growl.notice({ 
-	 				    	location: 'br',
-	 				    	title: "Clicked Appointment", 
-	 				    	message: 'Start: ' + calEvent.start + '<br/>End: ' + calEvent.end 
-	 				    });
+	 				eventClick: function(calEvent, $event) {
+	 					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
+	 					$( "#view-appointment-content" ).load(url);	 				        
+	 				    $('#edit-appointment-modal').modal();
 	 				},
 	 				noEvents: function() {
 	 				    $.growl.notice({ 
@@ -256,7 +334,7 @@
 				   $("#select-client, #add-client").toggle();
 				});
 
-				$('#add-appointment-modal').on('shown.bs.modal', function() {
+				$('.modal').on('shown.bs.modal', function() {
 					//Make sure the modal and backdrop are siblings (changes the DOM)
 					$(this).before($('.modal-backdrop'));
 					//Make sure the z-index is higher than the backdrop

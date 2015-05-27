@@ -15,8 +15,8 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm
-from appointments.forms import AppointmentForm, SimpleAppointmentForm
-from appointments.models import Appointment
+from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm
+from users.models import Client
 from venues.models import Venue
 from doctors.models import Doctor
 
@@ -169,6 +169,36 @@ def process_add_client_form(request):
 
 @csrf_exempt
 @json_view
+def process_edit_client_form(request, pk):
+    client = get_object_or_404(Client, pk=pk)
+    form = AddClientForm(request.POST or None, instance=client)
+    if form.is_valid():
+        form.save()
+        return {
+            'success': True,
+            'client_id': client.id
+        }
+    form_html = render_crispy_form(form)
+    return {'success': False, 'form_html': form_html}
+
+
+@csrf_exempt
+@json_view
+def process_edit_event_form(request, pk):
+    event = get_object_or_404(Event, pk=pk)
+    form = EventInfoForm(request.POST or None, instance=event)
+    if form.is_valid():
+        form.save()
+        return {
+            'success': True,
+            'event_id': event.id
+        }
+    form_html = render_crispy_form(form)
+    return {'success': False, 'form_html': form_html}
+
+
+@csrf_exempt
+@json_view
 def process_add_event_form(request):
     form = AppointmentForm(request.POST or None)
     if form.is_valid():
@@ -254,5 +284,4 @@ def add_event(request):
         form = SimpleAppointmentForm(request.POST)
         if form.is_valid():
             success = form.add_new(request.user)
-    print success
     return HttpResponse(json.dumps(success), content_type="application/json")

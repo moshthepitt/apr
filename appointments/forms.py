@@ -306,3 +306,28 @@ def hidden_appointment_form_helper():
         Field('venue_id', id="appointment-venue-id")
     )
     return helper
+
+
+class EventInfoForm(forms.ModelForm):
+    """
+    Form used to edit event info. i.e title and description
+    """
+
+    class Meta:
+        model = Event
+        fields = ['title', 'description']
+
+    def __init__(self, *args, **kwargs):
+        super(EventInfoForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = False
+        self.fields['description'].required = False
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-event-info-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('title'),
+            Field('description'),
+            ButtonHolder(
+                Submit('submit', 'Submit', css_class='btn-primary')
+            )
+        )

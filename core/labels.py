@@ -12,6 +12,7 @@ CLIENT = _("Patient")
 CLIENT_PLURAL = _("Patients")
 SELECT_CLIENT = _("Select Patient")
 CREATE_CLIENT = _("Create New Patient")
+EDIT_CLIENT = _("Edit Patient")
 CLIENT_ID = _("File Number")
 
 DOCTOR_TITLE = _("Dr.")

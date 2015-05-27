@@ -2,9 +2,10 @@ from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
 from appointments.ajax import event_feed, venue_event_feed, doctor_event_feed, printable_event_feed, calendar_event_feed
-from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form, edit_event, add_event
+from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form
+from appointments.ajax import process_edit_client_form, edit_event, add_event, process_edit_event_form
 from appointments.views import AddEventView, AppointmentView, AppointmentListView, AppointmentDelete
-from appointments.views import AppointmentEdit, AppointmentDatatableView
+from appointments.views import AppointmentEdit, AppointmentDatatableView, AppointmentSnippetView
 from venues.views import VenueView
 from doctors.views import DoctorView
 
@@ -17,6 +18,7 @@ urlpatterns = patterns('',
     url(r'^printable-feed/$', login_required(printable_event_feed), name='printable_event_feed'),
     url(r'^calendar-feed/$', login_required(calendar_event_feed), name='calendar_event_feed'),
     url(r'^add-client-form/$', login_required(process_add_client_form), name='process_add_client_form'),
+    url(r'^edit-client-form/(?P<pk>\d+)/$', login_required(process_edit_client_form), name='process_edit_client_form'),
     url(r'^select-client-form/$', login_required(process_select_client_form), name='process_select_client_form'),
     url(r'^add-event-form/$', login_required(process_add_event_form), name='process_add_event_form'),
     # regular
@@ -33,4 +35,6 @@ urlpatterns = patterns('',
     #edit
     url(r'^add-event/$', login_required(add_event), name='add_event'),
     url(r'^edit-event/$', login_required(edit_event), name='edit_event'),
+    url(r'^edit-event-form/(?P<pk>\d+)/$', login_required(process_edit_event_form), name='process_edit_event_form'),
+    url(r'^snippet/(?P<pk>\d+)/$', login_required(AppointmentSnippetView.as_view()), name='appointment_snippet'),
 )

@@ -85,3 +85,23 @@ class AddClientForm(forms.ModelForm):
                 Submit('submit', 'Submit', css_class='btn-primary')
             )
         )
+
+
+def edit_client_helper():
+    helper = FormHelper()
+    helper.form_id = 'id-edit-client-form'
+    helper.form_method = 'post'
+    helper.layout = Layout(
+        Fieldset(
+            getattr(labels, 'EDIT_CLIENT', _('Edit client')),
+            'email',
+            'phone',
+            'first_name',
+            'last_name',
+        ),
+        ButtonHolder(
+            Submit('submit', 'Submit', css_class='btn-primary')
+        )
+    )
+
+    return helper

@@ -30,3 +30,12 @@
 .notes-table {
 	margin-top:15px;
 }
+
+.modal h4,
+.modal h5 {
+	font-weight:bold;
+}
+
+.no-padding {
+	padding:0;
+}

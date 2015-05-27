@@ -12,8 +12,8 @@ from django.http import Http404
 
 from datatableview.views import DatatableView
 
-from users.forms import SelectClientForm, AddClientForm
-from appointments.forms import AppointmentForm
+from users.forms import SelectClientForm, AddClientForm, edit_client_helper
+from appointments.forms import AppointmentForm, EventInfoForm
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
@@ -113,6 +113,35 @@ class AppointmentView(DetailView):
             raise Http404
 
         return super(AppointmentView, self).dispatch(*args, **kwargs)
+
+
+class AppointmentSnippetView(DetailView):
+    """
+    returns HTML to be used in a modal showing appointment details
+    """
+    model = Appointment
+    template_name = "appointments/snippets/appointment_detail.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentSnippetView, self).get_context_data(**kwargs)
+        edit_client_form = AddClientForm(instance=self.get_object().client)
+        context['edit_client_form'] = edit_client_form
+        context['edit_client_helper'] = edit_client_helper
+        event_info_form = EventInfoForm(instance=self.get_object().event)
+        context['event_info_form'] = event_info_form
+        context['object'] = self.object
+        return context
+
+    def dispatch(self, *args, **kwargs):
+        # if current user is not tied to a customer then redirect them away
+        if not self.request.user.userprofile.customer:
+            raise Http404
+
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+
+        return super(AppointmentSnippetView, self).dispatch(*args, **kwargs)
 
 
 class AppointmentListView(ListView):
