@@ -13,8 +13,8 @@
 	  </div>
 	  <div class="panel-body">
 	  	<div class="col-md-12 text-right">
-	  		<a href="{% url 'appointments:appointment_edit' pk=object.pk %}" class="btn btn-sm btn-primary">Edit</a>
-	  		<a href="{% url 'appointments:appointment_delete' pk=object.pk %}" class="btn btn-sm btn-danger">Delete</a>
+	  		<a href="{% url 'appointments:appointment_edit' pk=object.pk %}" class="btn btn-sm btn-primary">{% trans "Edit" %}</a>
+	  		<a href="{% url 'appointments:appointment_delete' pk=object.pk %}" class="btn btn-sm btn-danger">{% trans "Delete" %}</a>
 	  		<br>
 	  		<br>
 	  	</div>

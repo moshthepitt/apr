@@ -290,3 +290,17 @@ def delete_appointment(request, pk):
             appointment.delete()
             success = True
     return HttpResponse(json.dumps(success), content_type="application/json")
+
+
+@login_required
+def edit_appointment_status(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
+    success = False
+    if request.is_ajax() and request.method == 'POST':
+        form = IDForm(request.POST)
+        if form.is_valid() and form.cleaned_data['id'] == appointment.pk:
+            if 'status' in request.POST and request.POST['status'] in Appointment.STATUS_LIST:
+                appointment.status = request.POST['status']
+                appointment.save()
+                success = True
+    return HttpResponse(json.dumps(success), content_type="application/json")

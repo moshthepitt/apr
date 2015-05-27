@@ -23,6 +23,9 @@ class Appointment(models.Model):
     CANCELED = 'canceled'
     NOTIFIED = 'notified'
     NOSHOW = 'noshow'
+    SHOWED = 'showed'
+
+    STATUS_LIST = [SCHEDULED, CONFIRMED, CANCELED, NOTIFIED, NOSHOW, SHOWED]
 
     STATUS_CHOICES = (
         (SCHEDULED, _('Scheduled')),
@@ -30,6 +33,7 @@ class Appointment(models.Model):
         (CANCELED, _('Canceled')),
         (NOTIFIED, _('Notified')),
         (NOSHOW, _('No Show')),
+        (SHOWED, _('Showed Up')),
     )
 
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)

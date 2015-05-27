@@ -40,9 +40,9 @@
 	    						<td>{{object.venue}}</td>
 	    						<td>{{object.event.start}}</td>
 	    						<td>
-	    							<a href="{{object.get_absolute_url}}">View</a> |
-	    							<a href="{% url 'appointments:appointment_edit' pk=object.pk %}">Edit</a> |
-	    							<a href="{% url 'appointments:appointment_delete' pk=object.pk %}">Delete</a>
+	    							<a href="{{object.get_absolute_url}}">{% trans "View" %}</a> |
+	    							<a href="{% url 'appointments:appointment_edit' pk=object.pk %}">{% trans "Edit" %}</a> |
+	    							<a href="{% url 'appointments:appointment_delete' pk=object.pk %}">{% trans "Delete" %}</a>
 	    						</td>
 	    					</tr>
 	    				{% endfor %}

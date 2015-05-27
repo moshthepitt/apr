@@ -66,7 +66,15 @@
 	      	<div id="view-appointment-content"></div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="button" id="edit-appointment-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+	      	<div class="btn-toolbar pull-left" role="toolbar" aria-label="{% trans 'Actions' %}">
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="confirmed">{% trans "Mark Confirmed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="canceled">{% trans "Mark Canceled" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="showed">{% trans "Mark Showed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="noshow">{% trans "Mark No Showed" %}</div>
+	      	</div>
+	        <div class="pull-right">
+	        	<button type="button" id="edit-appointment-modal-close" class="btn btn-sm btn-danger" data-dismiss="modal">{% trans "Close" %}</button>
+	        </div>
 	      </div>
 	    </div>
 	  </div>
@@ -84,6 +92,37 @@
 	
 	{% block event_feed_js %}
 	 	<script type='text/javascript'>
+	 		// change event status
+	 		$(document).on('click', '.status-changer', function(event) {
+	 			event.preventDefault();
+	 			var status = $(this).data("status");
+	 			var appointment_id = $('#appointment-info-box').data("appointment-id");
+	 			var csrftoken = $.cookie('csrftoken');
+	 			var url = '{% url "appointments:edit_appointment_status" 0 %}'.replace (0, appointment_id);
+	 			$.post(url, {
+	 			        csrfmiddlewaretoken: csrftoken,
+	 			        id: appointment_id,
+	 			        status: status,
+	 			    },
+	 			    function(data) {
+	 			        if(data) {
+	 			        	$('#edit-appointment-modal').modal('hide');
+	 			        	$.growl.notice({ 
+	 			        		location: 'br',
+	 			        		title: "{% trans 'Updated Appointment Details' %}", 
+	 			        		message: '{% trans "Successfully updated appointment details" %}' 
+	 			        	});
+	 			        } else {
+	 			        	$.growl.error({ 
+	 			        		location: 'br',
+	 			        		message: '{% trans "An error occurred" %}' 
+	 			        	});
+	 			        }
+	 			    }
+	 			);
+	 		});
+
+
 	 		//id-add-client-form
 	 		$(document).on('submit','#id-add-client-form',function(event){
 	 			event.preventDefault();

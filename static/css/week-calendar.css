@@ -59,3 +59,8 @@
 	background-color: #555555;
 	border: 1px solid #494949;
 }
+
+.wc-cal-event.showed .wc-title {
+	background-color: #27ae60;
+	border: 1px solid #229955;
+}
