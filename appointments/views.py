@@ -3,6 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.html import format_html
+from django.utils.timezone import localtime
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
@@ -175,7 +176,7 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
     }
 
     def get_date(self, instance, *args, **kwargs):
-        return instance.event.start.strftime("%d %b %Y %-I:%M%p")
+        return localtime(instance.event.start).strftime("%d %b %Y %-I:%M%p")
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(

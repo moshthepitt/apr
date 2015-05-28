@@ -55,27 +55,21 @@
         {% endif %}
 
         {% if request.user.is_authenticated %}
-        <li class="submenu">
-          <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Clinics" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+        <!--li class="submenu">
+          <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Schedules" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
           <ul>
             {% for venue in active_venues %}
             <li><a href="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</a></li>
             {% endfor %}
           </ul>
-        </li>
-        <li class="submenu">
-          <a href="#"><i class="fa fa-stethoscope"></i> <span>{% trans "Doctors" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
-          <ul>
-            {% for doctor in active_doctors %}
-            <li><a href="{% url 'appointments:doctor' pk=doctor.pk %}">{{doctor|title}}</a></li>
-            {% endfor %}
-          </ul>
-        </li> 
+        </li-->
         {% endif %}
         
         {% block sidebar_content %}
           {% block general_sidebar %}{% endblock %}
         {% endblock %}
+
+        <li><a href="{% url 'help' %}"><i class="fa fa-envelope-o"></i> <span>{% trans "Contact Us" %}</span></a></li>
         {% if request.user.is_authenticated %}
         <li><a href="{% url 'account_logout' %}"><i class="fa fa-sign-out"></i> <span>{% trans "Logout" %}</span></a></li>
         {% endif %}

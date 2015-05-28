@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
+from django.utils.timezone import localtime
 
 from users.models import Client
 from doctors.models import Doctor
@@ -70,10 +71,10 @@ class Appointment(models.Model):
         return dict(
             client=self.client.id,
             title=self.event.title,
-            start_date=self.event.start.strftime('%d-%m-%Y'),
-            start_time=self.event.start.strftime('%-H:%M%p'),
-            end_date=self.event.end.strftime('%d-%m-%Y'),
-            end_time=self.event.end.strftime('%-H:%M%p'),
+            start_date=localtime(self.event.start).strftime('%d-%m-%Y'),
+            start_time=localtime(self.event.start).strftime('%-H:%M%p'),
+            end_date=localtime(self.event.end).strftime('%d-%m-%Y'),
+            end_time=localtime(self.event.end).strftime('%-H:%M%p'),
             doctor=self.get_doctor_id(),
             venue=self.venue.id,
             description=self.event.description,
