@@ -310,7 +310,9 @@
 	 				// displayFreeBusys: true,
 	 				// defaultFreeBusy: {free: true},
 	 				readonly : false,
-	 				daysToShow: 5,
+	 				firstDayOfWeek: 1,
+	 				daysToShow: 6,
+	 				startOnFirstDayOfWeek: true,
 	 				businessHours: {
  					{% if CUSTOMER.global_opening_time.from_hour.hour %}
  						start: {{CUSTOMER.global_opening_time.from_hour.hour}},
