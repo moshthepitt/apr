@@ -43,7 +43,7 @@ class AppointmentEdit(FormView):
     def form_valid(self, form):
         form.edit_appointment(self.object)
         messages.add_message(
-            self.request, messages.SUCCESS, 'Successfully saved {}'.format(labels.APPOINTMENT))
+            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
         return super(AppointmentEdit, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):

@@ -3,6 +3,14 @@ import datetime
 from opening_hours.models import OpeningHour
 
 
+def new_default_opening_hours(customer):
+    """
+    creates default opening hours fort customer
+    """
+    times = [(datetime.time(hour=6, minute=0), datetime.time(hour=19, minute=0))]
+    bulk_create_opening_hours(times, customer)
+
+
 def bulk_create_opening_hours(times, customer, break_time=False):
     """
     convenience function to bulk create opening hours

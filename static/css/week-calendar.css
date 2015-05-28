@@ -64,3 +64,7 @@
 	background-color: #27ae60;
 	border: 1px solid #229955;
 }
+
+.intl-tel-input {
+	display:block;
+}

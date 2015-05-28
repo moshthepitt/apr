@@ -49,8 +49,16 @@
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
                 <li><a href="javascript:void(0)">{% trans "Pricing" %}</a></li>
-                <li><a href="javascript:void(0)" class="btn btn-success">{% trans "Sign Up" %}</a></li>
-                <li><a href="javascript:void(0)">{% trans "Sign In" %}</a></li>
+                {% if request.user.is_authenticated %}
+                  {% if CUSTOMER %}
+                    <li><a href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a></li>
+                  {% else %}
+                    <li><a href="{% url 'new_customer' %}">{% trans "Set Up Account" %}</a></li>
+                  {% endif %}
+                {% else %}
+                <li><a href="{% url 'account_signup' %}" class="btn btn-success">{% trans "Sign Up" %}</a></li>
+                <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
+                {% endif %}
               </ul>
             </div><!-- /.navbar-collapse -->
           </div>

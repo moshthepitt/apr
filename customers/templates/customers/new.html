@@ -1,0 +1,49 @@
+{% extends "front-base.html" %}
+
+{% load url from future %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block extracss %}
+<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
+{% endblock %}
+
+{% block title %}{% trans "Welcome to AppointWare" %}{% endblock %}
+
+{% block all_content %}
+<div class="row content-section">
+  	<div class="container">
+    	<div class="col-md-12">
+    		<h3>{% trans "Welcome to AppointWare" %}</h3>
+			
+    		<p>{% trans "Setup only takes a moment, you'll be booking appointments in no time." %}</p>
+
+    		<div class="row">
+    		<div class="col-md-8">
+			{% crispy form %}
+			</div>		
+    		<div class="col-md-4">
+			{% include 'core/snippets/benefits.html' %}
+			</div>		
+			</div>
+
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+
+{% block extrajs %}
+<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
+<script>
+	$(document).ready(function() {			
+  		$("#id_phone").intlTelInput({
+  			autoFormat: true,
+  			nationalMode: false,
+  		  	preferredCountries: ['ke'],
+  		  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+  		});
+  	});
+</script>
+{% endblock %}

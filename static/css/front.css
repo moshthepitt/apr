@@ -116,6 +116,10 @@ nav {
   border-bottom:1px solid #f9f9f9;
 }
 
+.intl-tel-input {
+  display:block!important;
+}
+
 /* Footer */
 footer {
   background-color: #293941;
