@@ -1,3 +1,4 @@
+from datetime import timedelta
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
@@ -20,6 +21,10 @@ class Subscription(models.Model):
         (YEAR, _("Year")),
     ]
 
+    WEEKDAYS = 7
+    MONTHDAYS = 30.44
+    YEARDAYS = 365.25
+
     name = models.CharField(_("Name"), max_length=100, unique=True, null=False)
     description = models.TextField(_("Description"), blank=True)
     price = models.DecimalField(_("Price"), max_digits=64, decimal_places=2)
@@ -33,11 +38,43 @@ class Subscription(models.Model):
     max_appointments = models.PositiveIntegerField(_("Max Appointments"), blank=False, default=500)
     highlighted = models.BooleanField(_("Highlighted"), default=True, help_text=_(
         "Is this subscription highlighted for prominent display?"))
+    default = models.BooleanField(_("Default"), default=False, help_text=_(
+        "The default subscription will be highlighted in price tables.  Ideally only one subscription should be default."))
 
     class Meta:
         ordering = ('price', '-recurring_period')
         verbose_name = _("Subscription")
         verbose_name_plural = _("Subscriptions")
+
+    def get_subscription_days(self):
+        """
+        returns the number of days as subscription Length
+        """
+        if self.recurring_unit == self.DAY:
+            return self.recurring_period
+        elif self.recurring_unit == self.WEEK:
+            return self.recurring_period * self.WEEKDAYS
+        elif self.recurring_unit == self.MONTH:
+            return self.recurring_period * self.MONTHDAYS
+        elif self.recurring_unit == self.YEAR:
+            return self.recurring_period * self.YEARDAYS
+        else:
+            return 0
+
+    def get_trialing_days(self):
+        """
+        returns the number of days as trial Length
+        """
+        if self.trial_unit == self.DAY:
+            return self.trial_period
+        elif self.trial_unit == self.WEEK:
+            return self.trial_period * self.WEEKDAYS
+        elif self.trial_unit == self.MONTH:
+            return self.trial_period * self.MONTHDAYS
+        elif self.trial_unit == self.YEAR:
+            return self.trial_period * self.YEARDAYS
+        else:
+            return 0
 
     def __str__(self):
         return self.name
@@ -60,7 +97,7 @@ class CustomerSubscription(models.Model):
         (ENDED, _("Ended")),
     ]
 
-    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), null=False, blank=False)
+    customer = models.OneToOneField(Customer, verbose_name=_("Customer"), null=False, blank=False)
     subscription = models.ForeignKey(
         Subscription, verbose_name=_("Subscription"), null=False, blank=False)
     start = models.DateTimeField(default=timezone.now, verbose_name=_("Subscription Date"))
@@ -73,12 +110,25 @@ class CustomerSubscription(models.Model):
     canceled_at = models.DateTimeField(_("Canceled at"), null=True, blank=True)
     cancel_reason = models.TextField(
         blank=True, null=True, default=None, verbose_name=_("Reason for cancelling"))
-    status = models.PositiveIntegerField(_("Status"), null=True, choices=STATUS_CHOICES, default=TRIALING)
+    status = models.PositiveIntegerField(
+        _("Status"), null=False, choices=STATUS_CHOICES, default=TRIALING)
 
     class Meta:
         unique_together = (('customer', 'subscription'), )
         verbose_name = _("Customer Subscription")
         verbose_name_plural = _("Customer Subscriptions")
+
+    def start_trial(self, start_date):
+        self.trial_start = start_date
+        self.trial_end = start_date + timedelta(self.subscription.get_trialing_days())
+        self.status = self.TRIALING
+        self.save()
+
+    def start_subscription(self, start_date):
+        self.current_period_start = start_date
+        self.current_period_end = start_date + timedelta(self.subscription.get_trialing_days())
+        self.status = self.ACTIVE
+        self.save()
 
     def __str__(self):
         return "{customer} {sub}".format(user=self.customer, sub=self.subscription)

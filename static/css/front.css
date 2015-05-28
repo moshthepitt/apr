@@ -90,6 +90,12 @@ nav {
   padding: 0;
 }
 
+.content-section.page {
+  min-height: 20px;
+  padding-top: 0;
+  padding-bottom:60px;
+}
+
 .grey-bg {
   background-color: #F9F9F9;
 }

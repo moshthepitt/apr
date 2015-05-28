@@ -17,7 +17,6 @@ from appointments.forms import AppointmentForm, EventInfoForm
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
-from doctors.models import Doctor
 
 from core import labels
 
@@ -86,7 +85,6 @@ class AddEventView(TemplateView):
         context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
         appointment_form = AppointmentForm()
-        appointment_form.fields['doctor'].queryset = Doctor.objects.filter(customer=self.request.user.userprofile.customer)
         appointment_form.fields['venue'].queryset = Venue.objects.filter(customer=self.request.user.userprofile.customer)
         context['AppointmentForm'] = appointment_form
         return context

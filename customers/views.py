@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.utils.translation import ugettext as _
 
 from customers.forms import NewCustomerForm
+from subscriptions.models import Subscription
 
 
 class NewCustomer(FormView):
@@ -15,6 +16,7 @@ class NewCustomer(FormView):
     def get_initial(self):
         initial = super(NewCustomer, self).get_initial()
         initial['email'] = self.request.user.email
+        initial['subscription'] = Subscription.objects.filter(default=True).first()
         return initial
 
     def form_valid(self, form):

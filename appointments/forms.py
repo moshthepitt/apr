@@ -49,10 +49,6 @@ class AppointmentForm(forms.Form):
         label=_("End time"),
         required=False
     )
-    doctor = DoctorModelChoiceField(
-        label=getattr(labels, 'DOCTOR', _("Doctor")),
-        queryset=Doctor.objects.all(),
-    )
     venue = VenueModelChoiceField(
         label=getattr(labels, 'VENUE', _("Venue")),
         queryset=Venue.objects.all(),
@@ -102,10 +98,6 @@ class AppointmentForm(forms.Form):
                     css_class='form-group row form-inline'
                 ),
                 Div(
-                    'doctor',
-                    css_class='form-group'
-                ),
-                Div(
                     'venue',
                     css_class='form-group'
                 ),
@@ -145,7 +137,6 @@ class AppointmentForm(forms.Form):
         event = self.create_event(user)
         new_appointment = Appointment(
             client=Client.objects.get(pk=self.cleaned_data['client']),
-            doctor=self.cleaned_data['doctor'],
             venue=self.cleaned_data['venue'],
             event=event,
             creator=user,
@@ -171,7 +162,6 @@ class AppointmentForm(forms.Form):
 
     def edit_appointment(self, appointment):
         self.edit_event(appointment.event)
-        appointment.doctor = self.cleaned_data['doctor']
         appointment.venue = self.cleaned_data['venue']
         appointment.save()
 
