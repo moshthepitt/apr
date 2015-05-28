@@ -26,10 +26,6 @@
 	  	  		<td width="80%">{{object.client.get_full_name}}</td>
 	  	  	</tr>
 	  	  	<tr>
-	  	  		<th>{% trans "File No." %}</th>
-	  	  		<td width="80%">{{object.client.client_id}}</td>
-	  	  	</tr>
-	  	  	<tr>
 	  	  		<th>{% trans "Phone" %}</th>
 	  	  		<td width="80%">{{object.client.phone}}</td>
 	  	  	</tr>
@@ -43,11 +39,7 @@
 	  	    	<td width="80%">{{object.event.title}}</td>
 	  	    </tr>
 	  	    <tr>
-	  	    	<th>{% trans "Doctor" %}</th>
-	  	    	<td width="80%">{{object.doctor}}</td>
-	  	    </tr>
-	  	    <tr>
-	  	    	<th>{% trans "Clinic" %}</th>
+	  	    	<th>{% trans "Schedule" %}</th>
 	  	    	<td width="80%">{{object.venue}}</td>
 	  	    </tr>
 	  	    <tr>
@@ -55,7 +47,7 @@
 	  	    	<td width="80%">{{object.event.start}}</td>
 	  	    </tr>
 	  	    <tr>
-	  	    	<th>{% trans "Treatment" %}</th>
+	  	    	<th>{% trans "Notes" %}</th>
 	  	    	<td width="80%">{{object.event.description}}</td>
 	  	    </tr>
 	  	  </table>

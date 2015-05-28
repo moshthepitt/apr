@@ -1,0 +1,18 @@
+{% load i18n %}
+<div id="sidebar" class="col-md-3">
+	<div class="widget">
+		<h4 class="widget-title">{% trans "Try It,  Risk Free" %}</h4>
+		<p>
+			{% if request.user.is_authenticated %}
+			<a href="{% url 'new_customer' %}" class="btn btn-success">{% trans "Start Your Free Trial" %}</a>
+			{% else %}
+			<a href="{% url 'account_signup' %}" class="btn btn-success">{% trans "Start Your Free Trial" %}</a>
+			{% endif %}
+		</p>
+		<p>
+			{% blocktrans %}
+			You can try AppointWare for 30 days absolutely free. If it doesn't work out, simply top using it.  It is free to try!
+			{% endblocktrans %}
+		</p>
+	</div>
+</div>

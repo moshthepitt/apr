@@ -22,8 +22,8 @@ DOCTOR_PLURAL = _("Doctors")
 ASSISTANT = _("Assistant")
 ASSISTANT_PLURAL = _("Assistants")
 
-VENUE = _("Venue")
-VENUE_PLURAL = _("Venues")
+VENUE = _("Schedule")
+VENUE_PLURAL = _("Schedules")
 
 DESCRIPTION = _("Notes")
 

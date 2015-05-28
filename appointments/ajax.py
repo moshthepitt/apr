@@ -145,6 +145,7 @@ def doctor_event_feed(request, pk):
 @json_view
 def process_select_client_form(request):
     form = SelectClientForm(request.POST or None)
+    form.fields['client'].queryset = Client.objects.filter(customer=request.user.userprofile.customer)
     if form.is_valid():
         return {
             'success': True,
@@ -173,7 +174,7 @@ def process_add_client_form(request):
 def process_edit_client_form(request, pk):
     client = get_object_or_404(Client, pk=pk)
     form = AddClientForm(request.POST or None, instance=client)
-    if form.is_valid():
+    if form.is_valid() and request.user.userprofile.customer == client.customer:
         form.save()
         return {
             'success': True,
@@ -188,7 +189,7 @@ def process_edit_client_form(request, pk):
 def process_edit_event_form(request, pk):
     event = get_object_or_404(Event, pk=pk)
     form = EventInfoForm(request.POST or None, instance=event)
-    if form.is_valid():
+    if form.is_valid() and request.user.userprofile.customer == event.appointment_set.first().customer:
         form.save()
         return {
             'success': True,
@@ -202,6 +203,7 @@ def process_edit_event_form(request, pk):
 @json_view
 def process_add_event_form(request):
     form = AppointmentForm(request.POST or None)
+    form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
     if form.is_valid():
         form.create_appointment(request.user)
         messages.add_message(
@@ -261,10 +263,14 @@ def printable_event_feed(request):
 
 
 @login_required
-def edit_event(request):
+def edit_event(request, pk):
+    appointment = get_object_or_404(Appointment, pk=pk)
     success = False
+    if request.user.userprofile.customer != appointment.customer:
+        return False
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
+        form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
         if form.is_valid():
             success = form.save_edit()
     return HttpResponse(json.dumps(success), content_type="application/json")
@@ -275,6 +281,7 @@ def add_event(request):
     success = False
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
+        form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
         if form.is_valid():
             success = form.add_new(request.user)
     return HttpResponse(json.dumps(success), content_type="application/json")
@@ -284,6 +291,8 @@ def add_event(request):
 def delete_appointment(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     success = False
+    if request.user.userprofile.customer != appointment.customer:
+        return False
     if request.is_ajax() and request.method == 'POST':
         form = IDForm(request.POST)
         if form.is_valid() and form.cleaned_data['id'] == appointment.pk:
@@ -296,6 +305,8 @@ def delete_appointment(request, pk):
 def edit_appointment_status(request, pk):
     appointment = get_object_or_404(Appointment, pk=pk)
     success = False
+    if request.user.userprofile.customer != appointment.customer:
+        return False
     if request.is_ajax() and request.method == 'POST':
         form = IDForm(request.POST)
         if form.is_valid() and form.cleaned_data['id'] == appointment.pk:

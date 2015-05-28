@@ -4,11 +4,13 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
 from apr.views import HomeView, DashboardView, CustomerRedirect, PDFView, PricingView
+from apr.views import SupportView
 from customers.views import NewCustomer
 
 urlpatterns = patterns('',
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^pricing/$', PricingView.as_view(), name='pricing'),
+    url(r'^support/$', SupportView.as_view(), name='support'),
     url(r'^dashboard/$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^pdf/$', login_required(PDFView.as_view()), name='pdf'),
     url(r'^new/$', login_required(NewCustomer.as_view()), name='new_customer'),

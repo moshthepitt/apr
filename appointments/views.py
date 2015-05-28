@@ -7,7 +7,7 @@ from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
 from django.views.generic.list import ListView
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.http import Http404
 
 from datatableview.views import DatatableView
@@ -163,11 +163,9 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
     datatable_options = {
         'structure_template': "datatableview/bootstrap_structure.html",
         'columns': [
-            (labels.CLIENT_ID, 'client__client_id'),
             (labels.APPOINTMENT, 'event__title'),
             'client',
             (_("Phone"), 'client__phone'),
-            'doctor',
             'venue',
             (_("Date"), 'event__start', 'get_date'),
             (_("Actions"), 'id', 'get_actions'),

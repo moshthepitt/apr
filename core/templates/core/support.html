@@ -1,0 +1,20 @@
+{% extends "front-base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
+{% block title %}{% trans "Support" %} | AppointWare{% endblock %}
+
+{% block all_content %}
+	<div id="main-page">
+	    <div class="row content-section">
+	      <div class="container">
+	        <div class="col-md-9">
+	        	<h3>{% trans "Support" %}</h3>
+	         	<div class="page-content">
+	         		{% crispy form %}
+	         	</div>
+	      	</div>
+	      	{% include 'core/snippets/front-sidebar.html' %}
+	    </div>
+    </div>
+{% endblock %}

@@ -1,8 +1,10 @@
 from django.core.urlresolvers import reverse_lazy
+from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.list import ListView
 from django.shortcuts import redirect
+from django.utils.translation import ugettext as _
 
 from wkhtmltopdf.views import PDFTemplateView
 
@@ -11,6 +13,7 @@ from users.forms import SelectClientForm, AddClientForm
 from users.models import Client
 from venues.models import Venue
 from subscriptions.models import Subscription
+from core.forms import SupportForm
 
 
 class DashboardView(FormView):
@@ -76,3 +79,15 @@ class CustomerRedirect(RedirectView):
         if self.request.user.is_authenticated and self.request.user.userprofile.customer:
             return reverse_lazy('dashboard')
         return super(CustomerRedirect, self).get_redirect_url(*args, **kwargs)
+
+
+class SupportView(FormView):
+    template_name = 'core/support.html'
+    form_class = SupportForm
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.send_email()
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully sent email'))
+        return super(SupportView, self).form_valid(form)

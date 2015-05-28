@@ -68,7 +68,7 @@ class AppointmentForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
-                _('Create appointment'),
+                _('Appointment Details'),
                 Div(
                     'title',
                     css_class='form-group'
@@ -108,7 +108,7 @@ class AppointmentForm(forms.Form):
                 )
             ),
             ButtonHolder(
-                Submit('submit', _('Submit'), css_class='btn-success')
+                Submit('submit', _('Save'), css_class='btn-success')
             )
         )
 
@@ -280,7 +280,7 @@ class SimpleAppointmentForm(forms.Form):
                 'description'
             ),
             ButtonHolder(
-                Submit('submit', _('Submit'), css_class='btn-primary')
+                Submit('submit', _('Save'), css_class='btn-primary')
             )
         )
 

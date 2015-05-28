@@ -34,7 +34,7 @@ urlpatterns = patterns('',
     url(r'^doctor/(?P<pk>\d+)/$', login_required(DoctorView.as_view()), name='doctor'),
     # edit
     url(r'^add-event/$', login_required(add_event), name='add_event'),
-    url(r'^edit-event/$', login_required(edit_event), name='edit_event'),
+    url(r'^edit-event/(?P<pk>\d+)/$', login_required(edit_event), name='edit_event'),
     url(r'^delete-appointment-form/(?P<pk>\d+)/$', login_required(delete_appointment), name='delete_appointment'),
     url(r'^edit-appointment-status/(?P<pk>\d+)/$', login_required(edit_appointment_status), name='edit_appointment_status'),
     url(r'^edit-event-form/(?P<pk>\d+)/$', login_required(process_edit_event_form), name='process_edit_event_form'),

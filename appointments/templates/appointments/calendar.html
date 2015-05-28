@@ -348,13 +348,6 @@
 	 				},
 	 				eventRender: function(calEvent, $event) {
 	 					$event.addClass(calEvent.status);
- 				        // if (calEvent.end.getTime() < new Date().getTime()) {
- 				        //   	$event.css('backgroundColor', '#aaa');
- 				        //   	$event.find('.time').css({
- 				        //     	backgroundColor: '#999',
- 				        //     	border:'1px solid #888'
- 				        //   	});
- 				        // }
  				    },
 	 				eventNew: function(calEvent, $event) {
  				        document.getElementById('appointment-start-id').value = calEvent.start.toString();
@@ -370,7 +363,7 @@
 	 				},
 	 				eventClick: function(calEvent, $event) {
 	 					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
-	 					$( "#view-appointment-content" ).load(url);	 				        
+	 					$("#view-appointment-content").load(url);	 				        
 	 				    $('#edit-appointment-modal').modal();
 	 				},
 	 				noEvents: function() {
@@ -389,7 +382,8 @@
 
 				function editEvent(calEvent) {
 					var csrftoken = $.cookie('csrftoken');
-					$.post("{% url 'appointments:edit_event' %}", {
+					var url = '{% url "appointments:edit_event" 0 %}'.replace (0, calEvent.id);
+					$.post(url, {
 					        csrfmiddlewaretoken: csrftoken,
 					        id: calEvent.id,
 					        client: calEvent.clientId,
@@ -439,6 +433,10 @@
 
 				$('#add-appointment-modal').on('hide.bs.modal', function (e) {
 				  	$('#calendar').weekCalendar('refresh');
+				  	$("#select-client").show();
+				  	$("#add-client").hide();
+				  	document.getElementById("id-add-client-form").reset();
+				  	document.getElementById("id-select-client-form").reset();
 				})
 
 				$('#edit-appointment-modal').on('hide.bs.modal', function (e) {
@@ -454,6 +452,11 @@
 	 		});
 
 			$(document).ajaxStop(function() {
+				$('#add-appointment-modal').on('hide.bs.modal', function (e) {
+				  	document.getElementById("id-add-client-form").reset();
+				  	document.getElementById("id-select-client-form").reset();
+				})
+
 				$("#id_phone").intlTelInput({
 					autoFormat: true,
 					nationalMode: false,
