@@ -40,10 +40,12 @@
 	      	<div id="add-appointment-form" style="display:none;">{% crispy AppointmentForm AppointmentFormHelper %}</div>
 	        <div id="select-client">	
 	        	{% crispy SelectClientForm %}
+	        	<br>
 	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Add New Client" %}</a>
 	        </div>
 	        <div id="add-client" style="display:none;">	        	
 	        	{% crispy AddClientForm %}
+	        	<br>
 	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Select Existing Client" %}</a>
 	        </div>
 	      </div>
@@ -67,10 +69,12 @@
 	      </div>
 	      <div class="modal-footer">
 	      	<div class="btn-toolbar pull-left" role="toolbar" aria-label="{% trans 'Actions' %}">
-	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="confirmed">{% trans "Mark Confirmed" %}</div>
-	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="canceled">{% trans "Mark Canceled" %}</div>
-	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="showed">{% trans "Mark Showed" %}</div>
-	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="noshow">{% trans "Mark No Showed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="confirmed">{% trans "Confirmed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="canceled">{% trans "Canceled" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="showed">{% trans "Showed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="noshow">{% trans "No Showed" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="notified">{% trans "Notified" %}</div>
+	      	  <div class="btn btn-sm btn-group status-changer btn-dark-blue" role="group" data-status="scheduled">{% trans "NOT Notified" %}</div>
 	      	</div>
 	        <div class="pull-right">
 	        	<button type="button" id="edit-appointment-modal-close" class="btn btn-sm btn-danger" data-dismiss="modal">{% trans "Close" %}</button>

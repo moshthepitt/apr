@@ -36,7 +36,7 @@ class SelectClientForm(forms.Form):
                 Field('client', id="id-select-client")
             ),
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='btn-primary')
+                Submit('submit', _('Submit'), css_class='btn-primary')
             )
         )
 
@@ -82,7 +82,7 @@ class AddClientForm(forms.ModelForm):
                 'last_name',
             ),
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='btn-primary')
+                Submit('submit', _('Save'), css_class='btn-success')
             )
         )
 
@@ -100,7 +100,7 @@ def edit_client_helper():
             'last_name',
         ),
         ButtonHolder(
-            Submit('submit', 'Submit', css_class='btn-primary')
+            Submit('submit', _('Save'), css_class='btn-success')
         )
     )
 

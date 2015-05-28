@@ -52,9 +52,10 @@
                 {% if request.user.is_authenticated %}
                   {% if CUSTOMER %}
                     <li><a href="{% url 'dashboard' %}">{% trans "Dashboard" %}</a></li>
+                    <li><a href="{% url 'account_logout' %}">{% trans "Log Out" %}</a></li>
                   {% else %}
                     <li><a href="{% url 'new_customer' %}">{% trans "Set Up Account" %}</a></li>
-                  {% endif %}
+                  {% endif %}                  
                 {% else %}
                 <li><a href="{% url 'account_signup' %}" class="btn btn-success">{% trans "Sign Up" %}</a></li>
                 <li><a href="{% url 'account_login' %}">{% trans "Sign In" %}</a></li>
@@ -99,7 +100,7 @@
     {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="{% static 'js/scripts.js' %}"></script>
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     {% block extrajs %}{% endblock %}
     {% endcompress %}

@@ -116,7 +116,7 @@ class AppointmentForm(forms.Form):
                 )
             ),
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='btn-success')
+                Submit('submit', _('Submit'), css_class='btn-success')
             )
         )
 
@@ -290,7 +290,7 @@ class SimpleAppointmentForm(forms.Form):
                 'description'
             ),
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='btn-primary')
+                Submit('submit', _('Submit'), css_class='btn-primary')
             )
         )
 
@@ -328,7 +328,7 @@ class EventInfoForm(forms.ModelForm):
             Field('title'),
             Field('description'),
             ButtonHolder(
-                Submit('submit', 'Submit', css_class='btn-primary')
+                Submit('submit', _('Save'), css_class='btn-success')
             )
         )
 

@@ -53,6 +53,6 @@ class NewCustomerForm(forms.ModelForm):
                 'phone',
             ),
             ButtonHolder(
-                Submit('submit', 'Get Access', css_class='btn-success')
+                Submit('submit', _('Get Access'), css_class='btn-success')
             )
         )
