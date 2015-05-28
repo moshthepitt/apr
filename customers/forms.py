@@ -7,11 +7,23 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
 
 from customers.models import Customer
 
+from subscriptions.models import Subscription
 from venues.utils import new_default_venue
 from opening_hours.utils import new_default_opening_hours
 
 
+class SubscriptionModelChoiceField(forms.ModelChoiceField):
+    pass
+
+
 class NewCustomerForm(forms.ModelForm):
+    """
+    Form used by users to sign up for a customer account
+    """
+    subscription = SubscriptionModelChoiceField(
+        label=_("Subscription"),
+        queryset=Subscription.objects.all(),
+    )
 
     class Meta:
         model = Customer
@@ -51,6 +63,7 @@ class NewCustomerForm(forms.ModelForm):
                 'name',
                 'email',
                 'phone',
+                'subscription',
             ),
             ButtonHolder(
                 Submit('submit', _('Get Access'), css_class='btn-success')
