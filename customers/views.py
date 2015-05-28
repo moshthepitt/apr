@@ -17,6 +17,11 @@ class NewCustomer(FormView):
         initial = super(NewCustomer, self).get_initial()
         initial['email'] = self.request.user.email
         initial['subscription'] = Subscription.objects.filter(default=True).first()
+        if 'sub' in self.request.GET and self.request.GET['sub'].isdigit():
+            try:
+                initial['subscription'] = Subscription.objects.get(pk=int(self.request.GET['sub']))
+            except Subscription.DoesNotExist:
+                pass
         return initial
 
     def form_valid(self, form):

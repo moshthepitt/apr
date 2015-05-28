@@ -17,6 +17,7 @@ from appointments.forms import AppointmentForm, EventInfoForm
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
+from customers.mixins import CustomerMixin
 
 from core import labels
 
@@ -25,7 +26,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 FIELD_TYPES['text'].append(PhoneNumberField)
 
 
-class AppointmentEdit(FormView):
+class AppointmentEdit(CustomerMixin, FormView):
     template_name = 'appointments/edit.html'
     form_class = AppointmentForm
     success_url = reverse_lazy('appointments:appointments')
@@ -46,12 +47,7 @@ class AppointmentEdit(FormView):
         return super(AppointmentEdit, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-
         self.object = get_object_or_404(Appointment, pk=self.kwargs['pk'])
-
         # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.object.customer:
             raise Http404
@@ -59,15 +55,11 @@ class AppointmentEdit(FormView):
         return super(AppointmentEdit, self).dispatch(*args, **kwargs)
 
 
-class AppointmentDelete(DeleteView):
+class AppointmentDelete(CustomerMixin, DeleteView):
     model = Appointment
     success_url = reverse_lazy('appointments:appointments')
 
     def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-
         # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
@@ -75,7 +67,7 @@ class AppointmentDelete(DeleteView):
         return super(AppointmentDelete, self).dispatch(*args, **kwargs)
 
 
-class AddEventView(TemplateView):
+class AddEventView(CustomerMixin, TemplateView):
     template_name = 'appointments/add.html'
 
     def get_context_data(self, **kwargs):
@@ -89,23 +81,12 @@ class AddEventView(TemplateView):
         context['AppointmentForm'] = appointment_form
         return context
 
-    def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
 
-        return super(AddEventView, self).dispatch(*args, **kwargs)
-
-
-class AppointmentView(DetailView):
+class AppointmentView(CustomerMixin, DetailView):
     model = Appointment
     template_name = "appointments/appointment_detail.html"
 
     def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-
         # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
@@ -142,7 +123,7 @@ class AppointmentSnippetView(DetailView):
         return super(AppointmentSnippetView, self).dispatch(*args, **kwargs)
 
 
-class AppointmentListView(ListView):
+class AppointmentListView(CustomerMixin, ListView):
     model = Appointment
     template_name = "appointments/appointments.html"
 
@@ -163,10 +144,6 @@ class AppointmentListView(ListView):
         return context
 
     def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-
         allowed_apps = ['users', 'doctors', 'venues']
         self.object = None
         if 'app_label' in kwargs and 'model_name' in kwargs and kwargs['app_label'] in allowed_apps:
@@ -180,7 +157,7 @@ class AppointmentListView(ListView):
         return super(AppointmentListView, self).dispatch(*args, **kwargs)
 
 
-class AppointmentDatatableView(DatatableView):
+class AppointmentDatatableView(CustomerMixin, DatatableView):
     model = Appointment
     template_name = "appointments/appointments_table2.html"
     datatable_options = {
@@ -210,10 +187,3 @@ class AppointmentDatatableView(DatatableView):
     def get_queryset(self):
         queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
         return queryset
-
-    def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-
-        return super(AppointmentDatatableView, self).dispatch(*args, **kwargs)

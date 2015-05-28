@@ -122,6 +122,10 @@ class CustomerSubscription(models.Model):
         verbose_name = _("Customer Subscription")
         verbose_name_plural = _("Customer Subscriptions")
 
+    @property
+    def active(self):
+        return self.status == self.ACTIVE or self.status == self.TRIALING
+
     def start_trial(self, start_date):
         self.trial_start = start_date
         self.trial_end = start_date + timedelta(self.subscription.get_trialing_days())
@@ -135,4 +139,4 @@ class CustomerSubscription(models.Model):
         self.save()
 
     def __str__(self):
-        return "{customer} {sub}".format(user=self.customer, sub=self.subscription)
+        return "{customer} {sub}".format(customer=self.customer, sub=self.subscription)

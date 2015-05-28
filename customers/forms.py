@@ -23,7 +23,7 @@ class NewCustomerForm(forms.ModelForm):
     Form used by users to sign up for a customer account
     """
     subscription = SubscriptionModelChoiceField(
-        label=_("Subscription"),
+        label=_("Subscription Plan"),
         queryset=Subscription.objects.exclude(highlighted=False),
     )
 

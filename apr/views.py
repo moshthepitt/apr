@@ -1,6 +1,7 @@
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView, RedirectView
+from django.views.generic.list import ListView
 from django.shortcuts import redirect
 
 from wkhtmltopdf.views import PDFTemplateView
@@ -9,6 +10,7 @@ from appointments.forms import AppointmentForm, SimpleAppointmentForm, hidden_ap
 from users.forms import SelectClientForm, AddClientForm
 from users.models import Client
 from venues.models import Venue
+from subscriptions.models import Subscription
 
 
 class DashboardView(FormView):
@@ -51,6 +53,15 @@ class PDFView(TemplateView):
 
 class HomeView(TemplateView):
     template_name = 'core/home.html'
+
+
+class PricingView(ListView):
+    template_name = 'core/pricing.html'
+    model = Subscription
+
+    def get_queryset(self):
+        queryset = Subscription.objects.exclude(highlighted=False)
+        return queryset
 
 
 class CustomerRedirect(RedirectView):
