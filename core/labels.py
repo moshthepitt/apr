@@ -8,24 +8,24 @@ from django.utils.translation import ugettext as _
 APPOINTMENT = _("Appointment")
 CREATE_APPOINTMENT = _("Add Appointment")
 
-CLIENT = _("Patient")
-CLIENT_PLURAL = _("Patients")
-SELECT_CLIENT = _("Select Patient")
-CREATE_CLIENT = _("Create New Patient")
-EDIT_CLIENT = _("Edit Patient")
-CLIENT_ID = _("File Number")
+CLIENT = _("Client")
+CLIENT_PLURAL = _("Clients")
+SELECT_CLIENT = _("Select Client")
+CREATE_CLIENT = _("Create New Client")
+EDIT_CLIENT = _("Edit Client")
+CLIENT_ID = _("Client ID")
 
-DOCTOR_TITLE = _("Dr.")
+DOCTOR_TITLE = _("")
 DOCTOR = _("Doctor")
 DOCTOR_PLURAL = _("Doctors")
 
-ASSISTANT = _("Nurse")
-ASSISTANT_PLURAL = _("Nurses")
+ASSISTANT = _("Assistant")
+ASSISTANT_PLURAL = _("Assistants")
 
-VENUE = _("Clinic")
-VENUE_PLURAL = _("Clinics")
+VENUE = _("Venue")
+VENUE_PLURAL = _("Venues")
 
-DESCRIPTION = _("Treatment")
+DESCRIPTION = _("Notes")
 
 OPENING_HOUR = _("Opening Hour")
 OPENING_HOUR_PLURAL = _("Opening Hours")
