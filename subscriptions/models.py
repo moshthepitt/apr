@@ -24,12 +24,13 @@ class Subscription(models.Model):
     description = models.TextField(_("Description"), blank=True)
     price = models.DecimalField(_("Price"), max_digits=64, decimal_places=2)
     trial_period = models.PositiveIntegerField(_("Trial Period Length"), blank=True, default=15)
-    trial_unit = models.CharField(
-        _("Trial Period Units"), max_length=1, choices=TIME_UNIT_CHOICES, default=DAY)
+    trial_unit = models.PositiveIntegerField(
+        _("Trial Period Units"), choices=TIME_UNIT_CHOICES, default=DAY)
     recurring_period = models.PositiveIntegerField(
         _("Recurring Period Length"), blank=True, default=1)
-    recurring_unit = models.CharField(
-        _("Recurring Period Units"), max_length=1, choices=TIME_UNIT_CHOICES, default=MONTH)
+    recurring_unit = models.PositiveIntegerField(
+        _("Recurring Period Units"), choices=TIME_UNIT_CHOICES, default=MONTH)
+    max_appointments = models.PositiveIntegerField(_("Max Appointments"), blank=False, default=500)
     highlighted = models.BooleanField(_("Highlighted"), default=True, help_text=_(
         "Is this subscription highlighted for prominent display?"))
 
@@ -72,7 +73,7 @@ class CustomerSubscription(models.Model):
     canceled_at = models.DateTimeField(_("Canceled at"), null=True, blank=True)
     cancel_reason = models.TextField(
         blank=True, null=True, default=None, verbose_name=_("Reason for cancelling"))
-    status = models.CharField(_("Status"), max_length=1, null=True, choices=STATUS_CHOICES, default=TRIALING)
+    status = models.PositiveIntegerField(_("Status"), null=True, choices=STATUS_CHOICES, default=TRIALING)
 
     class Meta:
         unique_together = (('customer', 'subscription'), )
