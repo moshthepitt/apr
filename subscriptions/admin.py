@@ -8,7 +8,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 
 class CustomerSubscriptionAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['customer', 'subscription', 'status']
 
 admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(CustomerSubscription, CustomerSubscriptionAdmin)

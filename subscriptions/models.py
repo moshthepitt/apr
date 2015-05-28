@@ -25,6 +25,8 @@ class Subscription(models.Model):
     MONTHDAYS = 30.44
     YEARDAYS = 365.25
 
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+    updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     name = models.CharField(_("Name"), max_length=100, unique=True, null=False)
     description = models.TextField(_("Description"), blank=True)
     price = models.DecimalField(_("Price"), max_digits=64, decimal_places=2)
@@ -97,6 +99,8 @@ class CustomerSubscription(models.Model):
         (ENDED, _("Ended")),
     ]
 
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+    updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     customer = models.OneToOneField(Customer, verbose_name=_("Customer"), null=False, blank=False)
     subscription = models.ForeignKey(
         Subscription, verbose_name=_("Subscription"), null=False, blank=False)
