@@ -47,22 +47,34 @@
         {% if request.user.is_authenticated %}
         {% block top_sidebar %}{% endblock %}
         <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>
-        <li><a href="{% url 'appointments:appointments' %}"><i class="fa fa-th-list"></i> <span>{% trans "Appointments List" %}</span></a></li>
-        <li><a href="{% url 'appointments:add' %}"><i class="fa fa-plus"></i> <span>{% trans "Add Appointment" %}</span></a></li>
+        
+        <li class="submenu">
+          <a href="#"><i class="fa fa-th-list"></i> <span>{% trans "Appointments" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            <li><a href="{% url 'appointments:add' %}">{% trans "Add Appointment" %}</a></li>
+            <li><a href="{% url 'appointments:appointments' %}">{% trans "Appointments" %}</a></li>
+          </ul>
+        </li>
         
         {% else %}
         <li><a href="{% url 'account_login' %}"><i class="fa fa-sign-in"></i> <span>{% trans "Login" %}</span></a></li>
         {% endif %}
 
         {% if request.user.is_authenticated %}
-        <!--li class="submenu">
-          <a href="#"><i class="fa fa-h-square"></i> <span>{% trans "Schedules" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+        <li class="submenu">
+          <a href="#"><i class="fa fa-user"></i> <span>{% trans "Clients" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
           <ul>
-            {% for venue in active_venues %}
-            <li><a href="{% url 'appointments:venue' pk=venue.pk %}">{{venue|title}}</a></li>
-            {% endfor %}
+            <li><a href="{% url 'users:add' %}">{% trans "Add Client" %}</a></li>
+            <li><a href="{% url 'users:list' %}">{% trans "Clients" %}</a></li>
           </ul>
-        </li-->
+        </li>
+        <li class="submenu">
+          <a href="#"><i class="fa fa-bookmark-o"></i> <span>{% trans "Schedules" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            <li><a href="{% url 'venues:add' %}">{% trans "Add Schedule" %}</a></li>
+            <li><a href="{% url 'venues:list' %}">{% trans "Schedules" %}</a></li>
+          </ul>
+        </li>
         {% endif %}
         
         {% block sidebar_content %}

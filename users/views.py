@@ -47,6 +47,11 @@ class ClientUpdate(CustomerMixin, UpdateView):
     template_name = "users/client_edit.html"
     success_url = reverse_lazy('users:list')
 
+    def form_valid(self, form):
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
+        return super(ClientUpdate, self).form_valid(form)
+
     def dispatch(self, *args, **kwargs):
             # if this appointment does not belong to the current customer then raise 404
             if self.request.user.userprofile.customer != self.get_object().customer:
@@ -90,6 +95,8 @@ class ClientDelete(CustomerMixin, DeleteView):
         Delete all appointments first
         """
         self.get_object().appointment_set.all().delete()
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully deleted {}'.format(labels.APPOINTMENT)))
         return super(ClientDelete, self).delete(request, *args, **kwargs)
 
     def dispatch(self, *args, **kwargs):

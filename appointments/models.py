@@ -51,7 +51,7 @@ class Appointment(models.Model):
     status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
 
     def __unicode__(self):
-        return _("Appointment: %s - %s - %s") % (self.client, self.doctor, self.event)
+        return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)
 
     def meta(self):
         return self._meta

@@ -6,6 +6,7 @@ from django.utils.translation import ugettext as _
 from django.utils.html import format_html
 from django.contrib import messages
 from django.http import Http404
+from django.shortcuts import redirect
 
 from datatableview.views import DatatableView
 
@@ -91,10 +92,16 @@ class VenueDelete(CustomerMixin, DeleteView):
         """
         Delete all appointments first
         """
-        self.get_object().appointment_set.all().delete()
-        messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully deleted {}'.format(labels.VENUE)))
-        return super(VenueDelete, self).delete(request, *args, **kwargs)
+        this_appointments = self.get_object().appointment_set.all()
+        if this_appointments.count() <= 1:
+            messages.add_message(
+                self.request, messages.WARNING, _('Cannot delete.  You must have at least one {}'.format(labels.VENUE)))
+            return redirect(reverse_lazy('venues:list'))
+        else:
+            this_appointments.delete()
+            messages.add_message(
+                self.request, messages.SUCCESS, _('Successfully deleted {}'.format(labels.VENUE)))
+            return super(VenueDelete, self).delete(request, *args, **kwargs)
 
     def dispatch(self, *args, **kwargs):
             # if this appointment does not belong to the current customer then raise 404
