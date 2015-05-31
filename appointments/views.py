@@ -14,11 +14,11 @@ from django.http import Http404
 from datatableview.views import DatatableView
 
 from users.forms import SelectClientForm, AddClientForm, edit_client_helper
-from appointments.forms import AppointmentForm, EventInfoForm
+from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, hidden_appointment_form_helper
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
-from customers.mixins import CustomerMixin
+from customers.mixins import CustomerMixin, Customer404Mixin
 
 from core import labels
 
@@ -95,7 +95,7 @@ class AppointmentView(CustomerMixin, DetailView):
         return super(AppointmentView, self).dispatch(*args, **kwargs)
 
 
-class AppointmentSnippetView(DetailView):
+class AppointmentSnippetView(Customer404Mixin, DetailView):
     """
     returns HTML to be used in a modal showing appointment details
     """
@@ -113,15 +113,33 @@ class AppointmentSnippetView(DetailView):
         return context
 
     def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            raise Http404
-
         # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
 
         return super(AppointmentSnippetView, self).dispatch(*args, **kwargs)
+
+
+class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
+    """
+    returns modal content when adding new appointment
+    """
+    template_name = "appointments/snippets/add-appointment.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(AddAppointmentSnippetView, self).get_context_data(**kwargs)
+        client_form = SelectClientForm()
+        client_form.fields['client'].queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        context['SelectClientForm'] = client_form
+        context['AddClientForm'] = AddClientForm()
+        appointment_form = SimpleAppointmentForm()
+        context['AppointmentForm'] = appointment_form
+        # set initial data based on GET parameters to facilitate new advert creation
+        appointment_form.fields['start_datetime'].initial = self.request.GET.get('start', "")
+        appointment_form.fields['end_datetime'].initial = self.request.GET.get('end', "")
+        appointment_form.fields['venue_id'].initial = self.request.GET.get('venue_id', "")
+        context['AppointmentFormHelper'] = hidden_appointment_form_helper
+        return context
 
 
 class AppointmentListView(CustomerMixin, ListView):

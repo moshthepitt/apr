@@ -6,7 +6,7 @@ from appointments.ajax import process_add_client_form, process_select_client_for
 from appointments.ajax import process_edit_client_form, edit_event, add_event, process_edit_event_form, delete_appointment
 from appointments.ajax import edit_appointment_status
 from appointments.views import AddEventView, AppointmentView, AppointmentListView, AppointmentDelete
-from appointments.views import AppointmentEdit, AppointmentDatatableView, AppointmentSnippetView
+from appointments.views import AppointmentEdit, AppointmentDatatableView, AppointmentSnippetView, AddAppointmentSnippetView
 from venues.views import VenueView
 from doctors.views import DoctorView
 
@@ -39,4 +39,5 @@ urlpatterns = patterns('',
     url(r'^edit-appointment-status/(?P<pk>\d+)/$', login_required(edit_appointment_status), name='edit_appointment_status'),
     url(r'^edit-event-form/(?P<pk>\d+)/$', login_required(process_edit_event_form), name='process_edit_event_form'),
     url(r'^snippet/(?P<pk>\d+)/$', login_required(AppointmentSnippetView.as_view()), name='appointment_snippet'),
+    url(r'^client-snippet/$', login_required(AddAppointmentSnippetView.as_view()), name='appointment_client_snippet'),
 )

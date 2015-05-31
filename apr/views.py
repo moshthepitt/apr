@@ -3,10 +3,7 @@ from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.list import ListView
-from django.shortcuts import redirect
 from django.utils.translation import ugettext as _
-
-from wkhtmltopdf.views import PDFTemplateView
 
 from appointments.forms import AppointmentForm, SimpleAppointmentForm, hidden_appointment_form_helper
 from users.forms import SelectClientForm, AddClientForm
@@ -14,9 +11,10 @@ from users.models import Client
 from venues.models import Venue
 from subscriptions.models import Subscription
 from core.forms import SupportForm
+from customers.mixins import CustomerMixin
 
 
-class DashboardView(FormView):
+class DashboardView(CustomerMixin, FormView):
     template_name = 'appointments/calendar.html'
     form_class = AppointmentForm
     success_url = reverse_lazy('dashboard')
@@ -32,26 +30,14 @@ class DashboardView(FormView):
         context['AppointmentFormHelper'] = hidden_appointment_form_helper
         return context
 
-    def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-        return super(DashboardView, self).dispatch(*args, **kwargs)
 
-
-class PDFView(TemplateView):
+class PDFView(CustomerMixin, TemplateView):
     template_name = 'appointments/day-pdf.html'
 
     def get_context_data(self, **kwargs):
         context = super(PDFView, self).get_context_data(**kwargs)
         context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer)
         return context
-
-    def dispatch(self, *args, **kwargs):
-        # if current user is not tied to a customer then redirect them away
-        if not self.request.user.userprofile.customer:
-            return redirect('customer_redirect')
-        return super(PDFView, self).dispatch(*args, **kwargs)
 
 
 class HomeView(TemplateView):

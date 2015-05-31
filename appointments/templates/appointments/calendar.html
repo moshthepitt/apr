@@ -36,19 +36,7 @@
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
 	        <h4 class="modal-title" id="add-appointment-modalLabel">{% trans "Add New Appointment" %}</h4>
 	      </div>
-	      <div class="modal-body">
-	      	<div id="add-appointment-form" style="display:none;">{% crispy AppointmentForm AppointmentFormHelper %}</div>
-	        <div id="select-client">	
-	        	{% crispy SelectClientForm %}
-	        	<br>
-	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Add New Client" %}</a>
-	        </div>
-	        <div id="add-client" style="display:none;">	        	
-	        	{% crispy AddClientForm %}
-	        	<br>
-	        	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Select Existing Client" %}</a>
-	        </div>
-	      </div>
+	      <div class="modal-body" id="add-appointment-snippet-content"></div>
 	      <div class="modal-footer">
 	        <button type="button" id="add-appointment-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
 	      </div>
@@ -127,7 +115,7 @@
 	 		});
 
 
-	 		//id-add-client-form
+	 		// id-add-client-form
 	 		$(document).on('submit','#id-add-client-form',function(event){
 	 			event.preventDefault();
 	 			var add_client_form = '#id-add-client-form';
@@ -151,7 +139,7 @@
 	 			});
 	 		});
 
-	 		//edit-client-form
+	 		// edit-client-form
 	 		$(document).on('submit','#id-edit-client-form',function(event){
 	 			event.preventDefault();
 	 			var edit_client_form = '#id-edit-client-form';
@@ -181,7 +169,7 @@
 	 			});
 	 		});
 
-	 		//id-event-info-form
+	 		// id-event-info-form
 	 		$(document).on('submit','#id-event-info-form',function(event){
 	 			event.preventDefault();
 	 			var edit_event_form = '#id-event-info-form';
@@ -211,7 +199,7 @@
 	 			});
 	 		});
 
-	 		//select-user-form
+	 		// select-user-form
 	 		$(document).on('submit','#id-select-client-form',function(event){
 	 			event.preventDefault();
 	 			var select_client_form = '#id-select-client-form';
@@ -235,7 +223,7 @@
 	 			});
 	 		});
 
-	 		//add-appointment-form
+	 		// add-appointment-form
 	 		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
 	 			event.preventDefault();
 	 			var appointment_form = '#id-hidden-add-appointment-form';
@@ -268,7 +256,7 @@
 	 			});
 	 		});
 
-	 		//delete appointment form
+	 		// delete appointment form
 	 		$(document).on('submit','#delete-appointment-form',function(event){
 	 			event.preventDefault();
 	 			var delete_appointment_form = '#delete-appointment-form';
@@ -350,10 +338,15 @@
 	 					$event.addClass(calEvent.status);
  				    },
 	 				eventNew: function(calEvent, $event) {
- 				        document.getElementById('appointment-start-id').value = calEvent.start.toString();
- 				        document.getElementById('appointment-end-id').value = calEvent.end.toString();
- 				        document.getElementById('appointment-venue-id').value = calEvent.userId;
- 				        $('#add-appointment-modal').modal();
+	 					$("#add-appointment-snippet-content").html("");
+	 					var data = {};
+	 					data['start'] = calEvent.start.toString();
+	 					data['end'] = calEvent.end.toString();
+	 					data['venue_id'] = calEvent.userId;
+	 					var url = "{% url 'appointments:appointment_client_snippet' %}" + '?' + $.param(data);
+	 					$("#add-appointment-snippet-content" ).load(url, function(){
+	 						$('#add-appointment-modal').modal();
+	 					});
 	 				},
 	 				eventDrop: function(calEvent, $event) {
 	 					editEvent(calEvent);
@@ -363,8 +356,10 @@
 	 				},
 	 				eventClick: function(calEvent, $event) {
 	 					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
-	 					$("#view-appointment-content").load(url);	 				        
-	 				    $('#edit-appointment-modal').modal();
+	 					$("#view-appointment-content").load(url, function() {
+	 						$('#edit-appointment-modal').modal();
+	 					});	 					
+	 				    
 	 				},
 	 				noEvents: function() {
 	 				    $.growl.warning({ 
@@ -425,9 +420,9 @@
 				});
 
 				$('.modal').on('shown.bs.modal', function() {
-					//Make sure the modal and backdrop are siblings (changes the DOM)
+					// Make sure the modal and backdrop are siblings (changes the DOM)
 					$(this).before($('.modal-backdrop'));
-					//Make sure the z-index is higher than the backdrop
+					// Make sure the z-index is higher than the backdrop
 					$(this).css("z-index", parseInt($('.modal-backdrop').css('z-index')) + 1);
 				});
 

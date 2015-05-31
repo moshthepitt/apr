@@ -31,8 +31,8 @@ class NewCustomer(FormView):
         return super(NewCustomer, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        # if current user is already tied to a customer then redirect them away
-        if self.request.user.userprofile.customer:
+        # if current user is already tied to a customer that has a subscription then redirect them away
+        if self.request.user.userprofile.customer and self.request.user.userprofile.customer.has_subscription():
             return redirect('dashboard')
 
         return super(NewCustomer, self).dispatch(*args, **kwargs)

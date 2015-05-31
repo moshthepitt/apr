@@ -279,6 +279,7 @@ def edit_event(request, pk):
 @login_required
 def add_event(request):
     success = False
+    print request.POST
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
         form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)

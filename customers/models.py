@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 
 from phonenumber_field.modelfields import PhoneNumberField
 
+from customers.utils import customer_has_subscription
+
 
 class Customer(models.Model):
 
@@ -43,3 +45,6 @@ class Customer(models.Model):
         returns the customer's closing time object with latest to_hour
         """
         return self.openinghour_set.exclude(break_time=True).order_by('to_hour').last()
+
+    def has_subscription(self):
+        return customer_has_subscription(self)

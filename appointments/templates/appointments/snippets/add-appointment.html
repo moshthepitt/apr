@@ -1,0 +1,13 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+<div id="add-appointment-form" style="display:none;">{% crispy AppointmentForm AppointmentFormHelper %}</div>
+<div id="select-client">	
+	{% crispy SelectClientForm %}
+	<br>
+	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Add New Client" %}</a>
+</div>
+<div id="add-client" style="display:none;">	        	
+	{% crispy AddClientForm %}
+	<br>
+	<a href="javascript:void(0)" class="client-toggler btn btn-default" >{% trans "Or Select Existing Client" %}</a>
+</div>
