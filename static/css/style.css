@@ -14,3 +14,11 @@
 .top-title {
 	font-weight:bold;
 }
+
+.intl-tel-input {
+	display:block!important;
+}
+
+.no-padding {
+	padding:0;
+}

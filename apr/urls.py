@@ -16,6 +16,7 @@ urlpatterns = patterns('',
     url(r'^pdf/$', login_required(PDFView.as_view()), name='pdf'),
     url(r'^new/$', login_required(NewCustomer.as_view()), name='new_customer'),
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),
+    url(r'^users/', include('users.urls', namespace='users')),
 
     url(r'^admin/', include(admin.site.urls)),
 

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.urlresolvers import reverse
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -51,6 +52,9 @@ class Client(models.Model):
     def get_short_name(self):
         "Returns the short name for the client."
         return self.first_name
+
+    def get_absolute_url(self):
+        return reverse('users:client', args=[self.pk])
 
     def __str__(self):
         if self.get_full_name():

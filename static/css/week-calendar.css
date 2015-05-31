@@ -36,10 +36,6 @@
 	font-weight:bold;
 }
 
-.no-padding {
-	padding:0;
-}
-
 .wc-cal-event.confirmed .wc-title,
 .wc-cal-event.confirmed {
 	background-color: #2ecc71;
@@ -67,9 +63,4 @@
 .wc-cal-event.showed .wc-title,
 .wc-cal-event.showed {
 	background-color: #27ae60;
-}
-
-
-.intl-tel-input {
-	display:block!important;
 }
