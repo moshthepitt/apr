@@ -150,6 +150,14 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
+# CELERY STUFF
+BROKER_URL = 'redis://localhost:6379/8'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/8'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Africa/Nairobi'
+
 try:
    from local_settings import *
 except ImportError, e:

@@ -1,7 +1,11 @@
 Django==1.8.2
 Django-Select2==4.3.1
 South==1.0.2
+amqp==1.4.6
+anyjson==0.3.3
 argparse==1.2.1
+billiard==3.3.0.20
+celery==3.1.18
 coverage==3.7.1
 django-ajaxerrors==1.1
 django-allauth==0.19.1
@@ -17,6 +21,7 @@ django-scheduler==0.7.5
 django-wkhtmltopdf==2.0.2
 future==0.14.3
 icalendar==3.9.0
+kombu==3.0.26
 oauthlib==0.7.2
 phonenumbers==7.0.4
 psycopg2==2.6

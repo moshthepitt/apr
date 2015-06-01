@@ -31,8 +31,8 @@ class Migration(migrations.Migration):
             ],
             options={
                 'ordering': ['first_name'],
-                'verbose_name': 'Nurse',
-                'verbose_name_plural': 'Nurses',
+                'verbose_name': 'Assistant',
+                'verbose_name_plural': 'Assistants',
             },
         ),
     ]

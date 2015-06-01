@@ -21,13 +21,14 @@ class Migration(migrations.Migration):
                 ('created_on', models.DateTimeField(auto_now_add=True, verbose_name='created on')),
                 ('updated_on', models.DateTimeField(auto_now=True, verbose_name='updated on')),
                 ('name', models.CharField(max_length=255, verbose_name='Venue name', blank=True)),
+                ('is_active', models.BooleanField(default=True, help_text='Designates whether this venue should be treated as active.', verbose_name='Active')),
                 ('creator', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Creator', to=settings.AUTH_USER_MODEL)),
                 ('customer', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, verbose_name='Customer', to='customers.Customer')),
             ],
             options={
                 'ordering': ['name'],
-                'verbose_name': 'Clinic',
-                'verbose_name_plural': 'Clinics',
+                'verbose_name': 'Schedule',
+                'verbose_name_plural': 'Schedules',
             },
         ),
     ]
