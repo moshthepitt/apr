@@ -178,7 +178,7 @@ class AppointmentListView(CustomerMixin, ListView):
 
 class AppointmentDatatableView(CustomerMixin, DatatableView):
     model = Appointment
-    template_name = "appointments/appointments_table2.html"
+    template_name = "appointments/appointments_list.html"
     datatable_options = {
         'structure_template': "datatableview/bootstrap_structure.html",
         'columns': [

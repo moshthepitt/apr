@@ -38,7 +38,6 @@ INSTALLED_APPS = (
     'django_select2',
     'allauth',
     'allauth.account',
-    'pagination',
     'debug_toolbar',
     'datatableview',
     'wkhtmltopdf',
@@ -62,7 +61,6 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'pagination.middleware.PaginationMiddleware',
 )
 
 ROOT_URLCONF = 'apr.urls'
