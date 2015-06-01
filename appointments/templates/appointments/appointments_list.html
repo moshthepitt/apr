@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+
+{% block title %}{{object|default_if_none:""}} {% trans "Appointments" %} | APR{% endblock %}
+
+{% block extracss %}
+	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/jquery.dataTables.min.css' %}" />
+	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/dataTables.bootstrap.css' %}" />
+{% endblock %}
+
+{% block main_content %}
+
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{{object|default_if_none:""}} {% trans "Appointments" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    {{ datatable }}
+	  </div>
+	</div>	
+
+
+{% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'datatables/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/datatableview.min.js"></script>
+{% endblock %}
