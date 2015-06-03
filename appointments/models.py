@@ -41,6 +41,7 @@ class Appointment(models.Model):
 
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
+    slug = RandomSlugField(length=9)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     client = models.ForeignKey(
@@ -51,7 +52,7 @@ class Appointment(models.Model):
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, verbose_name=_("Event"), on_delete=models.PROTECT)
     status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
-    slug = RandomSlugField(length=9)
+    no_reminders = models.BooleanField(_("No Reminders"), default=False, help_text=_("Do not send reminders for this appointment"))
 
     def __unicode__(self):
         return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)
