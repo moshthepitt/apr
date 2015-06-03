@@ -54,8 +54,11 @@ def task_hour_to_reminder():
     exactly *:15, *:30, *:45, or *:00 dont get multiple reminders
     """
     t = timezone.now()
+    t = datetime(year=t.year, month=t.month, day=t.day, hour=t.hour,
+                 minute=t.minute, tzinfo=timezone.get_current_timezone())
     fro = t + timedelta(minutes=46)
     to = t + timedelta(hours=1)
+
     period = Period(Event.objects.exclude(appointment=None), fro, to)
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
