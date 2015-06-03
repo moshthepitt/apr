@@ -2,14 +2,19 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template import Context
 from django.template.loader import render_to_string
+from django.contrib.sites.models import Site
 
 
 def send_email_reminder(appointment):
+    current_site = Site.objects.get_current()
+    current_site_domain = "http://" + current_site.domain
+
     c = Context({
         'appointment': appointment,
         'customer': appointment.customer,
         'client': appointment.client,
-        'event': appointment.event
+        'event': appointment.event,
+        'current_site_domain': current_site_domain
     })
 
     client_email = "{name} <{email}>".format(name=appointment.client.get_full_name(), email=appointment.client.email)
@@ -36,11 +41,15 @@ def send_email_reminder(appointment):
 
 
 def send_cancel_email(appointment):
+    current_site = Site.objects.get_current()
+    current_site_domain = "http://" + current_site.domain
+
     c = Context({
         'appointment': appointment,
         'customer': appointment.customer,
         'client': appointment.client,
-        'event': appointment.event
+        'event': appointment.event,
+        'current_site_domain': current_site_domain
     })
 
     client_email = "{name} <{email}>".format(name=appointment.client.get_full_name(), email=appointment.client.email)
