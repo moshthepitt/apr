@@ -87,7 +87,7 @@ class AppointmentClientCancel(DetailView):
 
     def dispatch(self, *args, **kwargs):
         appointment = self.get_object()
-        if appointment.event.start > timezone.now() and appointment.status != Appointment.Appointment.CANCELED:
+        if appointment.event.start > timezone.now() and appointment.status != Appointment.CANCELED:
             appointment.status = Appointment.CANCELED
             appointment.save()
             task_send_cancel_email.delay(appointment.id)
