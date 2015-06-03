@@ -52,7 +52,7 @@ def send_cancel_email(appointment):
         'current_site_domain': current_site_domain
     })
 
-    client_email = "{name} <{email}>".format(name=appointment.client.get_full_name(), email=appointment.client.email)
+    customer_email = "{name} <{email}>".format(name=appointment.customer.name(), email=appointment.customer.email)
 
     email_subject = render_to_string(
         'appointments/email/cancel_notification_subject.txt', c).replace('\n', '')
@@ -66,7 +66,7 @@ def send_cancel_email(appointment):
         email_subject,  # subject
         email_body,  # body
         settings.REMINDER_FROM_EMAIL,  # from
-        [client_email],  # to
+        [customer_email],  # to
         # ['bcc@example.com'],  # bcc
         reply_to=[settings.REMINDER_FROM_EMAIL],
         headers=email_headers
