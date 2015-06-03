@@ -1,10 +1,11 @@
 {% load i18n %}
-{% trans "Hello" %} {{client.get_full_name}},
+{% trans "Hello" %} {{client.get_full_name|title}},
 
 {% trans "We wanted to remind you that you have an appointment with" %} {{customer.name|title}} {% trans "at" %} {{event.start|date:"l, F j"}} {% trans "from" %} {{event.start|date:"fA"}}{% load i18n %}. {% trans "Please be on time." %}
 
-{% trans "To confirm your appointment, please go to" %} https://www.appointmentreminder.org/a/ec/639535/be79f490b698 .
-{% trans "To cancel your appointment, please go to" %} https://www.appointmentreminder.org/a/ea/639535/be79f490b698 .
+{% trans "To confirm your appointment, please go to" %} {% url 'confirm_appointment' slug=appointment.slug %}
+
+{% trans "To cancel your appointment, please go to" %} {% url 'cancel_appointment' slug=appointment.slug %}
 
 {% blocktrans %}
 Regards,

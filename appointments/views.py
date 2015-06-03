@@ -16,6 +16,7 @@ from datatableview.views import DatatableView
 from users.forms import SelectClientForm, AddClientForm, edit_client_helper
 from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, hidden_appointment_form_helper
 from appointments.models import Appointment
+from appointments.tasks import task_send_cancel_email
 from users.models import Client
 from venues.models import Venue
 from customers.mixins import CustomerMixin, Customer404Mixin
@@ -87,8 +88,9 @@ class AppointmentClientCancel(DetailView):
     def dispatch(self, *args, **kwargs):
         appointment = self.get_object()
         if appointment.event.start > timezone.now():
-            appointment.status = Appointment.CONFIRMED
+            appointment.status = Appointment.CANCELED
             appointment.save()
+            task_send_cancel_email.delay(appointment.id)
         return super(AppointmentClientCancel, self).dispatch(*args, **kwargs)
 
 

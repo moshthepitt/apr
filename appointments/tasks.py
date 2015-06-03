@@ -2,7 +2,7 @@ from datetime import timedelta, datetime
 from django.utils import timezone
 
 from celery.task.schedules import crontab
-from celery.decorators import periodic_task
+from celery.decorators import task, periodic_task
 from celery.utils.log import get_task_logger
 
 from schedule.models import Event
@@ -10,6 +10,7 @@ from schedule.periods import Period
 
 from appointments.models import Appointment
 from appointments.utils import send_period_reminders
+from appointments.emails import send_cancel_email
 
 logger = get_task_logger(__name__)
 
@@ -30,8 +31,10 @@ def task_morning_reminders():
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__status=Appointment.NOTIFIED), fro, to)
+    event_objects = period.get_occurrences()
+    event_ids = [x.event.id for x in event_objects]
 
-    send_period_reminders(period)
+    send_period_reminders(event_ids)
 
 
 @periodic_task(
@@ -54,5 +57,16 @@ def task_hour_to_reminder():
     fro = t + timedelta(minutes=46)
     to = t + timedelta(hours=1)
     period = Period(Event.objects.exclude(appointment=None), fro, to)
+    event_objects = period.get_occurrences()
+    event_ids = [x.event.id for x in event_objects]
 
-    send_period_reminders(period)
+    send_period_reminders(event_ids)
+
+
+@task(
+    name="task_send_cancel_email",
+    ignore_result=True
+)
+def task_send_cancel_email(appointment_id):
+    appointment = Appointment.objects.get(pk=appointment_id)
+    send_cancel_email(appointment)

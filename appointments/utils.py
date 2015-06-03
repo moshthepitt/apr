@@ -2,13 +2,11 @@ from appointments.models import Appointment
 from appointments.emails import send_email_reminder
 
 
-def send_period_reminders(period):
+def send_period_reminders(event_ids):
     """
     takes a Period object
     uses the Period to get appointments and then send reminders
     """
-    event_objects = period.get_occurrences()
-    event_ids = [x.event.id for x in event_objects]
     appointments = Appointment.objects.filter(event__id__in=event_ids)
 
     if appointments:

@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 
 from apr.views import HomeView, DashboardView, CustomerRedirect, PDFView, PricingView
 from apr.views import SupportView
+from appointments.views import AppointmentClientConfirm, AppointmentClientCancel
 from customers.views import NewCustomer
 
 urlpatterns = patterns('',
@@ -27,6 +28,10 @@ urlpatterns = patterns('',
 
     # utils
     url(r'^customer-redirector/$', CustomerRedirect.as_view(), name='customer_redirect'),
+
+    # client actions
+    url(r'^confirm/(?P<slug>[\w-]+)/$', AppointmentClientConfirm.as_view(), name='confirm_appointment'),
+    url(r'^cancel/(?P<slug>[\w-]+)/$', AppointmentClientCancel.as_view(), name='cancel_appointment'),
 
     # flat pages
     url(r'^page/', include('django.contrib.flatpages.urls')),

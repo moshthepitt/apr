@@ -1,0 +1,2 @@
+{% load i18n %}
+{%  trans "Client Has Canceled Their Appointment:" %} {{client.get_full_name|title}} {% trans "for" %} {{event.start|date:"l, F j"}} {% trans "at" %} {{event.start|date:"fA"}}
