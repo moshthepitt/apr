@@ -30,7 +30,8 @@ def task_morning_reminders():
                    tzinfo=timezone.get_current_timezone())
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
-        appointment__status=Appointment.NOTIFIED), fro, to)
+        appointment__status=Appointment.NOTIFIED).exclude(
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
 
@@ -57,7 +58,8 @@ def task_hour_to_reminder():
     fro = t + timedelta(minutes=46)
     to = t + timedelta(hours=1)
 
-    period = Period(Event.objects.exclude(appointment=None), fro, to)
+    period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
 
