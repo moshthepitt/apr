@@ -52,7 +52,7 @@ def send_cancel_email(appointment):
         'current_site_domain': current_site_domain
     })
 
-    customer_email = "{name} <{email}>".format(name=appointment.customer.name(), email=appointment.customer.email)
+    customer_email = "{name} <{email}>".format(name=appointment.customer.name, email=appointment.customer.email)
 
     email_subject = render_to_string(
         'appointments/email/cancel_notification_subject.txt', c).replace('\n', '')
