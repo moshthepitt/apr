@@ -15,17 +15,17 @@ logger = get_task_logger(__name__)
 
 
 @periodic_task(
-    run_every=(crontab(minute=0, hour=8)),
+    run_every=(crontab(minute=0, hour=7)),
     name="task_morning_reminders",
     ignore_result=True
 )
 def task_morning_reminders():
     """
     Sends a reminder to all the UN-NOTIFIED appointments
-    currently sends at 6am
+    currently sends at 7am
     """
     t = timezone.now().date()
-    fro = datetime(year=t.year, month=t.month, day=t.day, tzinfo=timezone.get_current_timezone())
+    fro = datetime(year=t.year, month=t.month, day=t.day, hour=7, tzinfo=timezone.get_current_timezone())
     to = fro + timedelta(1)
 
     period = Period(Event.objects.exclude(appointment=None).exclude(appointment__status=Appointment.NOTIFIED), fro, to)
