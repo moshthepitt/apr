@@ -87,7 +87,7 @@ class AppointmentClientCancel(DetailView):
 
     def dispatch(self, *args, **kwargs):
         appointment = self.get_object()
-        if appointment.event.start > timezone.now():
+        if appointment.event.start > timezone.now() and appointment.status != Appointment.Appointment.CANCELED:
             appointment.status = Appointment.CANCELED
             appointment.save()
             task_send_cancel_email.delay(appointment.id)
@@ -100,11 +100,13 @@ class AddEventView(CustomerMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(AddEventView, self).get_context_data(**kwargs)
         client_form = SelectClientForm()
-        client_form.fields['client'].queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        client_form.fields['client'].queryset = Client.objects.filter(
+            customer=self.request.user.userprofile.customer)
         context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
         appointment_form = AppointmentForm()
-        appointment_form.fields['venue'].queryset = Venue.objects.filter(customer=self.request.user.userprofile.customer)
+        appointment_form.fields['venue'].queryset = Venue.objects.filter(
+            customer=self.request.user.userprofile.customer)
         context['AppointmentForm'] = appointment_form
         return context
 
@@ -122,6 +124,7 @@ class AppointmentView(CustomerMixin, DetailView):
 
 
 class AppointmentSnippetView(Customer404Mixin, DetailView):
+
     """
     returns HTML to be used in a modal showing appointment details
     """
@@ -147,6 +150,7 @@ class AppointmentSnippetView(Customer404Mixin, DetailView):
 
 
 class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
+
     """
     returns modal content when adding new appointment
     """
@@ -155,7 +159,8 @@ class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(AddAppointmentSnippetView, self).get_context_data(**kwargs)
         client_form = SelectClientForm()
-        client_form.fields['client'].queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        client_form.fields['client'].queryset = Client.objects.filter(
+            customer=self.request.user.userprofile.customer)
         context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
         appointment_form = SimpleAppointmentForm()
@@ -225,7 +230,8 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(
-            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('appointments:appointment_edit', args=[instance.pk]), reverse('appointments:appointment_delete', args=[instance.pk])
+            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse(
+                'appointments:appointment_edit', args=[instance.pk]), reverse('appointments:appointment_delete', args=[instance.pk])
         )
 
     def get_queryset(self):
