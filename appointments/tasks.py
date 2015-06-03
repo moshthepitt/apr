@@ -61,7 +61,7 @@ def task_hour_to_reminder():
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
 
-    send_period_reminders(event_ids)
+    send_period_reminders(event_ids, turn_off_reminders=True)
 
 
 @task(
