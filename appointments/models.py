@@ -6,6 +6,8 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import localtime
 
+from randomslugfield import RandomSlugField
+
 from users.models import Client
 from doctors.models import Doctor
 from venues.models import Venue
@@ -49,6 +51,7 @@ class Appointment(models.Model):
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, verbose_name=_("Event"), on_delete=models.PROTECT)
     status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
+    slug = RandomSlugField(length=9)
 
     def __unicode__(self):
         return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)

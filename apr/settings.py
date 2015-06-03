@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'allauth.account',
     'debug_toolbar',
     'datatableview',
+    'randomslugfield',
     'wkhtmltopdf',
     # custom
     'appointments',
