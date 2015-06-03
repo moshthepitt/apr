@@ -1,0 +1,17 @@
+{% extends "front-base.html" %}
+{% load i18n %}
+
+{% block title %}{{site.name}}{% endblock %}
+
+{% block all_content %}
+	<div id="main-page">
+	    <div class="row content-section">
+	      <div class="container">
+	        <div class="col-md-12">
+	         	<div class="page-content">
+	         		<p>{% trans "We have forwarded your request to cancel the appointment to your service provider." %}</p>
+	         	</div>
+	      	</div>
+	    </div>
+    </div>
+{% endblock %}

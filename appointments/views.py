@@ -3,7 +3,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.html import format_html
-from django.utils.timezone import localtime
+from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
@@ -66,6 +66,30 @@ class AppointmentDelete(CustomerMixin, DeleteView):
             raise Http404
 
         return super(AppointmentDelete, self).dispatch(*args, **kwargs)
+
+
+class AppointmentClientConfirm(DetailView):
+    model = Appointment
+    template_name = 'appointments/client_confirm.html'
+
+    def dispatch(self, *args, **kwargs):
+        appointment = self.get_object()
+        if appointment.event.start > timezone.now():
+            appointment.status = Appointment.CONFIRMED
+            appointment.save()
+        return super(AppointmentClientConfirm, self).dispatch(*args, **kwargs)
+
+
+class AppointmentClientCancel(DetailView):
+    model = Appointment
+    template_name = 'appointments/client_cancel.html'
+
+    def dispatch(self, *args, **kwargs):
+        appointment = self.get_object()
+        if appointment.event.start > timezone.now():
+            appointment.status = Appointment.CONFIRMED
+            appointment.save()
+        return super(AppointmentClientCancel, self).dispatch(*args, **kwargs)
 
 
 class AddEventView(CustomerMixin, TemplateView):
@@ -195,7 +219,7 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
     }
 
     def get_date(self, instance, *args, **kwargs):
-        return localtime(instance.event.start).strftime("%d %b %Y %-I:%M%p")
+        return timezone.localtime(instance.event.start).strftime("%d %b %Y %-I:%M%p")
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(
