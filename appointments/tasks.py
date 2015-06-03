@@ -15,7 +15,7 @@ logger = get_task_logger(__name__)
 
 
 @periodic_task(
-    run_every=(crontab(minute='*/15')),
+    run_every=(crontab(minute=0, hour=8)),
     name="task_morning_reminders",
     ignore_result=True
 )
