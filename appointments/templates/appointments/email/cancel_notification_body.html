@@ -1,0 +1,22 @@
+{% load i18n %}
+{% blocktrans %}
+A client has just told us they want to cancel their appointment, and we're letting you know.
+{% endblocktrans %}
+
+{% trans "Client name:" %} {{client.get_full_name|title}}
+{% trans "Client contact info:" %}
+    {{client.phone}}
+    {{client.email}}
+
+{% trans "Appointment Date:" %} {{event.start|date:"l, F j"}}
+{% trans "Appointment Time:" %} {{event.start|date:"fA"}}
+{% trans "Appointment Status: Canceled" %}
+
+{% blocktrans %}
+This status has been automatically updated in the software.
+
+Regards,
+
+
+AppointWare
+{% endblocktrans %}

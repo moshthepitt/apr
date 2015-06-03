@@ -1,0 +1,18 @@
+{% load i18n %}
+{% trans "Hello" %} {{client.get_full_name|title}},
+
+{% trans "We wanted to remind you that you have an appointment with" %} {{customer.name|title}} {% trans "at" %} {{event.start|date:"l, F j"}} {% trans "from" %} {{event.start|date:"fA"}}{% load i18n %}. {% trans "Please be on time." %}
+
+{% trans "To confirm your appointment, please go to" %} {{current_site_domain}}{% url 'confirm_appointment' slug=appointment.slug %}
+
+{% trans "To cancel your appointment, please go to" %} {{current_site_domain}}{% url 'cancel_appointment' slug=appointment.slug %}
+
+{% blocktrans %}
+Regards,
+
+
+The Management
+
+P.S. We're sending you this message because your service provider asked us to.
+If you didn't want to receive it, we apologize.
+{% endblocktrans %}
