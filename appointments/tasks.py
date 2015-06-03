@@ -53,9 +53,7 @@ def task_hour_to_reminder():
     we use 46 minutes to avoid cases where events happening at
     exactly *:15, *:30, *:45, or *:00 dont get multiple reminders
     """
-    t = timezone.now()
-    t = datetime(year=t.year, month=t.month, day=t.day, hour=t.hour,
-                 minute=t.minute, tzinfo=timezone.get_current_timezone())
+    t = timezone.localtime(timezone.now())
     fro = t + timedelta(minutes=46)
     to = t + timedelta(hours=1)
 
