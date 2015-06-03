@@ -41,10 +41,20 @@
 	background-color: #2ecc71;
 }
 
+.wc-cal-event.confirmed .wc-time {
+	background-color: #29b163;
+	border-color: #29b163;
+}
+
 
 .wc-cal-event.canceled .wc-title,
 .wc-cal-event.canceled {
 	background-color: #df2e1b;
+}
+
+.wc-cal-event.canceled .wc-time {
+	background-color: #bf2717;
+	border-color: #bf2717;
 }
 
 
@@ -53,14 +63,29 @@
 	background-color: #d2850b;
 }
 
+.wc-cal-event.notified .wc-time {
+	background-color: #b06f09;
+	border-color: #b06f09;
+}
+
 
 .wc-cal-event.noshow .wc-title,
 .wc-cal-event.noshow {
 	background-color: #555555;
 }
 
+.wc-cal-event.noshow .wc-time {
+	background-color: #444444;
+	border-color: #444444;
+}
+
 
 .wc-cal-event.showed .wc-title,
 .wc-cal-event.showed {
 	background-color: #27ae60;
+}
+
+.wc-cal-event.showed .wc-time {
+	background-color: #209150;
+	border-color: #209150;
 }
