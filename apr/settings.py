@@ -158,6 +158,9 @@ CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Nairobi'
 
+# APR STUFF
+REMINDER_FROM_EMAIL = "no-reply <no-reply@appointware.com>"
+
 try:
    from local_settings import *
 except ImportError, e:

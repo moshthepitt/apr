@@ -187,6 +187,7 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
             (_("Phone"), 'client__phone'),
             'venue',
             (_("Date"), 'event__start', 'get_date'),
+            'status',
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['client__first_name', 'client__last_name', 'doctor__first_name', 'doctor__last_name', 'venue__name'],
