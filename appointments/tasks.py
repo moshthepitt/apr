@@ -42,10 +42,17 @@ def task_morning_reminders():
 def task_hour_to_reminder():
     """
     tries to send a reminder approximately one hour before an appointment
+    given a time, say 7AM
+    we look for appointments that are happening
+    between 46 minutes and 1 hour from the given time
+    in our case 7:46AM and 8AM
+    if time now i6 7:45 we get fro=8:31 and to = 8:45
+    we use 46 minutes to avoid cases where events happening at
+    exactly *:15, *:30, *:45, or *:00 dont get multiple reminders
     """
-    fro = timezone.now()
-    to = datetime(year=fro.year, month=fro.month, day=fro.day,
-                  hour=fro.hour + 1, tzinfo=timezone.get_current_timezone())
+    t = timezone.now()
+    fro = t + timedelta(minutes=46)
+    to = t + timedelta(hours=1)
     period = Period(Event.objects.exclude(appointment=None), fro, to)
 
     send_period_reminders(period)
