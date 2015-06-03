@@ -37,5 +37,6 @@ def task_morning_reminders():
         for appointment in appointments:
             if appointment.client.email:
                 send_email_reminder(appointment)
-                appointment.status = Appointment.NOTIFIED
-                appointment.save()
+                if appointment.status != Appointment.CONFIRMED and appointment.status != Appointment.CANCELED:
+                    appointment.status = Appointment.NOTIFIED
+                    appointment.save()
