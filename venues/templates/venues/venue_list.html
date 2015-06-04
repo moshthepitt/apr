@@ -19,8 +19,8 @@
 	  </div>
 	  <div class="panel-body">
 	  	<div class="alert alert-info" role="alert">	  		
-	  		{% blocktrans %}
-	  		<p>A schedule represents one resource -- a room, service provider, machine, etc -- whose appointments need to be tracked. You have 3 schedules and can create up to 10 schedules at your subscription level. If you need more, please upgrade your account.</p>
+	  		{% blocktrans with CUSTOMER.number_of_venues as venues and CUSTOMER.customersubscription.subscription.max_schedules as max_schedules %}
+	  		<p>A schedule represents one resource -- a room, service provider, machine, etc -- whose appointments need to be tracked. You have <strong>{{venues}} schedules</strong> and can create up to <strong>{{max_schedules}} schedules</strong> at your subscription level. If you need more, please <strong><a href="#">upgrade your account</a></strong>.</p>
 	  		<p>You can configure what days and times are available for each schedule (for example, Monday ~ Friday, 10 AM to 7 PM, etc).</p>
 	  		{% endblocktrans %}
 	  	</div>

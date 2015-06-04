@@ -48,3 +48,6 @@ class Customer(models.Model):
 
     def has_subscription(self):
         return customer_has_subscription(self)
+
+    def number_of_venues(self):
+        return self.venue_set.all().count()
