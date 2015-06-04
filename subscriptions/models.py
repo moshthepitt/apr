@@ -38,6 +38,7 @@ class Subscription(models.Model):
     recurring_unit = models.PositiveIntegerField(
         _("Recurring Period Units"), choices=TIME_UNIT_CHOICES, default=MONTH)
     max_appointments = models.PositiveIntegerField(_("Max Appointments"), blank=False, default=500)
+    max_schedules = models.PositiveIntegerField(_("Max Schedules"), blank=False, default=10)
     highlighted = models.BooleanField(_("Highlighted"), default=True, help_text=_(
         "Is this subscription highlighted for prominent display?"))
     default = models.BooleanField(_("Default"), default=False, help_text=_(

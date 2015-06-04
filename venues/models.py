@@ -15,12 +15,12 @@ class Venue(models.Model):
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     is_active = models.BooleanField(_('Active'), default=True,
-                                    help_text=_('Designates whether this venue should be treated as '
+                                    help_text=_('Designates whether this schedule should be treated as '
                                                 'active.'))
 
     class Meta:
-        verbose_name = getattr(labels, 'VENUE', _("Venue"))
-        verbose_name_plural = getattr(labels, 'VENUE_PLURAL', _("Venues"))
+        verbose_name = getattr(labels, 'VENUE', _("Schedule"))
+        verbose_name_plural = getattr(labels, 'VENUE_PLURAL', _("Schedules"))
         ordering = ['name']
 
     def meta(self):
