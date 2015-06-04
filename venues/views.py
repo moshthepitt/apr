@@ -7,14 +7,16 @@ from django.utils.html import format_html
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
+from django.forms.models import inlineformset_factory
 
 from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
 
+from opening_hours.models import OpeningHour
 from venues.models import Venue
-from venues.forms import VenueForm
+from venues.forms import VenueForm, OpeningHourFormSetHelper, NoSubmitVenueFormHelper
 
 
 class VenueAdd(CustomerMixin, FormView):
@@ -35,11 +37,11 @@ class VenueView(CustomerMixin, DetailView):
     template_name = "venues/venue_view.html"
 
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
 
-            return super(VenueView, self).dispatch(*args, **kwargs)
+        return super(VenueView, self).dispatch(*args, **kwargs)
 
 
 class VenueUpdate(CustomerMixin, UpdateView):
@@ -48,17 +50,26 @@ class VenueUpdate(CustomerMixin, UpdateView):
     template_name = "venues/venue_edit.html"
     success_url = reverse_lazy('venues:list')
 
+    def get_context_data(self, **kwargs):
+        context = super(VenueUpdate, self).get_context_data(**kwargs)
+        inline_formset = inlineformset_factory(
+            Venue, OpeningHour, fields=('weekday', 'from_hour', 'to_hour'), can_delete=False, extra=0)
+        context['formset'] = inline_formset(instance=self.get_object())
+        context['venue_helper'] = NoSubmitVenueFormHelper()
+        context['formset_helper'] = OpeningHourFormSetHelper()
+        return context
+
     def form_valid(self, form):
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueUpdate, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
 
-            return super(VenueUpdate, self).dispatch(*args, **kwargs)
+        return super(VenueUpdate, self).dispatch(*args, **kwargs)
 
 
 class VenueDatatableView(CustomerMixin, DatatableView):
@@ -75,7 +86,8 @@ class VenueDatatableView(CustomerMixin, DatatableView):
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(
-            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('venues:edit', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
+            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
+            ), reverse('venues:edit', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
         )
 
     def get_queryset(self, **kwargs):
@@ -105,9 +117,9 @@ class VenueDelete(CustomerMixin, DeleteView):
 
     def dispatch(self, *args, **kwargs):
             # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
-            return super(VenueDelete, self).dispatch(*args, **kwargs)
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(VenueDelete, self).dispatch(*args, **kwargs)
 
 
 class VenueCalendarView(DetailView):

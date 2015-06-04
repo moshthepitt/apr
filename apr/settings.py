@@ -141,7 +141,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 # allauth
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_USERNAME_BLACKLIST = ['mosh', 'moshthepitt', 'wambere', 'kelvin', 'nicole', 'jay']
+ACCOUNT_USERNAME_BLACKLIST = ['mosh', 'moshthepitt', 'kelvin', 'nicole', 'jay']
 LOGIN_REDIRECT_URL = '/new'
 
 AUTHENTICATION_BACKENDS = (

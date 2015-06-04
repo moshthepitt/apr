@@ -1,3 +1,5 @@
+import datetime as dt
+
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
@@ -26,17 +28,19 @@ class OpeningHour(models.Model):
         (SUNDAY, _("Sunday")),
     ]
 
+    HOUR_CHOICES = [(x, dt.time(x).strftime('%l %p')) for x in range(24)]
+
     venue = models.ForeignKey(Venue, verbose_name=getattr(labels, 'VENUE', _("Clinic")))
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, default=None, null=True, blank=True)
     weekday = models.IntegerField(_("Weekday"), choices=WEEKDAYS)
     from_hour = models.TimeField(_("From Hour"), )
     to_hour = models.TimeField(_("To Hour"), )
-    break_time = models.BooleanField(_("Break"), help_text=_("Does this time represent a break e.g. lunch break"), default=False)
 
     class Meta:
         verbose_name = getattr(labels, 'OPENING_HOUR', _("Opening Hour"))
         verbose_name_plural = getattr(labels, 'OPENING_HOUR_PLURAL', _("Opening Hours"))
         ordering = ['venue__name', 'weekday', 'from_hour']
+        unique_together = ("venue", "weekday")
 
     def __unicode__(self):
         return "{} {} {} {}".format(self.venue, self.get_weekday_display(), self.from_hour, self.to_hour)

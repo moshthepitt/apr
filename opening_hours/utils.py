@@ -11,7 +11,7 @@ def new_default_opening_hours(customer):
     bulk_create_opening_hours(times, customer)
 
 
-def bulk_create_opening_hours(times, customer, break_time=False):
+def bulk_create_opening_hours(times, customer):
     """
     convenience function to bulk create opening hours
     Inputs:
@@ -37,7 +37,6 @@ def bulk_create_opening_hours(times, customer, break_time=False):
                     weekday=weekday,
                     from_hour=t[0],
                     to_hour=t[1],
-                    break_time=break_time
                 )
                 opening_hour.save()
 

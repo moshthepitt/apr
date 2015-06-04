@@ -126,7 +126,7 @@
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     {% block extrajs %}{% endblock %}
     {% endcompress %}
-
+    {% compress js inline %}{% block calendarjs %}{% endblock %}{% endcompress %}
     {% block extrafooter %}{% endblock %}
   </body>
   </html>
