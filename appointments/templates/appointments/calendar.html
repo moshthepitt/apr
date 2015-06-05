@@ -343,8 +343,8 @@
  				eventNew: function(calEvent, $event) {
  					$("#add-appointment-snippet-content").html("");
  					var data = {};
- 					data['start'] = calEvent.start.toString();
- 					data['end'] = calEvent.end.toString();
+ 					data['start'] = calEvent.start.toISOString();
+ 					data['end'] = calEvent.end.toISOString();
  					data['venue_id'] = calEvent.userId;
  					var url = "{% url 'appointments:appointment_client_snippet' %}" + '?' + $.param(data);
  					$("#add-appointment-snippet-content" ).load(url, function(){
@@ -385,8 +385,8 @@
 				        csrfmiddlewaretoken: csrftoken,
 				        id: calEvent.id,
 				        client: calEvent.clientId,
-				        start_datetime: calEvent.start, 
-				        end_datetime: calEvent.end, 
+				        start_datetime: calEvent.start.toISOString(), 
+				        end_datetime: calEvent.end.toISOString(), 
 				        venue: calEvent.userId,
 				    },
 				    function(data) {
