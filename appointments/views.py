@@ -20,6 +20,7 @@ from venues.models import Venue
 from customers.mixins import CustomerMixin, Customer404Mixin
 
 from core import labels
+from core.utils import invalidate_caches
 
 from datatableview.utils import FIELD_TYPES
 from phonenumber_field.modelfields import PhoneNumberField
@@ -42,6 +43,12 @@ class AppointmentEdit(CustomerMixin, FormView):
 
     def form_valid(self, form):
         form.edit_appointment(self.object)
+
+        # invalidate caches
+        invalidate_caches('evedit', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('appdetail', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('adddel', [self.request.user.pk, self.get_object().pk])
+
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
         return super(AppointmentEdit, self).form_valid(form)
