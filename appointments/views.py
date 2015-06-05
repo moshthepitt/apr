@@ -173,40 +173,6 @@ class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
         return context
 
 
-class AppointmentListView(CustomerMixin, ListView):
-    model = Appointment
-    template_name = "appointments/appointments.html"
-
-    def get_queryset(self):
-        queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
-        if self.object:
-            if self.object.meta().model_name == "client":
-                queryset = queryset.filter(client=self.object)
-            elif self.object.meta().model_name == "doctor":
-                queryset = queryset.filter(doctor=self.object)
-            elif self.object.meta().model_name == "venue":
-                queryset = queryset.filter(venue=self.object)
-        return queryset
-
-    def get_context_data(self, **kwargs):
-        context = super(AppointmentListView, self).get_context_data(**kwargs)
-        context['object'] = self.object
-        return context
-
-    def dispatch(self, *args, **kwargs):
-        allowed_apps = ['users', 'doctors', 'venues']
-        self.object = None
-        if 'app_label' in kwargs and 'model_name' in kwargs and kwargs['app_label'] in allowed_apps:
-            object_type = get_object_or_404(
-                ContentType, app_label=kwargs['app_label'], model=kwargs['model_name'])
-            try:
-                this_object = object_type.get_object_for_this_type(pk=kwargs['pk'])
-                self.object = this_object
-            except:
-                raise Http404
-        return super(AppointmentListView, self).dispatch(*args, **kwargs)
-
-
 class AppointmentDatatableView(CustomerMixin, DatatableView):
     model = Appointment
     template_name = "appointments/appointments_list.html"
