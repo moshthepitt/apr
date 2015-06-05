@@ -11,7 +11,7 @@
 {% block title %}{% trans "Add Client" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-	{% cache 1200 CUSTOMER.pk %}
+	{% cache 1200 cuaddview CUSTOMER.pk request.user.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

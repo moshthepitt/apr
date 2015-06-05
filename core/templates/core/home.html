@@ -10,7 +10,7 @@
 {% block title %}{{site.name}}{% endblock %}
 
 {% block all_content %} 
-{% cache 3600 CUSTOMER.pk request.user.username %}
+{% cache 3600 home CUSTOMER.pk request.user.username %}
 <div class="row content-section bluish-bg">
   <div class="container">
     <div class="col-md-8">
