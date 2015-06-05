@@ -1,8 +1,9 @@
 {% extends "front-base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load cache %}
 
-{% block title %}{% trans "Support" %} | AppointWare{% endblock %}
+{% block title %}{% trans "Support" %} | {{site.name}}{% endblock %}
 
 {% block all_content %}
 {% cache 86400 support %}

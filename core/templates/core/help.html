@@ -3,7 +3,7 @@
 {% load crispy_forms_tags %}
 {% load cache %}
 
-{% block title %}{% trans "Support" %} | AppointWare{% endblock %}
+{% block title %}{% trans "Support" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
 	{% cache 86400 help %}
