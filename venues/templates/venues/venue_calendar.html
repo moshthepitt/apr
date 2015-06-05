@@ -1,34 +1,25 @@
-{% extends "appointments/home.html" %}
+{% extends "appointments/calendar.html" %}
+{% load staticfiles %}
 {% load i18n %}
+
 {% block title %}{{object}} {% trans "Calendar" %}{% endblock %}
 {% block calendar_title %}{{object}} {% trans "Calendar" %}{% endblock %}
 
-{% block event_feed_js %}
-<script type="text/javascript">
-    $(document).ready(function() {	
-		$('#calendar').fullCalendar({
-			header: {
-				left: 'prev,next,today',
-				center: 'title',
-				right: 'month,agendaWeek,agendaDay'
-			},
-			defaultDate: '{% now "c" %}',
-			editable: false,
-			eventLimit: true, // allow "more" link when too many events
-			events: "{% url 'appointments:venue_event_feed' pk=object.pk %}",
-			slotEventOverlap: false,
-			dayClick: function(date, allDay, jsEvent, view) {
-				$('#calendar').fullCalendar('changeView', 'agendaDay');
-				$('#calendar').fullCalendar('gotoDate', date);
-			},
-			defaultView: "agendaDay",
-			height: "auto",
-			minTime: "06:00",
-			maxTime: "19:00",
-			eventClick: function(calEvent, jsEvent, view) {
-				window.location.href = "/appointments/view/" + calEvent.id;
-			}
-		});		
-	});
-</script>
+
+{% block schedule_specific_js %}
+	data: "{% url 'appointments:venue_event_feed' pk=object.pk %}",
+	businessHours: {
+		{% if object.opening_time %}
+			start: {{object.opening_time.from_hour.hour}},
+		{% else %}
+			start: 8,
+		{% endif %}
+		{% if object.closing_time %}
+        	end: {{object.closing_time.to_hour.hour}},
+        {% else %}
+        	end: 17,
+        {% endif %}
+        limitDisplay: true
+	}, 
+	users: [{'id': {{object.id}}, 'name': '{{object.name|upper}}'},],
 {% endblock %}

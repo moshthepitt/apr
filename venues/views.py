@@ -91,8 +91,8 @@ class VenueDatatableView(CustomerMixin, DatatableView):
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(
-            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
-            ), reverse('venues:edit', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
+            '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
+            ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
         )
 
     def get_queryset(self, **kwargs):
@@ -109,12 +109,13 @@ class VenueDelete(CustomerMixin, DeleteView):
         """
         Delete all appointments first
         """
-        this_appointments = self.get_object().appointment_set.all()
-        if this_appointments.count() <= 1:
+        customer_venues = self.get_object().customer.number_of_venues()
+        if customer_venues <= 1:
             messages.add_message(
                 self.request, messages.WARNING, _('Cannot delete.  You must have at least one {}'.format(labels.VENUE)))
             return redirect(reverse_lazy('venues:list'))
         else:
+            this_appointments = self.get_object().appointment_set.all()
             this_appointments.delete()
             messages.add_message(
                 self.request, messages.SUCCESS, _('Successfully deleted {}'.format(labels.VENUE)))
@@ -127,6 +128,12 @@ class VenueDelete(CustomerMixin, DeleteView):
         return super(VenueDelete, self).dispatch(*args, **kwargs)
 
 
-class VenueCalendarView(DetailView):
+class VenueCalendarView(CustomerMixin, DetailView):
     model = Venue
     template_name = "venues/venue_calendar.html"
+
+    def dispatch(self, *args, **kwargs):
+            # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(VenueCalendarView, self).dispatch(*args, **kwargs)

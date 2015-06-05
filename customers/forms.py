@@ -51,7 +51,6 @@ class NewCustomerForm(forms.ModelForm):
         customer_subscription.start_trial(timezone.now())
         # venue
         new_default_venue(customer)
-        new_default_opening_hours(customer)
         # user
         user.userprofile.customer = customer
         user.userprofile.save()

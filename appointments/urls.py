@@ -30,7 +30,7 @@ urlpatterns = patterns('',
     url(r'^view/(?P<pk>\d+)/$', login_required(AppointmentView.as_view()), name='appointment'),
     url(r'^edit/(?P<pk>\d+)/$', login_required(AppointmentEdit.as_view()), name='appointment_edit'),
     url(r'^delete/(?P<pk>\d+)/$', login_required(AppointmentDelete.as_view()), name='appointment_delete'),
-    url(r'^venue/(?P<pk>\d+)/$', login_required(VenueCalendarView.as_view()), name='venue'),
+    url(r'^schedule/(?P<pk>\d+)/$', login_required(VenueCalendarView.as_view()), name='venue'),
     url(r'^doctor/(?P<pk>\d+)/$', login_required(DoctorView.as_view()), name='doctor'),
     # edit
     url(r'^add-event/$', login_required(add_event), name='add_event'),

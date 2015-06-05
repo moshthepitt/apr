@@ -294,12 +294,18 @@
  				timeslotsPerHour: 4,
  				timeslotHeight: 20,
  				defaultEventLength: 4,
- 				// displayFreeBusys: true,
- 				// defaultFreeBusy: {free: true},
+ 				displayFreeBusys: true,
+ 				defaultFreeBusy: {free: true},
  				readonly : false,
  				firstDayOfWeek: 1,
  				daysToShow: 6,
- 				startOnFirstDayOfWeek: true,
+ 				startOnFirstDayOfWeek: true, 				
+            	height: function($calendar) {
+             	return $(window).height() - $('h1').outerHeight(true);
+            	},
+            	minBodyHeight: 1200, 
+            	{% block schedule_specific_js %}
+            	data: "{% url 'appointments:calendar_event_feed' %}",
  				businessHours: {
 					{% if CUSTOMER.global_opening_time.from_hour.hour %}
 						start: {{CUSTOMER.global_opening_time.from_hour.hour}},
@@ -312,11 +318,7 @@
 	                	end: 17,
 	                {% endif %}
 	                limitDisplay: true
-            	},
-            	height: function($calendar) {
-             	return $(window).height() - $('h1').outerHeight(true);
-            	},
-            	minBodyHeight: 1200,   
+            	},  
             	users: [
 					{% for venue in venues %}
 						{
@@ -324,9 +326,9 @@
 							'name': '{{venue.name|upper}}'
 						},
 					{% endfor %}
- 				],		
-            	showAsSeparateUser: true,	
-            	data: "{% url 'appointments:calendar_event_feed' %}",
+ 				],	
+ 				{% endblock %}	
+            	showAsSeparateUser: true,            	
             	getUserId: function(user, index, calendar) {
 				    return user.id;
  				},

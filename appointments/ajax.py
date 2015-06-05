@@ -61,46 +61,6 @@ def event_feed(request):
     raise Http404
 
 
-def venue_event_feed(request, pk):
-    venue = get_object_or_404(Venue, pk=pk)
-    if request.is_ajax() and request.method == 'GET':
-        if 'start' in request.GET and 'end' in request.GET:
-            fro = timezone.make_aware(
-                parser.parse(request.GET['start']), timezone.get_current_timezone())
-            to = timezone.make_aware(
-                parser.parse(request.GET['end']), timezone.get_current_timezone())
-            period = Period(
-                Event.objects.exclude(appointment=None).filter(appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
-            occurences = [{'id': x.event.appointment_set.first().pk,
-                           'title': "%s - %s - %s" % (x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
-                           'className': 'event-info',
-                           'start': timezone.localtime(x.start).isoformat(),
-                           'end': timezone.localtime(x.end).isoformat(),
-                           'resources': [x.event.appointment_set.first().venue.pk]
-                           }
-                          for x in period.get_occurrences()]
-            breaks = [
-                {
-                    'start': 'T10:00:00',
-                    'end': 'T10:30:00',
-                    'dow': [0, 1, 2, 3, 4, 5, 6],
-                    'rendering': 'background',
-                    'resources': [x.id for x in Venue.objects.all()]
-                },
-                {
-                    'start': 'T13:30:00',
-                    'end': 'T14:30:00',
-                    'dow': [0, 1, 2, 3, 4, 5, 6],
-                    'rendering': 'background',
-                    'resources': [x.id for x in Venue.objects.all()]
-                }
-            ]
-        data = occurences + breaks
-        return HttpResponse(json.dumps(data), content_type="application/json")
-    # if all fails
-    raise Http404
-
-
 def doctor_event_feed(request, pk):
     doctor = get_object_or_404(Doctor, pk=pk)
     if request.is_ajax() and request.method == 'GET':
@@ -218,7 +178,7 @@ def process_add_event_form(request):
 
 
 def calendar_event_feed(request):
-    if request.method == 'GET':
+    if request.is_ajax() and request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
             fro = timezone.make_aware(
                 datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
@@ -226,6 +186,30 @@ def calendar_event_feed(request):
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
+            data = [{'id': x.event.appointment_set.first().pk,
+                     'title': "{}".format(x.event.appointment_set.first().client),
+                     'userId': [x.event.appointment_set.first().venue.pk],
+                     'start': x.start.isoformat(),
+                     'end': x.end.isoformat(),
+                     'clientId': x.event.appointment_set.first().client.pk,
+                     'status': x.event.appointment_set.first().status
+                     }
+                    for x in period.get_occurrences()]
+        return HttpResponse(json.dumps(data), content_type="application/json")
+    # if all fails
+    raise Http404
+
+
+def venue_event_feed(request, pk):
+    venue = get_object_or_404(Venue, pk=pk)
+    if request.is_ajax() and request.method == 'GET':
+        if 'start' in request.GET and 'end' in request.GET:
+            fro = timezone.make_aware(
+                datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
+            to = timezone.make_aware(
+                datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
+            period = Period(Event.objects.exclude(appointment=None).filter(
+                appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
                      'title': "{}".format(x.event.appointment_set.first().client),
                      'userId': [x.event.appointment_set.first().venue.pk],
