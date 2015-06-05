@@ -11,6 +11,7 @@ from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
+from core.utils import invalidate_caches
 
 from users.models import Client
 from users.forms import AddClientForm
@@ -48,6 +49,13 @@ class ClientUpdate(CustomerMixin, UpdateView):
     success_url = reverse_lazy('users:list')
 
     def form_valid(self, form):
+        # invalidate caches
+        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.pk])
+        invalidate_caches('cudelview', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('cueditview', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('culistview', [self.get_object().customer.pk, self.request.user.pk])
+        invalidate_caches('cudetailview', [self.request.user.pk, self.get_object().pk])
+
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
         return super(ClientUpdate, self).form_valid(form)

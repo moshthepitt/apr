@@ -12,6 +12,7 @@ from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
+from core.utils import invalidate_caches
 from opening_hours.forms import OpeningHourFormSetHelper, OpeningHourFormSet
 
 from venues.models import Venue
@@ -66,6 +67,14 @@ class VenueUpdate(CustomerMixin, UpdateView):
             formset.save()
         else:
             return self.form_invalid(form=self.get_form())
+
+        # invalidate caches
+        invalidate_caches('vuedit', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('vuview', [self.get_object().customer.pk, self.request.user.pk, self.get_object().pk])
+        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.pk])
+        invalidate_caches('vucal', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('vudel', [self.request.user.pk, self.get_object().pk])
+
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueUpdate, self).form_valid(form)

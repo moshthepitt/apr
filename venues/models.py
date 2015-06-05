@@ -14,6 +14,8 @@ class Venue(models.Model):
     name = models.CharField(_('Venue name'), max_length=255, blank=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
+    main_calendar = models.BooleanField(_("Display in main calendar"), default=True, help_text=_(
+        "Should this schedule be displayed in the main Dashboard calendar?"))
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this schedule should be treated as '
                                                 'active.'))
