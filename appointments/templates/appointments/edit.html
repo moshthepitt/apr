@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load cache %}
 
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
@@ -11,7 +12,7 @@
 {% block title %}{% trans "Edit" %} {{object.event.title}} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-
+	{% cache 600 object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -24,8 +25,7 @@
 	    </div>
 	  </div>
 	</div>	
-
-
+	{% endcache %}
 {% endblock %}
 
 {% block extrajs %}

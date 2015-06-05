@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load cache %}
 
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
@@ -12,7 +13,7 @@
 {% block title %}{% trans "Create appointment" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-
+	{% cache 3600 CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -32,9 +33,8 @@
 	    	{% crispy AppointmentForm %}
 	    </div>
 	  </div>
-	</div>	
-
-
+	</div>
+	{% endcache %}
 {% endblock %}
 
 {% block extrajs %}

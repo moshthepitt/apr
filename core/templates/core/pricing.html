@@ -10,6 +10,7 @@
 {% block title %}{% trans "Pays For Itself With Just One Saved Appointment | AppointWare Pricing" %} {% endblock %}
 
 {% block all_content %}
+{% cache 86400 pricing %}
 <div class="row content-section page">
   	<div class="container">
 
@@ -66,5 +67,5 @@
 
 	</div>
 </div>
-
+{% endcache %}
 {% endblock %}

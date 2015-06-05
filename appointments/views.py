@@ -1,5 +1,4 @@
 from django.core.urlresolvers import reverse_lazy, reverse
-from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 from django.utils.html import format_html
@@ -7,7 +6,6 @@ from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import DeleteView, FormView
-from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 

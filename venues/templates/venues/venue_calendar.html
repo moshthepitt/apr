@@ -1,11 +1,12 @@
 {% extends "appointments/calendar.html" %}
 {% load staticfiles %}
 {% load i18n %}
+{% load cache %}
 
 {% block title %}{{object}} {% trans "Calendar" %}{% endblock %}
 {% block calendar_title %}{{object}} {% trans "Calendar" %}{% endblock %}
 
-
+{% cache 600 object.pk %}
 {% block schedule_specific_js %}
 	data: "{% url 'appointments:venue_event_feed' pk=object.pk %}",
 	businessHours: {
@@ -23,3 +24,4 @@
 	}, 
 	users: [{'id': {{object.id}}, 'name': '{{object.name|upper}}'},],
 {% endblock %}
+{% endcache %}

@@ -1,7 +1,11 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load cache %}
+
 {% block title %}{{object}} | {{site.name}}{% endblock %}
+
 {% block main_content %}
+	{% cache 1200 object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -17,5 +21,6 @@
 	  	</form>
 	  </div>
 	</div>	
+	{% endcache %}
 {% endblock %}
 {% block extrajs %}{% endblock %}

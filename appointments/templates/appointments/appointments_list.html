@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load cache %}
 
-{% block title %}{{object|default_if_none:""}} {% trans "Appointments" %} | APR{% endblock %}
+{% block title %} {% trans "Appointments" %} | APR{% endblock %}
 
 {% block extracss %}
 	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/jquery.dataTables.min.css' %}" />
@@ -10,19 +11,18 @@
 {% endblock %}
 
 {% block main_content %}
-
+	{% cache 1200 CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
-	    {% block calendar_title %}{{object|default_if_none:""}} {% trans "Appointments" %}{% endblock %}
+	    {% block calendar_title %} {% trans "Appointments" %}{% endblock %}
 	    </h3>
 	  </div>
 	  <div class="panel-body">
 	    {{ datatable }}
 	  </div>
-	</div>	
-
-
+	</div>
+	{% endcache %}
 {% endblock %}
 
 {% block extrajs %}

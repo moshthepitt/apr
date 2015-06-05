@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load cache %}
 
 {% block title %}{% trans "Support" %} | AppointWare{% endblock %}
 
 {% block main_content %}
-
+	{% cache 86400 help %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -23,6 +24,5 @@
 	    </div>
 	  </div>
 	</div>	
-
-
+	{% endcache %}
 {% endblock %}

@@ -1,9 +1,11 @@
 {% extends "front-base.html" %}
 {% load i18n %}
+{% load cache %}
 
 {% block title %}{{site.name}}{% endblock %}
 
 {% block all_content %}
+	{% cache 3600 object.pk %}
 	<div id="main-page">
 	    <div class="row content-section">
 	      <div class="container">
@@ -14,6 +16,7 @@
 	      	</div>
 	    </div>
     </div>
+    {% endcache %}
 {% endblock %}
 
 {% block footer %}{% endblock %}

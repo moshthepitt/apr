@@ -2,6 +2,8 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load cache %}
+
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
@@ -13,7 +15,7 @@
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}} {% trans "Calendar" %} | {{site.name}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
 {% block main_content %}
-
+	{% cache 1200 CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading clearfix">
 	    <h3 class="panel-title pull-left">
@@ -71,7 +73,7 @@
 	    </div>
 	  </div>
 	</div>
-
+	{% endcache %}
 {% endblock %}
 {% block extrajs %}
 	<script src="{% static 'js/jquery.cookie.js' %}"></script>

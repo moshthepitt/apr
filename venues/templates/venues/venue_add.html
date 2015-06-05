@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load cache %}
 
 {% block title %}{% trans "Add Schedule" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-
+	{% cache 3600 CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -19,6 +20,5 @@
 	    </div>
 	  </div>
 	</div>	
-
-
+	{% endcache %}
 {% endblock %}

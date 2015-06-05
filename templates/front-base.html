@@ -2,13 +2,14 @@
 {% load staticfiles %}
 {% load compress %}
 {% load i18n %}
+
 <html lang="en">
 <head> 
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% block meta_keywords %}<meta name="keywords" content="" />{% endblock %}
-  {% block meta_description %}<meta name="description" content="" />{% endblock %}
+  {% block meta_description %}<meta name="description" content="{% trans 'AppointWare helps your customers remember their appointments with you' %}" />{% endblock %}
   {% block other_meta %}{% endblock %}
   <link rel="Shortcut Icon" href="{% static 'img/favicon.ico' %}" type="image/x-icon" />
 

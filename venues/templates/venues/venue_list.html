@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load staticfiles %}
+{% load cache %}
 
 {% block title %} {% trans "Schedules" %} | {{site.name}}{% endblock %}
 
@@ -10,7 +11,7 @@
 {% endblock %}
 
 {% block main_content %}
-
+	{% cache 1200 CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -27,8 +28,7 @@
 	    {{ datatable }}
 	  </div>
 	</div>	
-
-
+	{% endcache %}
 {% endblock %}
 
 {% block extrajs %}

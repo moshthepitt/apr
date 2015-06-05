@@ -2,6 +2,7 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 {% load staticfiles %}
+{% load cache %}
 
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
@@ -10,7 +11,7 @@
 {% block title %}{% trans "Edit Client" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-
+	{% cache 1200 object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -24,8 +25,7 @@
 	    </div>
 	  </div>
 	</div>	
-
-
+	{% endcache %}
 {% endblock %}
 
 {% block extrajs %}

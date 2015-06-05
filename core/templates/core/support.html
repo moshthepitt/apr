@@ -5,6 +5,7 @@
 {% block title %}{% trans "Support" %} | AppointWare{% endblock %}
 
 {% block all_content %}
+{% cache 86400 support %}
 	<div id="main-page">
 	    <div class="row content-section">
 	      <div class="container">
@@ -22,4 +23,5 @@
 	      	{% include 'core/snippets/front-sidebar.html' %}
 	    </div>
     </div>
+{% endcache %}
 {% endblock %}
