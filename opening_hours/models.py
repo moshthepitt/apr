@@ -33,8 +33,8 @@ class OpeningHour(models.Model):
     venue = models.ForeignKey(Venue, verbose_name=getattr(labels, 'VENUE', _("Clinic")))
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, default=None, null=True, blank=True)
     weekday = models.IntegerField(_("Weekday"), choices=WEEKDAYS)
-    from_hour = models.TimeField(_("From Hour"), )
-    to_hour = models.TimeField(_("To Hour"), )
+    from_hour = models.TimeField(_("From Hour"), blank=True, null=True)
+    to_hour = models.TimeField(_("To Hour"), blank=True, null=True)
 
     class Meta:
         verbose_name = getattr(labels, 'OPENING_HOUR', _("Opening Hour"))

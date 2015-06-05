@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% load i18n %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
 
 {% block title %}{% trans "Edit Schedule" %} | {{site.name}}{% endblock %}
+
+{% block extracss %}
+	<link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" type="text/css" />
+{% endblock %}
 
 {% block main_content %}
 
@@ -15,13 +20,35 @@
 	  <div class="panel-body">
 	    <div class="row" id="create-event no-padding">
 	    	<div class="col-md-6 no-padding">
+	    		<form action="{% url 'venues:edit' pk=object.id %}" method="POST">
+	    		{% csrf_token %}
 	    		{% crispy form venue_helper %}
+	    		<h5>{% trans "Opening Hours" %}</h5>
 	    		{% crispy formset formset_helper %}
+	    		<button type="submit" class="btn btn-success">Save</button>
+	    		</form>
 	    	</div>
 	    	<div class="clearfix"></div>
 	    </div>
 	  </div>
-	</div>	
-
+	</div>
 
 {% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
+ 	<script type='text/javascript'>
+ 		$(document).ready(function() {
+	 		$(':disabled').each(
+	 		    function() {
+	 		        $(this).after('<input type="hidden" name="' + $(this).attr('name') + '" value="' + $(this).val() + '" />');
+	 		    }
+	 		);
+
+	 		$('.timeinput').timepicker({
+	 			'showDuration': true,
+	 			'timeFormat': 'H:i:s'
+	 		});
+ 		});
+ 	</script>
+ {% endblock %}

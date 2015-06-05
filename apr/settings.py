@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'datatableview',
     'randomslugfield',
+    'extra_views',
     'wkhtmltopdf',
     # custom
     'appointments',

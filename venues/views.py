@@ -7,16 +7,15 @@ from django.utils.html import format_html
 from django.contrib import messages
 from django.http import Http404
 from django.shortcuts import redirect
-from django.forms.models import inlineformset_factory
 
 from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
+from opening_hours.forms import OpeningHourFormSetHelper, OpeningHourFormSet
 
-from opening_hours.models import OpeningHour
 from venues.models import Venue
-from venues.forms import VenueForm, OpeningHourFormSetHelper, NoSubmitVenueFormHelper
+from venues.forms import VenueForm, NoSubmitVenueFormHelper
 
 
 class VenueAdd(CustomerMixin, FormView):
@@ -52,14 +51,21 @@ class VenueUpdate(CustomerMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super(VenueUpdate, self).get_context_data(**kwargs)
-        inline_formset = inlineformset_factory(
-            Venue, OpeningHour, fields=('weekday', 'from_hour', 'to_hour'), can_delete=False, extra=0)
-        context['formset'] = inline_formset(instance=self.get_object())
+        if self.request.POST:
+            context['formset'] = OpeningHourFormSet(self.request.POST, instance=self.get_object())
+        else:
+            context['formset'] = OpeningHourFormSet(instance=self.get_object())
         context['venue_helper'] = NoSubmitVenueFormHelper()
         context['formset_helper'] = OpeningHourFormSetHelper()
         return context
 
     def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+        if formset.is_valid():
+            formset.save()
+        else:
+            return self.form_invalid(form=self.get_form())
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueUpdate, self).form_valid(form)
@@ -68,7 +74,6 @@ class VenueUpdate(CustomerMixin, UpdateView):
         # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
-
         return super(VenueUpdate, self).dispatch(*args, **kwargs)
 
 
