@@ -20,6 +20,11 @@
 	  <div class="panel-body">
 	    <div class="row" id="create-event no-padding">
 	    	<div class="col-md-6 no-padding">
+	    		<div class="alert alert-info" role="alert">	  		
+	    			{% blocktrans  %}
+	    			<p>Leave both opening and closing time blank for days you do not open.</p>
+	    			{% endblocktrans %}
+	    		</div>
 	    		<form action="{% url 'venues:edit' pk=object.id %}" method="POST">
 	    		{% csrf_token %}
 	    		{% crispy form venue_helper %}

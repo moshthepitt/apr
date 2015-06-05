@@ -21,7 +21,7 @@ class OpeningHourFormSetHelper(FormHelper):
             Field('to_hour'),
         )
         self.render_required_fields = True
-        self.template = 'bootstrap/table_inline_formset.html'
+        self.template = 'bootstrap3/table_inline_formset.html'
 
 
 class OpeningHourForm(forms.ModelForm):
@@ -33,10 +33,8 @@ class OpeningHourForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(OpeningHourForm, self).__init__(*args, **kwargs)
         self.fields['weekday'].required = False
-        self.fields['from_hour'].required = True
-        self.fields['to_hour'].required = True
-        # self.fields['from_hour'].input_format = '%l:%M%p'
-        # self.fields['from_hour'].widget = forms.TimeInput(format='%l:%M%p')
+        self.fields['from_hour'].required = False
+        self.fields['to_hour'].required = False
 
     def clean_weekday(self):
         if self.instance and self.instance.pk:

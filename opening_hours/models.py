@@ -2,6 +2,7 @@ import datetime as dt
 
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 from venues.models import Venue
 from customers.models import Customer
@@ -31,10 +32,17 @@ class OpeningHour(models.Model):
     HOUR_CHOICES = [(x, dt.time(x).strftime('%l %p')) for x in range(24)]
 
     venue = models.ForeignKey(Venue, verbose_name=getattr(labels, 'VENUE', _("Clinic")))
-    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, default=None, null=True, blank=True)
+    customer = models.ForeignKey(Customer, verbose_name=_(
+        "Customer"), on_delete=models.PROTECT, default=None, null=True, blank=True)
     weekday = models.IntegerField(_("Weekday"), choices=WEEKDAYS)
-    from_hour = models.TimeField(_("From Hour"), blank=True, null=True)
-    to_hour = models.TimeField(_("To Hour"), blank=True, null=True)
+    from_hour = models.TimeField(_("Opening Time"), blank=True, null=True)
+    to_hour = models.TimeField(_("Closing Time"), blank=True, null=True)
+
+    def clean(self):
+        super(OpeningHour, self).clean()
+        if None in (self.from_hour, self.to_hour) and (self.from_hour is not None or self.to_hour is not None):
+            raise ValidationError(
+                _("Both the opening time and closing time must be filled in, or both must be left blank"))
 
     class Meta:
         verbose_name = getattr(labels, 'OPENING_HOUR', _("Opening Hour"))

@@ -29,7 +29,14 @@
 	  	  		<td width="80%">
 	  	  			<ul class="list-unstyled">
 	  	  			{% for otime in object.opening_hours %}
-	  	  			 <li><strong>{{otime.get_weekday_display}}</strong>: {{otime.from_hour}} {% trans "to" %} {{otime.to_hour}}</li>
+	  	  			 <li>
+	  	  			 	<strong>{{otime.get_weekday_display}}</strong>: 
+	  	  			 	{% if otime.from_hour and otime.to_hour %}
+		  	  			 	{{otime.from_hour}} {% trans "to" %} {{otime.to_hour}}
+		  	  			{% else %}
+		  	  				{% trans "Closed" %}
+	  	  			 	{% endif %}
+	  	  			 </li>
 	  	  			{% endfor %}
 	  	  			</ul>
 	  	  		</td>

@@ -33,13 +33,13 @@ class Venue(models.Model):
         """
         returns the venue's opening time object with earliest from_hour
         """
-        return self.openinghour_set.order_by('from_hour').first()
+        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).order_by('from_hour').first()
 
     def closing_time(self):
         """
         returns the venue's closing time object with latest to_hour
         """
-        return self.openinghour_set.order_by('to_hour').last()
+        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).order_by('to_hour').last()
 
     def opening_hours(self):
         return self.openinghour_set.all()
