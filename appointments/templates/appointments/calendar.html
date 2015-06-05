@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'jquery.growl/css/jquery.growl.css' %}" type="text/css" />
 {% endblock %}
-{% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}} {% trans "Calendar" %} | {{site.name}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
 {% block main_content %}
 
