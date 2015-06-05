@@ -105,17 +105,8 @@ class CustomerForm(forms.ModelForm):
             )
         )
 
-    def invalidate_caches(self, customer, user):
-        keys = [
-            make_template_fragment_key('customeredit', [customer.id, user.id]),
-            make_template_fragment_key('dashboard', [customer.id, user.id])
-        ]
-        for key in keys:
-            cache.delete(key)
-
-    def save_customer(self, customer, user):
+    def save_customer(self, customer):
         customer.name = self.cleaned_data['name']
         customer.email = self.cleaned_data['email']
         customer.phone = self.cleaned_data['phone']
         customer.save()
-        self.invalidate_caches(customer, user)

@@ -4,6 +4,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
 
+from core.utils import invalidate_caches
+
 from customers.mixins import CustomerMixin
 from customers.forms import NewCustomerForm, CustomerForm
 from subscriptions.models import Subscription
@@ -52,7 +54,12 @@ class EditCustomer(CustomerMixin, FormView):
         return initial
 
     def form_valid(self, form):
-        form.save_customer(self.object, self.request.user)
+        form.save_customer(self.object)
+
+        # invalidate caches
+        invalidate_caches('customeredit', [self.object.id, self.request.user.id])
+        invalidate_caches('dashboard', [self.object.id, self.request.user.id])
+
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
         return super(EditCustomer, self).form_valid(form)
