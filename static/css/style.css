@@ -26,6 +26,11 @@
 th.control-group.error .help-inline {
 	color:#ff0000!important;
 }
+
 th.control-group.error .form-control {
 	border-color:#ff0000!important;
+}
+
+.extra-modal-info {
+	margin-top:20px;
 }
