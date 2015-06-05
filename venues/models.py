@@ -41,6 +41,9 @@ class Venue(models.Model):
         """
         return self.openinghour_set.order_by('to_hour').last()
 
+    def opening_hours(self):
+        return self.openinghour_set.all()
+
     def __str__(self):
         return self.name
 
