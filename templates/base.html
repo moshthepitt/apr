@@ -75,6 +75,12 @@
             <li><a href="{% url 'venues:list' %}">{% trans "Schedules" %}</a></li>
           </ul>
         </li>
+        <li class="submenu">
+          <a href="#"><i class="fa fa-cog"></i> <span>{% trans "Settings" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            <li><a href="{% url 'customer:edit' %}">{% trans "Edit Details" %}</a></li>
+          </ul>
+        </li>
         {% endif %}
         
         {% block sidebar_content %}
