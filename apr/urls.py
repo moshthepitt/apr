@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^schedules/', include('venues.urls', namespace='venues')),
+    url(r'^customer/', include('customers.urls', namespace='customer')),
 
     url(r'^admin/', include(admin.site.urls)),
 

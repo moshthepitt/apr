@@ -15,7 +15,7 @@
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}} {% trans "Calendar" %} | {{site.name}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
 {% block main_content %}
-	{% cache 1200 dashboard request.user.pk CUSTOMER.pk %}
+	{% cache 1200 dashboard CUSTOMER.pk request.user.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading clearfix">
 	    <h3 class="panel-title pull-left">

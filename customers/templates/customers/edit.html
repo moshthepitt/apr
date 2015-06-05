@@ -1,4 +1,4 @@
-{% extends "front-base.html" %}
+{% extends "base.html" %}
 
 {% load url from future %}
 {% load i18n %}
@@ -10,24 +10,20 @@
 <link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
 {% endblock %}
 
-{% block title %}{% trans "Welcome to AppointWare" %}{% endblock %}
+{% block title %}{% trans "Edit Your Details" %}{% endblock %}
 
-{% block all_content %}
-{% cache 600 newcustomersignup CUSTOMER.pk request.user.username %}
+{% block main_content %}
+{% cache 600 customeredit CUSTOMER.pk request.user.pk %}
 <div class="row content-section page">
   <div class="container">
     <div class="col-md-12">
-  		<h3>{% trans "Welcome to AppointWare" %}</h3>
-		
-  		<p>{% trans "Setup only takes a moment, you'll be booking appointments in no time." %}</p>
+  		<h3>{% trans "Edit Your Details" %}</h3>
 
   		<div class="row">
-  		<div class="col-md-8">
-			{% crispy form %}
-			</div>		
-    		<div class="col-md-4">
-			    {% include 'core/snippets/benefits.html' %}
-			  </div>		
+    		<div class="col-md-8">
+  			{% crispy form %}
+  			</div>		
+    		<div class="clearfix"></div>		
 			</div>
 		</div>
 	</div>
