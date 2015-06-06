@@ -51,6 +51,7 @@ INSTALLED_APPS = (
     'customers',
     'opening_hours',
     'subscriptions',
+    'reminders',
     'core',
 )
 
