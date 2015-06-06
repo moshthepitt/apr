@@ -31,7 +31,8 @@ def task_morning_reminders():
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
-        appointment__status=Appointment.CANCELED), fro, to)
+        appointment__status=Appointment.CANCELED).exclude(
+        appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
 
@@ -59,11 +60,12 @@ def task_hour_to_reminder():
     to = t + timedelta(hours=1)
 
     period = Period(Event.objects.exclude(appointment=None).exclude(
-        appointment__status=Appointment.CANCELED), fro, to)
+        appointment__status=Appointment.CANCELED).exclude(
+        appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = [x.event.id for x in event_objects]
 
-    send_period_reminders(event_ids, turn_off_reminders=True)
+    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True)
 
 
 @task(
