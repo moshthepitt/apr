@@ -10,6 +10,7 @@ django-ajaxerrors==1.1
 django-allauth==0.19.1
 django-annoying==0.8.1
 django-appconf==1.0.1
+django-cacheops==2.3.2
 django-compressor==1.5
 django-crispy-forms==1.4.0
 django-datatable-view==0.8.1
@@ -20,6 +21,7 @@ django-randomslugfield==0.3.0
 django-redis==4.0.0
 django-scheduler==0.7.5
 django-wkhtmltopdf==2.0.2
+funcy==1.5
 future==0.14.3
 icalendar==3.9.0
 kombu==3.0.26
