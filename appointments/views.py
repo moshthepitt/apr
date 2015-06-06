@@ -45,9 +45,9 @@ class AppointmentEdit(CustomerMixin, FormView):
         form.edit_appointment(self.object)
 
         # invalidate caches
-        invalidate_caches('evedit', [self.request.user.pk, self.get_object().pk])
-        invalidate_caches('appdetail', [self.request.user.pk, self.get_object().pk])
-        invalidate_caches('adddel', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('evedit', [self.request.user.pk, self.object.pk])
+        invalidate_caches('appdetail', [self.request.user.pk, self.object.pk])
+        invalidate_caches('adddel', [self.request.user.pk, self.object.pk])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
