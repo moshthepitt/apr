@@ -4,7 +4,7 @@ from reminders.models import Reminder
 
 from appointments.models import Appointment
 from appointments.emails import send_email_reminder
-from appointments.sms import send_reminder_sms
+from appointments.sms import send_sms_reminder
 
 
 def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
@@ -19,7 +19,7 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
             sent_email = False
             sent_sms = False
             if appointment.client.phone and sendsms and getattr(settings, 'SENDSMS', False):
-                send_reminder_sms(appointment)
+                send_sms_reminder(appointment)
                 sent_sms = True
             if appointment.client.email:
                 send_email_reminder(appointment)

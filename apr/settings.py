@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'datatableview',
     'randomslugfield',
+    'cacheops',
     'wkhtmltopdf',
     # custom
     'appointments',
@@ -162,6 +163,21 @@ CELERY_TIMEZONE = 'Africa/Nairobi'
 
 # APR STUFF
 REMINDER_FROM_EMAIL = "no-reply <no-reply@appointware.com>"
+
+# CACHE OPS
+CACHEOPS_REDIS = {
+    'host': 'localhost',  # redis-server is on same machine
+    'port': 6379,        # default redis port
+    'db': 7,             # SELECT non-default redis database
+                         # using separate redis db or redis instance
+                         # is highly recommended
+    'socket_timeout': 3,
+}
+CACHEOPS_DEGRADE_ON_FAILURE = True
+CACHEOPS = {
+    # automatically cache everything
+    '*.*': ('all', 60 * 10),
+}
 
 try:
    from local_settings import *
