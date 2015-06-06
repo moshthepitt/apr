@@ -12,7 +12,7 @@ def get_balance():
 
 def send_sms(to, message, sender_id="Vipepeo"):
     if get_balance():
-        tumasms.queue_sms(to, message, sender_id)
+        tumasms.queue_sms(to, message, sender_id, "")
         tumasms.send_sms()
         return tumasms.status
     return False
