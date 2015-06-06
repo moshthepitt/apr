@@ -42,12 +42,16 @@
 	  	    	<td width="80%">{{object.event.title}}</td>
 	  	    </tr>
 	  	    <tr>
-	  	    	<th>{% trans "Schedule" %}</th>
-	  	    	<td width="80%">{{object.venue}}</td>
+	  	    	<th>{% trans "Start" %}</th>
+	  	    	<td width="80%">{{object.event.start}}</td>
 	  	    </tr>
 	  	    <tr>
-	  	    	<th>{% trans "Date" %}</th>
-	  	    	<td width="80%">{{object.event.start}}</td>
+	  	    	<th>{% trans "End" %}</th>
+	  	    	<td width="80%">{{object.event.end}}</td>
+	  	    </tr>
+	  	    <tr>
+	  	    	<th>{% trans "Schedule" %}</th>
+	  	    	<td width="80%">{{object.venue}}</td>
 	  	    </tr>
 	  	    <tr>
 	  	    	<th>{% trans "Notes" %}</th>

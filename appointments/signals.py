@@ -1,7 +1,9 @@
 from datetime import timedelta
 
+from django.utils.translation import ugettext_lazy as _
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
+from django.core.exceptions import ValidationError
 
 from schedule.models import Event
 
@@ -28,9 +30,9 @@ def event_changed(sender, instance, **kwargs):
     try:
         obj = sender.objects.get(pk=instance.pk)
     except sender.DoesNotExist:
-        # Object is new, so field hasn't technically changed, but you may want to
-        # do something else here.
-        pass
+        # ensure that end time is not before start time
+        if instance.end <= instance.start:
+            instance.end = instance.start + timedelta(minutes=15)
     else:
         if not obj.start == instance.start:  # Field has changed
             if instance.start > obj.start:

@@ -13,6 +13,8 @@
 			<h5>{% trans "Appointment Details" %}</h5>
 			<ul class="list-unstyled">
 				<li><span class="appointment-label"><strong>{% trans "Title" %}:</strong></span> <span class="appointment-info">{{object.event.title}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "Start" %}:</strong></span> <span class="appointment-info">{{object.event.start}}</span></li>
+				<li><span class="appointment-label"><strong>{% trans "End" %}:</strong></span> <span class="appointment-info">{{object.event.end}}</span></li>
 				<li><span class="appointment-label"><strong>{% trans "Status" %}:</strong></span> <span class="appointment-info">{{object.get_status_display}}</span></li>
 				<li><span class="appointment-label"><strong>{% trans "Schedule" %}:</strong></span> <span class="appointment-info">{{object.venue}}</span></li>
 				<li><span class="appointment-label"><strong>{% trans "Notes" %}:</strong></span> <span class="appointment-info">{{object.event.description}}</span></li>
