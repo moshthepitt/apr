@@ -14,10 +14,15 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
 
     if appointments:
         for appointment in appointments:
+            sent_email = False
+            sent_sms = False
+            if appointment.client.phone and sendsms and getattr(settings, 'SENDSMS', False):
+                send_reminder_sms(appointment)
+                sent_sms = True
             if appointment.client.email:
                 send_email_reminder(appointment)
-                if sendsms and getattr(settings, 'SENDSMS', False):
-                    send_reminder_sms(appointment)
+                sent_email = True
+            if True in [sent_email, sent_sms]:
                 if turn_off_reminders:
                     appointment.no_reminders = True
                     appointment.save()
