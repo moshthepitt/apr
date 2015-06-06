@@ -1,5 +1,7 @@
 from django.conf import settings
 
+from reminders.models import Reminder
+
 from appointments.models import Appointment
 from appointments.emails import send_email_reminder
 from appointments.sms import send_reminder_sms
@@ -10,7 +12,7 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
     takes a Period object
     uses the Period to get appointments and then send reminders
     """
-    appointments = Appointment.objects.filter(event__id__in=event_ids).exclude(no_reminders=True)
+    appointments = Appointment.objects.filter(event__id__in=event_ids).exclude(no_reminders=True).distinct('id')
 
     if appointments:
         for appointment in appointments:
@@ -29,3 +31,12 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
                 if appointment.status != Appointment.CONFIRMED and appointment.status != Appointment.CANCELED:
                     appointment.status = Appointment.NOTIFIED
                     appointment.save()
+            reminder = Reminder(
+                customer=appointment.customer,
+                appointment=appointment,
+                client_name=appointment.client.get_full_name(),
+                appointment_time=appointment.event.start,
+                sent_email=sent_email,
+                sent_sms=sent_sms
+            )
+            reminder.save()

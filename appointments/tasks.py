@@ -34,7 +34,7 @@ def task_morning_reminders():
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()
-    event_ids = [x.event.id for x in event_objects]
+    event_ids = list(set([x.event.id for x in event_objects]))
 
     send_period_reminders(event_ids)
 
@@ -63,7 +63,7 @@ def task_hour_to_reminder():
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()
-    event_ids = [x.event.id for x in event_objects]
+    event_ids = list(set([x.event.id for x in event_objects]))
 
     send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True)
 
