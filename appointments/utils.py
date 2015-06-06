@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from appointments.models import Appointment
 from appointments.emails import send_email_reminder
 from appointments.sms import send_reminder_sms
@@ -14,7 +16,7 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
         for appointment in appointments:
             if appointment.client.email:
                 send_email_reminder(appointment)
-                if sendsms:
+                if sendsms and getattr(settings, 'SENDSMS', False):
                     send_reminder_sms(appointment)
                 if turn_off_reminders:
                     appointment.no_reminders = True
