@@ -16,6 +16,12 @@ class Reminder(models.Model):
     sent_email = models.BooleanField(_("Sent email"), default=False)
     sent_sms = models.BooleanField(_("Sent sms"), default=False)
 
+    @property
+    def _appointment_id(self):
+        if self.appointment:
+            return self.appointment.id
+        return None
+
     class Meta:
         verbose_name = _("Reminder")
         verbose_name_plural = _("Reminders")
