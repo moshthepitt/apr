@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from core import labels
 
@@ -19,6 +20,21 @@ class Venue(models.Model):
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this schedule should be treated as '
                                                 'active.'))
+    # reminder stuff
+    custom_reminder = models.BooleanField(_("Use custom reminder"), default=False, help_text=_(
+        "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))
+    reminder_sender = models.EmailField(
+        _("Reminder from address"), blank=False, default=settings.REMINDER_FROM_EMAIL_ONLY)
+    reminder_subject = models.CharField(_("Reminder subject line"), max_length=100, blank=False, default=_(
+        "Reminder Appointment with $OUR_NAME at $APPOINTMENT_DATE from $APPOINTMENT_START_TIME"))
+    reminder_email = models.TextField(_("Reminder email message"), blank=False, default=_(
+        "We wanted to remind you that you have an appointment at $OUR_NAME on $APPOINTMENT_DATE from $APPOINTMENT_START_TIME. Please be on time."))
+    reminder_sms = models.CharField(_("Reminder SMS message"), max_length=255, blank=False, default=_(
+        "Reminder! Appointment with $OUR_NAME on $APPOINTMENT_DATE from $APPOINTMENT_START_TIME"))
+    show_confirm_link = models.BooleanField(
+        _("Show a link to confirm appointment"), default=True, blank=False)
+    show_cancel_link = models.BooleanField(
+        _("Show a link to cancel appointment"), default=True, blank=False)
 
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Schedule"))
