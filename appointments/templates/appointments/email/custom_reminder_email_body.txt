@@ -1,0 +1,16 @@
+{% load i18n %}
+{{message}}
+
+{% if customer.show_confirm_link %}{% trans "To confirm your appointment, please go to" %} {{current_site_domain}}{% url 'confirm_appointment' slug=appointment.slug %}{% endif %}
+
+{% if customer.show_cancel_link %}{% trans "To cancel your appointment, please go to" %} {{current_site_domain}}{% url 'cancel_appointment' slug=appointment.slug %}{% endif %}
+
+{% blocktrans %}
+Regards,
+
+
+The Management
+
+P.S. We're sending you this message because your service provider asked us to.
+If you didn't want to receive it, we apologize.
+{% endblocktrans %}
