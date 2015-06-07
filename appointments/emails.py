@@ -21,7 +21,19 @@ def send_email_reminder(appointment):
 
     client_email = "{name} <{email}>".format(name=appointment.client.get_full_name(), email=appointment.client.email)
 
-    if appointment.customer.custom_reminder:
+    if appointment.venue.custom_reminder:
+        context_variables['subject'] = replace_script_variables(appointment.venue.reminder_subject, appointment)
+        context_variables['message'] = replace_script_variables(appointment.venue.reminder_email, appointment)
+        sender_email = appointment.venue.reminder_sender
+
+        c = Context(context_variables)
+
+        email_subject = render_to_string(
+            'appointments/email/custom_reminder_email_subject.txt', c).replace('\n', '')
+        email_txt_body = render_to_string('appointments/email/custom_reminder_email_body.txt', c)
+        email_html_body = render_to_string('appointments/email/custom_reminder_email_body.html', c)
+        sender = "{name} <{email}>".format(name=appointment.customer.name, email=sender_email)
+    elif appointment.customer.custom_reminder:
         context_variables['subject'] = replace_script_variables(appointment.customer.reminder_subject, appointment)
         context_variables['message'] = replace_script_variables(appointment.customer.reminder_email, appointment)
         sender_email = appointment.customer.reminder_sender
