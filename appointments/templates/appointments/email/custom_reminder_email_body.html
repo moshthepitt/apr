@@ -1,7 +1,11 @@
 {% load i18n %}
+{% spaceless %}
 {{message|linebreaks}}
 {% if customer.show_confirm_link %}<p>{% trans "To confirm your appointment, please go to" %} <a href="{{current_site_domain}}{% url 'confirm_appointment' slug=appointment.slug %}">{{current_site_domain}}{% url 'confirm_appointment' slug=appointment.slug %}</a></p>{% endif %}
 {% if customer.show_cancel_link %}<p>{% trans "To cancel your appointment, please go to" %} <a href="{{current_site_domain}}{% url 'cancel_appointment' slug=appointment.slug %}">{{current_site_domain}}{% url 'cancel_appointment' slug=appointment.slug %}</a></p>{% endif %}
+<br>
 <p>{% trans "Regards," %}</p>
+<br>
 <p>{% trans "The Management" %}</p>
 <p>{% trans "P.S. We're sending you this message because your service provider asked us to.  If you didn't want to receive it, we apologize." %}</p>
+{% endspaceless %}
