@@ -24,7 +24,8 @@ class Customer(models.Model):
                                     help_text=_('Designates whether this assistant should be treated as '
                                                 'active.'))
     # reminder stuff
-    custom_reminder = models.BooleanField(_("Use custom reminder"), default=False, help_text=_("If you check this, we will use the custom script provided by you"))
+    custom_reminder = models.BooleanField(_("Use custom reminder"), default=False, help_text=_(
+        "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))
     reminder_sender = models.EmailField(
         _("Reminder from address"), blank=False, default=settings.REMINDER_FROM_EMAIL_ONLY)
     reminder_subject = models.CharField(_("Reminder subject line"), max_length=100, blank=False, default=_(
