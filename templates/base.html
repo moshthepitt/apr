@@ -10,7 +10,7 @@
   {% block meta_description %}<meta name="description" content="" />{% endblock %}
   {% block other_meta %}{% endblock %}
   <link rel="Shortcut Icon" href="{% static 'img/favicon.png' %}" type="image/x-icon" />
-  
+
   <title>{% block title %}{{site.name}}{% endblock %}</title>
 
   {% compress css %}
@@ -30,7 +30,11 @@
   </head> 
   <body data-color="grey" class="flat"><div id="wrapper">
     <div id="header" class="hidden-print">
+      {% if request.user.is_authenticated %}
+      <h1><a href="{% url 'dashboard' %}">{{site.name}}</a></h1> 
+      {% else %}
       <h1><a href="{% url 'home' %}">{{site.name}}</a></h1> 
+      {% endif %}
        <a id="menu-trigger" href="#"><i class="fa fa-bars"></i></a>
     </div>
     <div id="user-nav" class="hidden-print">
