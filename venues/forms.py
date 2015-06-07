@@ -75,13 +75,3 @@ class VenueScriptForm(forms.ModelForm):
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
-
-    # def save_script(self, venue):
-    #     venue.custom_reminder = self.cleaned_data['custom_reminder']
-    #     venue.reminder_sender = self.cleaned_data['reminder_sender']
-    #     venue.reminder_subject = self.cleaned_data['reminder_subject']
-    #     venue.reminder_email = self.cleaned_data['reminder_email']
-    #     venue.reminder_sms = self.cleaned_data['reminder_sms']
-    #     venue.show_confirm_link = self.cleaned_data['show_confirm_link']
-    #     venue.show_cancel_link = self.cleaned_data['show_cancel_link']
-    #     venue.save()
