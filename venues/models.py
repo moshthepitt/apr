@@ -10,6 +10,12 @@ from customers.models import Customer
 
 
 class Venue(models.Model):
+    """
+    Model to store "schedules"
+    """
+
+    NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     name = models.CharField(_('Venue name'), max_length=255, blank=True)
@@ -20,6 +26,8 @@ class Venue(models.Model):
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this schedule should be treated as '
                                                 'active.'))
+    shown_days = models.PositiveIntegerField(
+        _("Number of days to show in calendar"), choices=NUMBER_OF_DAYS_CHOICES, default=6)
     # reminder stuff
     custom_reminder = models.BooleanField(_("Use custom script"), default=False, help_text=_(
         "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))

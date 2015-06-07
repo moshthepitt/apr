@@ -13,6 +13,9 @@ class Customer(models.Model):
     """
     This model stores customers i.e. peopl who sign up to user APR
     """
+
+    NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]
+
     user = models.ForeignKey(User, verbose_name=_("User"), null=True, default=None, blank=True,
                              on_delete=models.PROTECT, help_text=_("This user will be able to log in as this customer"))
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
@@ -23,6 +26,8 @@ class Customer(models.Model):
     is_active = models.BooleanField(_('Active'), default=True,
                                     help_text=_('Designates whether this assistant should be treated as '
                                                 'active.'))
+    shown_days = models.PositiveIntegerField(
+        _("Number of days to show in main calendar"), choices=NUMBER_OF_DAYS_CHOICES, default=6)
     # reminder stuff
     custom_reminder = models.BooleanField(_("Use custom script"), default=False, help_text=_(
         "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))

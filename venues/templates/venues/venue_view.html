@@ -27,6 +27,14 @@
 	  	  		<td width="80%">{{object}}</td>
 	  	  	</tr>
 	  	  	<tr>
+	  	  		<th>{% trans "Show in main calendar" %}</th>
+	  	  		<td width="80%">{{object.main_calendar}}</td>
+	  	  	</tr>
+	  	  	<tr>
+	  	  		<th>{% trans "Number of days to show in calendar" %}</th>
+	  	  		<td width="80%">{{object.get_shown_days_display}}</td>
+	  	  	</tr>
+	  	  	<tr>
 	  	  		<th>{% trans "Opening Hours" %}</th>
 	  	  		<td width="80%">
 	  	  			<ul class="list-unstyled">

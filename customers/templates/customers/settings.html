@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+
+{% block title %}{% trans "Edit Settings" %}{% endblock %}
+
+{% block main_content %}
+{% cache 600 customerscript CUSTOMER.pk request.user.pk %}
+<div class="row content-section page">
+    <div class="container">
+        <div class="col-md-12 no-padding">
+            <h3>{% trans "Edit Settings" %}</h3>
+
+            <div class="row">
+                <div class="col-md-8 no-padding bottom-20">
+                {% crispy form %}
+                </div>      
+                <div class="clearfix"></div>        
+            </div>
+        </div>
+    </div>
+</div>
+{% endcache %}
+{% endblock %}

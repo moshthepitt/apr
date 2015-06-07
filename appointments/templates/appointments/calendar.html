@@ -299,14 +299,14 @@
  				displayFreeBusys: true,
  				defaultFreeBusy: {free: true},
  				readonly : false,
- 				firstDayOfWeek: 1,
- 				daysToShow: 6,
+ 				firstDayOfWeek: 1, 				
  				startOnFirstDayOfWeek: true, 				
             	height: function($calendar) {
              	return $(window).height() - $('h1').outerHeight(true);
             	},
             	minBodyHeight: 1200, 
             	{% block schedule_specific_js %}
+            	daysToShow: {{CUSTOMER.shown_days}},
             	data: "{% url 'appointments:calendar_event_feed' %}",
  				businessHours: {
 					{% if CUSTOMER.global_opening_time.from_hour.hour %}

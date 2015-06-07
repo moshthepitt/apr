@@ -7,7 +7,7 @@ from django.utils.translation import ugettext as _
 from core.utils import invalidate_caches
 
 from customers.mixins import CustomerMixin
-from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm
+from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm, CustomerSettingsForm
 from subscriptions.models import Subscription
 
 
@@ -100,3 +100,30 @@ class EditCustomerScript(CustomerMixin, FormView):
         self.object = self.request.user.userprofile.customer
 
         return super(EditCustomerScript, self).dispatch(*args, **kwargs)
+
+
+class EditCustomerSettings(CustomerMixin, FormView):
+    template_name = 'customers/settings.html'
+    form_class = CustomerSettingsForm
+    success_url = reverse_lazy('customer:settings')
+
+    def get_initial(self):
+        initial = super(EditCustomerSettings, self).get_initial()
+        initial['shown_days'] = self.object.shown_days
+        return initial
+
+    def form_valid(self, form):
+        form.save_settings(self.object)
+
+        # invalidate caches
+        invalidate_caches('customerscript', [self.object.id, self.request.user.id])
+        invalidate_caches('dashboard', [self.object.id, self.request.user.id])
+
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved'))
+        return super(EditCustomerSettings, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        self.object = self.request.user.userprofile.customer
+
+        return super(EditCustomerSettings, self).dispatch(*args, **kwargs)

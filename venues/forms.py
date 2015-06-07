@@ -12,7 +12,7 @@ class VenueForm(forms.ModelForm):
 
     class Meta:
         model = Venue
-        fields = ['name', 'main_calendar']
+        fields = ['name', 'main_calendar', 'shown_days']
 
     def create_venue(self, user):
         new_venue = Venue(
@@ -33,6 +33,7 @@ class VenueForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('name'),
             Field('main_calendar'),
+            Field('shown_days'),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')
             )

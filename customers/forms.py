@@ -144,3 +144,26 @@ class CustomerScriptForm(forms.ModelForm):
         customer.show_confirm_link = self.cleaned_data['show_confirm_link']
         customer.show_cancel_link = self.cleaned_data['show_cancel_link']
         customer.save()
+
+
+class CustomerSettingsForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = ['shown_days']
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerSettingsForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-customer-settings-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('shown_days'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )
+
+    def save_settings(self, customer):
+        customer.shown_days = self.cleaned_data['shown_days']
+        customer.save()
