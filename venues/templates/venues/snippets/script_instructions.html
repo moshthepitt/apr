@@ -1,0 +1,13 @@
+{% load i18n %}
+<div class="alert alert-info" role="alert">
+  <p>
+    {% trans "The following symbols will be replaced as follows" %}:
+    <ul>
+      <li><strong>$NAME</strong> {% trans "The client's name (e.g. John Doe)." %}</li>
+      <li><strong>$FIRST_NAME</strong> {% trans "The client's first name (e.g. John)." %}</li>
+      <li><strong>$OUR_NAME</strong> {% trans "The client-friendly name of the facility the appointment is at" %} (e.g. {{CUSTOMER.name|title}}).</li>
+      <li><strong>$APPOINTMENT_DATE</strong> {% trans "The date of the appointment (e.g. Sunday, June 7th)" %}</li>
+      <li><strong>$APPOINTMENT_START_TIME</strong> {% trans "The time of the appointment (e.g. 9a.m.)" %}</li>
+    </ul>
+  </p>
+</div>

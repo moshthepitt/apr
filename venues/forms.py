@@ -49,3 +49,39 @@ class NoSubmitVenueFormHelper(FormHelper):
         self.layout = Layout(
             Field('name'),
         )
+
+
+class VenueScriptForm(forms.ModelForm):
+
+    class Meta:
+        model = Venue
+        fields = ['custom_reminder', 'reminder_sender', 'reminder_subject',
+                  'reminder_email', 'reminder_sms', 'show_confirm_link', 'show_cancel_link']
+
+    def __init__(self, *args, **kwargs):
+        super(VenueScriptForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-venue-script-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('custom_reminder'),
+            Field('reminder_sender'),
+            Field('reminder_subject'),
+            Field('reminder_email'),
+            Field('reminder_sms'),
+            Field('show_confirm_link'),
+            Field('show_cancel_link'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )
+
+    # def save_script(self, venue):
+    #     venue.custom_reminder = self.cleaned_data['custom_reminder']
+    #     venue.reminder_sender = self.cleaned_data['reminder_sender']
+    #     venue.reminder_subject = self.cleaned_data['reminder_subject']
+    #     venue.reminder_email = self.cleaned_data['reminder_email']
+    #     venue.reminder_sms = self.cleaned_data['reminder_sms']
+    #     venue.show_confirm_link = self.cleaned_data['show_confirm_link']
+    #     venue.show_cancel_link = self.cleaned_data['show_cancel_link']
+    #     venue.save()

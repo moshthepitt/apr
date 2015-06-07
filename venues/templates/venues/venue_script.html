@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load staticfiles %}
+{% load cache %}
+
+{% block title %}{% trans "Edit Schedule Script" %} | {{site.name}}{% endblock %}
+
+{% block main_content %}
+	{% cache 1200 vuscriptt CUSTOMER.pk object.pk %}
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Edit Schedule Script" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div class="row" id="create-event no-padding">
+	    	<div class="col-md-8 no-padding">
+	    		{% include "venues/snippets/script_instructions.html" %}
+	    		{% crispy form %}
+	    	</div>
+	    	<div class="clearfix"></div>
+	    </div>
+	  </div>
+	</div>
+	{% endcache %}
+{% endblock %}

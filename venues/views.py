@@ -16,7 +16,7 @@ from core.utils import invalidate_caches
 from opening_hours.forms import OpeningHourFormSetHelper, OpeningHourFormSet
 
 from venues.models import Venue
-from venues.forms import VenueForm, NoSubmitVenueFormHelper
+from venues.forms import VenueForm, NoSubmitVenueFormHelper, VenueScriptForm
 
 
 class VenueAdd(CustomerMixin, FormView):
@@ -86,6 +86,27 @@ class VenueUpdate(CustomerMixin, UpdateView):
         return super(VenueUpdate, self).dispatch(*args, **kwargs)
 
 
+class VenueScriptUpdate(CustomerMixin, UpdateView):
+    model = Venue
+    form_class = VenueScriptForm
+    template_name = "venues/venue_script.html"
+    success_url = reverse_lazy('venues:list')
+
+    def form_valid(self, form):
+        # invalidate caches
+        invalidate_caches('vuscript', [self.get_object().customer.pk, self.get_object().pk])
+
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
+        return super(VenueScriptUpdate, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(VenueScriptUpdate, self).dispatch(*args, **kwargs)
+
+
 class VenueDatatableView(CustomerMixin, DatatableView):
     model = Venue
     datatable_options = {
@@ -100,8 +121,8 @@ class VenueDatatableView(CustomerMixin, DatatableView):
 
     def get_actions(self, instance, *args, **kwargs):
         return format_html(
-            '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
-            ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
+            '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a> | <a href="{}">Script</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
+            ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk]), reverse('venues:script', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
         )
 
     def get_queryset(self, **kwargs):

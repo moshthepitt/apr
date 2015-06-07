@@ -2,8 +2,6 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.utils import timezone
-from django.core.cache import cache
-from django.core.cache.utils import make_template_fragment_key
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
@@ -122,7 +120,7 @@ class CustomerScriptForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CustomerScriptForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
-        self.helper.form_id = 'id-customer-form'
+        self.helper.form_id = 'id-customer-script-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Field('custom_reminder'),
