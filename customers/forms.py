@@ -110,3 +110,39 @@ class CustomerForm(forms.ModelForm):
         customer.email = self.cleaned_data['email']
         customer.phone = self.cleaned_data['phone']
         customer.save()
+
+
+class CustomerScriptForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = ['custom_reminder', 'reminder_sender', 'reminder_subject',
+                  'reminder_email', 'reminder_sms', 'show_confirm_link', 'show_cancel_link']
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerScriptForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-customer-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('custom_reminder'),
+            Field('reminder_sender'),
+            Field('reminder_subject'),
+            Field('reminder_email'),
+            Field('reminder_sms'),
+            Field('show_confirm_link'),
+            Field('show_cancel_link'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )
+
+    def save_script(self, customer):
+        customer.custom_reminder = self.cleaned_data['custom_reminder']
+        customer.reminder_sender = self.cleaned_data['reminder_sender']
+        customer.reminder_subject = self.cleaned_data['reminder_subject']
+        customer.reminder_email = self.cleaned_data['reminder_email']
+        customer.reminder_sms = self.cleaned_data['reminder_sms']
+        customer.show_confirm_link = self.cleaned_data['show_confirm_link']
+        customer.show_cancel_link = self.cleaned_data['show_cancel_link']
+        customer.save()
