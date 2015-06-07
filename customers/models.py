@@ -1,7 +1,9 @@
+from datetime import timedelta
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth.models import User
 from django.conf import settings
+from django.utils import timezone
 
 from phonenumber_field.modelfields import PhoneNumberField
 
@@ -72,3 +74,6 @@ class Customer(models.Model):
 
     def number_of_venues(self):
         return self.venue_set.all().count()
+
+    def is_new(self):
+        return (timezone.now() - self.created_on) < timedelta(days=3)

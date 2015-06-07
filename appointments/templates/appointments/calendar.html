@@ -26,6 +26,12 @@
 	    </div>
 	  </div>
 	  <div class="panel-body">
+	  	{% if CUSTOMER.is_new %}
+	  	<div class="alert alert-warning" role="alert">
+	  	  <h4>{% trans "Welcome to" %} {{site.name}}</h4>
+	  	  <p><strong>{% trans "Hint:" %}</strong> {% trans "Quickly create an appointment by clicking anywhere on the calendar below." %}</p>
+	  	</div>
+	  	{% endif %}
 	    <div id="calendar" class="row"></div>	    
 	  </div>
 	</div>	
