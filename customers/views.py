@@ -116,7 +116,7 @@ class EditCustomerSettings(CustomerMixin, FormView):
         form.save_settings(self.object)
 
         # invalidate caches
-        invalidate_caches('customerscript', [self.object.id, self.request.user.id])
+        invalidate_caches('customersettings', [self.object.id, self.request.user.id])
         invalidate_caches('dashboard', [self.object.id, self.request.user.id])
 
         messages.add_message(
