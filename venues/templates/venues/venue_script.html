@@ -20,6 +20,15 @@
 	    		{% include "venues/snippets/script_instructions.html" %}
 	    		{% crispy form %}
 	    	</div>
+	    	<div class="col-md-4 bottom-20">
+	    	  <p>{% trans "You can customize what we tell your clients, via SMS (text message), or email. Our computers" %} <strong>{% trans "automatically insert" %}</strong> {% trans "per-appointment information (like date/time) into these scripts to make your messages." %}</p>
+	    	  <h5>{% trans "What describes your needs best?" %}</h5>
+	    	  <ol>
+	    	    <li>{% trans "Do you" %} <strong>{% trans "want the minimum setup" %}</strong> {% trans "possible? Our system automatically has a default script which mentions each appointment's date and times. You're done!" %}</li>
+	    	    <li>{% trans "Do you" %} <strong>{% trans "want to have just one customized script that you use for everyone?" %}</strong> {% trans "(We can fill per-appointment dates and times into it.) If so, edit your" %} <a href="{% url 'customer:script' %}">{% trans "Default Script" %}</a></li>
+	    	    <li>{% trans "Do you" %} <strong>{% trans "want to have messages specific to a location or staff member?" %}</strong> {% trans "The easiest way to do that is to make a" %} <a href="{% url 'venues:list' %}">{% trans "Schedule" %}</a> {% trans "for that location/staff member. (You can create extra schedules under your Schedules screen). Then, use schedule custom scripts as you are doing right now." %}</li>
+	    	  </ol>
+	    	</div>
 	    	<div class="clearfix"></div>
 	    </div>
 	  </div>

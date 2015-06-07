@@ -59,13 +59,13 @@ class Customer(models.Model):
         """
         returns the customer's opening time object with earliest from_hour
         """
-        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).order_by('from_hour').first()
+        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).exclude(venue__main_calendar=False).order_by('from_hour').first()
 
     def global_closing_time(self):
         """
         returns the customer's closing time object with latest to_hour
         """
-        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).order_by('to_hour').last()
+        return self.openinghour_set.exclude(from_hour=None).exclude(to_hour=None).exclude(venue__main_calendar=False).order_by('to_hour').last()
 
     def has_subscription(self):
         return customer_has_subscription(self)
