@@ -6,10 +6,6 @@
 	box-sizing: content-box; 
 }
 
-.ui-widget-header.wc-toolbar {
-	display:none;
-}
-
 .printable .wc-header {
 	background:#fff;
 }

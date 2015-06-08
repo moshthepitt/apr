@@ -38,3 +38,7 @@ th.control-group.error .form-control {
 .bottom-20 {
 	margin-bottom:20px;
 }
+
+.panel-title {
+  font-size: 20px;
+}

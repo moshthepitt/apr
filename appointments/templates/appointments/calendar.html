@@ -22,7 +22,10 @@
 	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 	    </h3>
 	    <div class="btn-group pull-right">
-            <a href="#" class="btn btn-sm btn-info" id="choose-date">{% trans "Go To Date" %}</a>
+	    	<button class="btn btn-sm btn-default" id="go-prev"><i class="fa fa-chevron-left"></i> {% trans "Prev" %}</button>
+	    	<button class="btn btn-sm btn-default" id="go-today"><i class="fa fa-home"></i> {% trans "Today" %}</button>
+	    	<button class="btn btn-sm btn-default" id="go-next"><i class="fa fa-chevron-right"></i> {% trans "Next" %}</button>
+            <button class="btn btn-sm btn-inverse" id="choose-date"><i class="fa fa-calendar"></i> {% trans "Go To Date" %}</button>
 	    </div>
 	  </div>
 	  <div class="panel-body">
@@ -92,6 +95,20 @@
 {% endblock %}
 {% block calendarjs %}
  	<script type='text/javascript'>
+ 		// navigation
+ 		$(document).on('click', '#go-prev', function(event) {
+ 			event.preventDefault();
+ 			$("#calendar").weekCalendar("prevWeek");
+ 		});
+ 		$(document).on('click', '#go-today', function(event) {
+ 			event.preventDefault();
+ 			$("#calendar").weekCalendar("today");
+ 		});
+ 		$(document).on('click', '#go-next', function(event) {
+ 			event.preventDefault();
+ 			$("#calendar").weekCalendar("nextWeek");
+ 		});
+
  		// change event status
  		$(document).on('click', '.status-changer', function(event) {
  			event.preventDefault();
@@ -306,7 +323,8 @@
  				defaultFreeBusy: {free: true},
  				readonly : false,
  				firstDayOfWeek: 1, 				
- 				startOnFirstDayOfWeek: true, 				
+ 				startOnFirstDayOfWeek: true, 
+ 				showHeader: false,				
             	height: function($calendar) {
              	return $(window).height() - $('h1').outerHeight(true);
             	},
@@ -371,7 +389,7 @@
  				    
  				},
  				noEvents: function() {
- 				    $.growl.warning({ 
+ 				    $.growl.notice({ 
  				    	location: 'br',
  				    	message: '{% trans "There are no appointments to show!" %}'
  				    });
