@@ -1,7 +1,7 @@
 from django.template import Context
 from django.template.loader import render_to_string
 
-from core.sms import send_sms
+from core.sms import InfoBip
 from core.utils import replace_script_variables
 
 
@@ -28,4 +28,5 @@ def send_sms_reminder(appointment):
 
     to = appointment.client.phone
 
-    send_sms(to, message)
+    sms_client = InfoBip()
+    sms_client.send_sms(to, message)
