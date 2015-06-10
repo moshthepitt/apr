@@ -56,6 +56,10 @@ nav {
 .navbar-brand {
   font-size: 30px;
   font-weight: bold;
+  background: url('../img/logo.png') 0px center no-repeat;
+  background-size: 191px;
+  text-indent: -9999px;
+  width: 191px;
 }
 
 @media (max-width: 767px) {
