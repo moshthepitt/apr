@@ -42,3 +42,15 @@ th.control-group.error .form-control {
 .panel-title {
   font-size: 20px;
 }
+
+#header h1 {
+  background: url("../img/logo.png") no-repeat scroll 0 0 transparent;
+  height: 77px;
+  left: 5px;
+  line-height: 600px;
+  overflow: hidden;
+  position: relative;
+  top: 0px;
+  width: 191px;
+  margin-bottom:20px;
+}
