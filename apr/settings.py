@@ -162,7 +162,7 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Nairobi'
 
 # APR STUFF
-REMINDER_FROM_EMAIL = "no-reply <no-reply@appointware.com>"
+REMINDER_FROM_EMAIL = "noreply-reminder <no-reply@appointware.com>"
 REMINDER_FROM_EMAIL_ONLY = "no-reply@appointware.com"
 
 # CACHE OPS

@@ -16,18 +16,18 @@ logger = get_task_logger(__name__)
 
 
 @periodic_task(
-    run_every=(crontab(minute=0, hour=7)),
-    name="task_morning_reminders",
+    run_every=(crontab(minute=0, hour=18)),
+    name="task_day_before_reminders",
     ignore_result=True
 )
-def task_morning_reminders():
+def task_day_before_reminders():
     """
     Sends a reminder to all the UN-NOTIFIED appointments
-    currently sends at 7am
+    happening the next day
+    currently sends at 6pm
     """
     t = timezone.now().date()
-    fro = datetime(year=t.year, month=t.month, day=t.day, hour=7,
-                   tzinfo=timezone.get_current_timezone())
+    fro = datetime(year=t.year, month=t.month, day=t.day + 1, hour=0, tzinfo=timezone.get_current_timezone())
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
@@ -36,7 +36,30 @@ def task_morning_reminders():
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids)
+    send_period_reminders(event_ids, sendsms=True)
+
+
+@periodic_task(
+    run_every=(crontab(minute=0, hour=7)),
+    name="task_morning_reminders",
+    ignore_result=True
+)
+def task_morning_reminders():
+    """
+    Sends a reminder to all the appointments happening today
+    currently sends at 7am
+    """
+    t = timezone.now().date()
+    fro = datetime(year=t.year, month=t.month, day=t.day, hour=7,
+                   tzinfo=timezone.get_current_timezone())
+    to = fro + timedelta(1)
+    period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__status=Appointment.CANCELED).exclude(
+        appointment__status=Appointment.CONFIRMED), fro, to)
+    event_objects = period.get_occurrences()
+    event_ids = list(set([x.event.id for x in event_objects]))
+
+    send_period_reminders(event_ids, sendsms=False)
 
 
 @periodic_task(
@@ -54,12 +77,15 @@ def task_hour_to_reminder():
     if time now i6 7:45 we get fro=8:31 and to = 8:45
     we use 46 minutes to avoid cases where events happening at
     exactly *:15, *:30, *:45, or *:00 dont get multiple reminders
+
+    The idea is to catch any appointments happening soon that have NOT been notified
     """
     t = timezone.localtime(timezone.now())
     fro = t + timedelta(minutes=46)
     to = t + timedelta(hours=1)
 
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__status=Appointment.NOTIFIED).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()

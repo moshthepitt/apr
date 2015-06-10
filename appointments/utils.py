@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.utils import timezone
 
 from reminders.models import Reminder
 
@@ -35,7 +36,7 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
                 customer=appointment.customer,
                 appointment=appointment,
                 client_name=appointment.client.get_full_name(),
-                appointment_time=appointment.event.start,
+                appointment_time=timezone.localtime(appointment.event.start),
                 sent_email=sent_email,
                 sent_sms=sent_sms
             )

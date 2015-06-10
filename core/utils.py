@@ -1,4 +1,5 @@
 from django.core.cache import cache
+from django.utils import timezone
 from django.core.cache.utils import make_template_fragment_key
 
 
@@ -16,9 +17,11 @@ def replace_script_variables(some_string, appointment):
         $APPOINTMENT_DATE The date of the appointment (e.g. Sunday, June 7th)
         $APPOINTMENT_START_TIME The time of the appointment (e.g. 9a.m.)
     """
+    start_time = timezone.localtime(appointment.event.start)
+
     some_string = some_string.replace("$NAME", appointment.client.get_full_name())
     some_string = some_string.replace("$FIRST_NAME", appointment.client.first_name)
     some_string = some_string.replace("$OUR_NAME", appointment.customer.name)
-    some_string = some_string.replace("$APPOINTMENT_DATE", appointment.event.start.strftime("%A, %B %-d"))
-    some_string = some_string.replace("$APPOINTMENT_START_TIME", appointment.event.start.strftime("%-I%p"))
+    some_string = some_string.replace("$APPOINTMENT_DATE", start_time.strftime("%A, %B %-d"))
+    some_string = some_string.replace("$APPOINTMENT_START_TIME", start_time.strftime("%-I%p"))
     return some_string
