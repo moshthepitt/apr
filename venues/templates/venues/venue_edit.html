@@ -20,16 +20,19 @@
 	  </div>
 	  <div class="panel-body">
 	    <div class="row" id="create-event no-padding">
-	    	<div class="col-md-6 no-padding">
-	    		<div class="alert alert-info" role="alert">	  		
-	    			{% blocktrans  %}
-	    			<p>Leave both opening and closing time blank for days you do not open.</p>
-	    			{% endblocktrans %}
+	    	<div class="col-md-8 no-padding">
+	    		<div class="alert alert-warning" role="alert">
+	    			<p>{% trans "Please note that changes made here will override your" %} <a href="{% url 'customer:settings' %}">{% trans "overall settings" %}</a>, {% trans "but only for this schedule" %}.</p>
 	    		</div>
 	    		<form action="{% url 'venues:edit' pk=object.id %}" method="POST">
 	    		{% csrf_token %}
 	    		{% crispy form venue_helper %}
 	    		<h5>{% trans "Opening Hours" %}</h5>
+	    		<div class="alert alert-info" role="alert">	  		
+	    			{% blocktrans  %}
+	    			<p>Leave both opening and closing time blank for days you do not open.</p>
+	    			{% endblocktrans %}
+	    		</div>
 	    		{% crispy formset formset_helper %}
 	    		<button type="submit" class="btn btn-success">Save</button>
 	    		</form>
