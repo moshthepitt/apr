@@ -24,5 +24,9 @@
         limitDisplay: true
 	}, 
 	users: [{'id': {{object.id}}, 'name': '{{object.name|upper}}'},],
+	{% if object.allow_overlap %}
+	allowCalEventOverlap: true,
+	overlapEventsSeparate: true,
+	{% endif %}
 {% endblock %}
 {% endcache %}

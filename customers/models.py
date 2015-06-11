@@ -32,8 +32,10 @@ class Customer(models.Model):
         _("Number of days to show in main calendar"), choices=NUMBER_OF_DAYS_CHOICES, default=6)
     allow_overlap = models.BooleanField(_("Allow appointment overlap"), default=False, help_text=_(
         "Should we allow two or more appointments at the same time?"))
-    send_sms = models.BooleanField(_("Send text message reminder"), default=True)
-    send_email = models.BooleanField(_("Send email reminder"), default=True)
+    send_sms = models.BooleanField(
+        _("SMS reminder"), default=True, help_text=_("Should we send reminders by text message (SMS)?"))
+    send_email = models.BooleanField(
+        _("Email reminder"), default=True, help_text=_("Should we send reminders by email?"))
     # reminder stuff
     custom_reminder = models.BooleanField(_("Use custom script"), default=False, help_text=_(
         "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))

@@ -10,6 +10,7 @@ from customers.models import Customer
 
 
 class Venue(models.Model):
+
     """
     Model to store "schedules"
     """
@@ -18,7 +19,8 @@ class Venue(models.Model):
 
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
-    name = models.CharField(_('Venue name'), max_length=255, blank=True)
+    name = models.CharField(
+        verbose_name=getattr(labels, 'VENUE', _("Schedule")), max_length=255, blank=True)
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     main_calendar = models.BooleanField(_("Display in main calendar"), default=True, help_text=_(
@@ -28,6 +30,12 @@ class Venue(models.Model):
                                                 'active.'))
     shown_days = models.PositiveIntegerField(
         _("Number of days to show in calendar"), choices=NUMBER_OF_DAYS_CHOICES, default=6)
+    allow_overlap = models.BooleanField(_("Allow appointment overlap"), default=False, help_text=_(
+        "Should we allow two or more appointments at the same time?"))
+    send_sms = models.BooleanField(
+        _("SMS reminder"), default=True, help_text=_("Should we send reminders by text message (SMS)?"))
+    send_email = models.BooleanField(
+        _("Email reminder"), default=True, help_text=_("Should we send reminders by email?"))
     # reminder stuff
     custom_reminder = models.BooleanField(_("Use custom script"), default=False, help_text=_(
         "If you check this, we will use the custom script provided by you below.  Leave it blank to use the system default."))
