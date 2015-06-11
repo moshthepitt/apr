@@ -353,6 +353,10 @@
 						},
 					{% endfor %}
  				],	
+ 				{% if CUSTOMER.allow_overlap %}
+ 				allowCalEventOverlap: true,
+ 				overlapEventsSeparate: true,
+ 				{% endif %}
  				{% endblock %}	
             	showAsSeparateUser: true,            	
             	getUserId: function(user, index, calendar) {

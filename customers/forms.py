@@ -150,7 +150,7 @@ class CustomerSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Customer
-        fields = ['shown_days']
+        fields = ['shown_days', 'allow_overlap', 'send_sms', 'send_email']
 
     def __init__(self, *args, **kwargs):
         super(CustomerSettingsForm, self).__init__(*args, **kwargs)
@@ -159,6 +159,9 @@ class CustomerSettingsForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Field('shown_days'),
+            Field('allow_overlap'),
+            Field('send_sms'),
+            Field('send_email'),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
@@ -166,4 +169,7 @@ class CustomerSettingsForm(forms.ModelForm):
 
     def save_settings(self, customer):
         customer.shown_days = self.cleaned_data['shown_days']
+        customer.allow_overlap = self.cleaned_data['allow_overlap']
+        customer.send_sms = self.cleaned_data['send_sms']
+        customer.send_email = self.cleaned_data['send_email']
         customer.save()

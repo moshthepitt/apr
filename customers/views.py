@@ -110,6 +110,9 @@ class EditCustomerSettings(CustomerMixin, FormView):
     def get_initial(self):
         initial = super(EditCustomerSettings, self).get_initial()
         initial['shown_days'] = self.object.shown_days
+        initial['allow_overlap'] = self.object.allow_overlap
+        initial['send_sms'] = self.object.send_sms
+        initial['send_email'] = self.object.send_email
         return initial
 
     def form_valid(self, form):
