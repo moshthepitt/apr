@@ -7,7 +7,7 @@ from django.contrib.sites.models import Site
 from core.utils import replace_script_variables
 
 
-def send_email_reminder(appointment):
+def send_email_reminder(appointment, mailgun_campaign_id=None):
     current_site = Site.objects.get_current()
     current_site_domain = "http://" + current_site.domain
 
@@ -53,9 +53,11 @@ def send_email_reminder(appointment):
         email_html_body = render_to_string('appointments/email/reminder_email_body.html', c)
         sender = settings.REMINDER_FROM_EMAIL
 
-    email_headers = {
-        "X-Mailgun-Campaign-Id": "ffz23",
-    }
+    email_headers = {}
+    if mailgun_campaign_id:
+        email_headers = {
+            "X-Mailgun-Campaign-Id": mailgun_campaign_id,
+        }
 
     email = EmailMultiAlternatives(
         email_subject,  # subject

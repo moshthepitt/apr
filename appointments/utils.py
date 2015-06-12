@@ -8,7 +8,7 @@ from appointments.emails import send_email_reminder
 from appointments.sms import send_sms_reminder
 
 
-def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
+def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False, mailgun_campaign_id=None):
     """
     takes a Period object
     uses the Period to get appointments and then send reminders
@@ -27,7 +27,7 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False):
             if appointment.client.email:
                 if appointment.customer.send_email:
                     if appointment.venue.send_email:
-                        send_email_reminder(appointment)
+                        send_email_reminder(appointment, mailgun_campaign_id)
                         sent_email = True
             if True in [sent_email, sent_sms]:
                 if turn_off_reminders:

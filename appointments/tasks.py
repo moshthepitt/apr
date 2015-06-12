@@ -36,7 +36,7 @@ def task_day_before_reminders():
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=True)
+    send_period_reminders(event_ids, sendsms=True, mailgun_campaign_id="fi0bc")
 
 
 @periodic_task(
@@ -59,7 +59,7 @@ def task_morning_reminders():
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=False)
+    send_period_reminders(event_ids, sendsms=False, mailgun_campaign_id="ffz23")
 
 
 @periodic_task(
@@ -91,7 +91,7 @@ def task_hour_to_reminder():
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True)
+    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True, mailgun_campaign_id="fi0bd")
 
 
 @task(
