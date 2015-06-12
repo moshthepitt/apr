@@ -94,6 +94,31 @@ def task_hour_to_reminder():
     send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True, mailgun_campaign_id="fi0bd")
 
 
+@periodic_task(
+    run_every=(crontab(minute='*/15')),
+    name="task_immediate_reminder",
+    ignore_result=True
+)
+def task_immediate_reminder():
+    """
+    tries to send a reminder for appointments happening in the next 45 minutes that have NOT been notified
+    probably these were created very soon before the appointment start and thus were not caught by any other task
+    The idea is to catch any appointments happening very soon that have NOT been notified
+    """
+    t = timezone.localtime(timezone.now())
+    fro = t
+    to = t + timedelta(minutes=45)
+
+    period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__status=Appointment.NOTIFIED).exclude(
+        appointment__status=Appointment.CANCELED).exclude(
+        appointment__status=Appointment.CONFIRMED), fro, to)
+    event_objects = period.get_occurrences()
+    event_ids = list(set([x.event.id for x in event_objects]))
+
+    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True, mailgun_campaign_id="fi0cz")
+
+
 @task(
     name="task_send_cancel_email",
     ignore_result=True
