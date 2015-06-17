@@ -1,6 +1,8 @@
 {% extends "front-base.html" %}
 {% load i18n %}
+{% load cache %}
 
+{% cache 86400 flatpage flatpage.pk %}
 {% block title %}{{ flatpage.title }} | {{site.name}}{% endblock %}
 
 {% block all_content %}
@@ -15,3 +17,4 @@
 	    </div>
     </div>
 {% endblock %}
+{% endcache %}
