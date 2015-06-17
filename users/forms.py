@@ -66,8 +66,8 @@ class AddClientForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
-        self.fields['email'].required = True
-        self.fields['phone'].required = True
+        self.fields['email'].required = False
+        self.fields['phone'].required = False
         self.fields['first_name'].required = True
         self.fields['last_name'].required = False
         self.helper = FormHelper()

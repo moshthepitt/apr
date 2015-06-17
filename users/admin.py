@@ -21,7 +21,8 @@ class UserAdmin(UserAdmin):
 
 
 class ClientAdmin(admin.ModelAdmin):
-    pass
+    list_display = ['first_name', 'last_name', 'email', 'phone', 'customer']
+    list_filter = ['customer']
 
 
 # Re-register UserAdmin
