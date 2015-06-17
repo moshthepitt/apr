@@ -49,6 +49,7 @@
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
               <ul class="nav navbar-nav navbar-right">
+                <li><a href="{% url 'home' %}#who-can-use-it">{% trans "Use Cases" %}</a></li>
                 <li><a href="{% url 'pricing' %}">{% trans "Pricing" %}</a></li>
                 {% if request.user.is_authenticated %}
                   {% if CUSTOMER %}
