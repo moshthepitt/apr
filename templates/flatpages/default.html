@@ -2,10 +2,10 @@
 {% load i18n %}
 {% load cache %}
 
-{% cache 86400 flatpage flatpage.pk %}
-{% block title %}{{ flatpage.title }} | {{site.name}}{% endblock %}
+{% block title %}{% cache 86400 flatpage_title flatpage.pk %}{{ flatpage.title }} | {{site.name}}{% endcache %}{% endblock %}
 
 {% block all_content %}
+	{% cache 86400 flatpage_content flatpage.pk %}
 	<div id="main-page">
 	    <div class="row content-section">
 	      <div class="container">
@@ -16,5 +16,5 @@
 	      	{% include 'core/snippets/front-sidebar.html' %}
 	    </div>
     </div>
+    {% endcache %}
 {% endblock %}
-{% endcache %}
