@@ -22,6 +22,8 @@ SECRET_KEY = '(i=16yxj@9buj^9y_j0w)qhdm5ppk+8)g5k*0v^5*-r=@i5o+k'
 # Application definition
 
 INSTALLED_APPS = (
+    'suit',
+    # django
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,6 +45,7 @@ INSTALLED_APPS = (
     'randomslugfield',
     'cacheops',
     'wkhtmltopdf',
+    'suit_redactor',
     # custom
     'appointments',
     'users',

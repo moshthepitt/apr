@@ -80,5 +80,51 @@
     </div>
   </div>
 </div>
+<div class="row content-section grey-bg">
+  <div class="container">
+    <div class="col-md-12">
+      <h3>{% trans "Who can use AppointWare?" %}</h3>
+      <p>
+        {% blocktrans %}
+        AppointWare is essential for any kind of business that provides personal or professional services.  We will help you spend more time actually providing your service (meaning more revenue for you) than wasting time on the phone managing your clients' scheduling.  Some of the types of businesses that can definitely benefit from using AppointWare include health clinics, law firms, hair salons, massage therapy practices, auto repair business, and many more... some landlords even use AppointWare to remind tenants to pay the rent!
+        {% endblocktrans %}
+      </p>
+      <p>
+        {% blocktrans %}
+        Additionally, businesses that typically go to their customers (instead of them coming to you) can save a lot of time and money by using our automated reminders to prevent wasted trips.  These are businesses such as exterminators, cleaners, repairs, computer networking/installation, and the like.
+        {% endblocktrans %}
+      </p>
+      <p>
+        {% trans "AppointWare is a great choice for" %}:
+        <ul>
+          <li><a href="/doctors">{% trans "doctors and health professionals" %}</a></li>
+          <li><a href="/lawyers">{% trans "lawyers" %}</a></li>
+          <li><a href="/beauty-salons">{% trans "beauty salons" %}</a></li>          
+          <li><a href="/hair-salons">{% trans "hair salons" %}</a></li>          
+          <li><a href="/massage-therapists">{% trans "massage therapy practices" %}</a></li>
+          <li>{% trans "electricians" %}</li>
+          <li>{% trans "auto repair businesses" %}</li>
+          <li>{% trans "landlords" %}</li>
+          <li>{% trans "cleaners" %}</li>
+          <li>{% trans "and many others" %}</li>
+        </ul>
+      </p>
+    </div>
+    <div class="col-md-12 text-center">
+      <br/>
+      <p>
+        {% if request.user.is_authenticated %}
+          {% if CUSTOMER %}
+            <a href="{% url 'dashboard' %}" class="btn btn-lg btn-success">{% trans "Dashboard" %}</a>
+          {% else %}
+            <a href="{% url 'new_customer' %}" class="btn btn-lg btn-success">{% trans "Set Up Account" %}</a>
+          {% endif %}
+        {% else %}
+          <a href="{% url 'account_signup' %}" class="btn btn-lg btn-success">{% trans "Start Your Free Trial" %}</a>
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>
 {% endcache %}
 {% endblock %}

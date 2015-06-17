@@ -26,7 +26,7 @@ class Customer(models.Model):
     email = models.EmailField(_('Email address'), blank=True)
     phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True)
     is_active = models.BooleanField(_('Active'), default=True,
-                                    help_text=_('Designates whether this assistant should be treated as '
+                                    help_text=_('Designates whether this customer should be treated as '
                                                 'active.'))
     shown_days = models.PositiveIntegerField(
         _("Number of days to show in main calendar"), choices=NUMBER_OF_DAYS_CHOICES, default=6)

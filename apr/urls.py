@@ -35,7 +35,7 @@ urlpatterns = patterns('',
     url(r'^cancel/(?P<slug>[\w-]+)/$', AppointmentClientCancel.as_view(), name='cancel_appointment'),
 
     # flat pages
-    url(r'^page/', include('django.contrib.flatpages.urls')),
+    url(r'^', include('django.contrib.flatpages.urls')),
 )
 
 if settings.DEBUG:
