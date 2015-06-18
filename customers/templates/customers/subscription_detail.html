@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+
+{% block title %}{{object.name}}{% endblock %}
+
+{% block main_content %}
+{% cache 600 customerselectplan CUSTOMER.pk object.pk request.user.pk %}
+<div class="row content-section page">
+    <div class="container">
+        <div class="col-md-10 no-padding">
+            <h3>{{object.name}}</h3>
+            <p>{{object.description}}</p>
+            <p>{{object.max_schedules}} {% trans "schedules, up to" %} {{object.max_appointments}} {% trans "appointments per month." %}</p>
+            <p>
+               <strong>{% trans "Monthly charge" %}</strong>: {% trans "KES" %} {{object.price}}
+            </p>
+            <div class="row">
+                <div class="col-md-8 no-padding bottom-20">
+                    <div class="panel panel-info">
+                      <div class="panel-heading">Instructions on how to pay</div>
+                      <div class="panel-body">
+                        <h4>Please send <strong>KES {{object.price}}</strong> to Till No. <strong>594874</strong></h4>
+
+                        <div class="mpesa-instructions">
+                          <p>
+                            <h5>Steps to follow</h5>
+                            <ol>
+                              <li>On your Safaricom phone go the M-PESA menu</li>
+                              <li>Select Lipa Na M-PESA and then select Buy Goods and Services</li>
+                              <li>Enter the Till Number <strong>594874</strong> </li>
+                              <li>Enter exactly <strong>KES {{object.price}}</strong> as the amount</li>
+                              <li>Follow subsequent prompts to complete the transaction. </li>
+                              <li>Please input the confirmation code that you received from M-PESA above.</li>
+                              <li>You will then get a confirmation message from M-PESA and an email from EatOut with your PDF tickets attached.  Please remember to print these tickets for the event.</li>
+                            </ol>
+                          </p>
+                        </div>                   
+
+                        {% crispy form %}
+                      </div>
+                    </div>
+                    
+                </div>      
+                <div class="clearfix"></div>        
+            </div>
+        </div>
+    </div>
+</div>
+{% endcache %}
+{% endblock %}

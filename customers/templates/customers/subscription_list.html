@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load cache %}
+
+{% block title %}{% trans "Your Subscription" %}{% endblock %}
+
+{% block main_content %}
+{% cache 600 customersubscription CUSTOMER.pk request.user.pk %}
+<div class="row content-section page">
+    <div class="container">
+        <div class="col-md-12 no-padding">
+            <h3>{% trans "Your Subscription" %}</h3>
+
+            <div class="row">
+                <div class="col-md-11 no-padding bottom-20">
+                <h4>{% trans "Account Details" %}</h4>
+                {% if CUSTOMER.customersubscription.status == CUSTOMER.customersubscription.TRIALING %}
+                    <P>
+                        {% trans "Your free trial lasts until" %} <strong>{{CUSTOMER.customersubscription.trial_end}}</strong>
+                    </P>
+                {% endif %}
+
+                <p>
+                <strong>{% trans "Account Type" %}</strong>: {{CUSTOMER.customersubscription.subscription.name}}</br>
+                <strong>{% trans "Price Per Month" %}</strong>: {% trans "KES" %} {{CUSTOMER.customersubscription.subscription.price}}</br>
+                <strong>{% trans "Next Charge" %}</strong>: {{CUSTOMER.customersubscription.next_charge_date}} {% trans "(We charge one day before your account expires, to prevent anything from causing you a lapse in service.)" %}
+                </p>
+                </br>
+                <h4>{% trans "Upgrading Or Downgrading Your Account" %}</h4>
+                <p>{% trans "You can upgrade or downgrade your account at any time. We always try to treat you fairly." %}</p>
+                <p>
+                    {% trans "If you downgrade your account, we pro-rate your time remaining and give you a credit against future renewals. If you upgrade your account, we will charge you the pro-rated difference for the rest of your current billing cycle now. In either case, your renewal will happen on the day listed above, for the new rate." %}
+                </p>
+                <p>
+                    <ul>
+                    {% for object in object_list %}
+                        <li>
+                            {% if CUSTOMER.customersubscription.subscription == object%}
+                            <strong>{{object.name}} ({% trans "Your current plan." %} {{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price}} {% trans "per month" %})</strong>
+                            {% else %}
+                            <a href="{% url 'customer:plan' object.pk %}">{% trans "Switch to" %} {{object.name}}</a> ({{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price}} {% trans "per month" %})
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </p>
+                </div>      
+                <div class="clearfix"></div>        
+            </div>
+        </div>
+    </div>
+</div>
+{% endcache %}
+{% endblock %}

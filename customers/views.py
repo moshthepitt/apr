@@ -1,6 +1,7 @@
 from django.views.generic.edit import FormView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import FormMixin
+from django.views.generic.list import ListView
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
@@ -10,6 +11,7 @@ from core.utils import invalidate_caches
 
 from customers.mixins import CustomerMixin
 from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm, CustomerSettingsForm
+from customers.forms import MPESAForm
 from subscriptions.models import Subscription
 
 
@@ -50,24 +52,24 @@ class EditCustomer(CustomerMixin, FormView):
 
     def get_initial(self):
         initial = super(EditCustomer, self).get_initial()
-        initial['name'] = self.object.name
-        initial['email'] = self.object.email
-        initial['phone'] = self.object.phone
+        initial['name'] = self.customer.name
+        initial['email'] = self.customer.email
+        initial['phone'] = self.customer.phone
         return initial
 
     def form_valid(self, form):
-        form.save_customer(self.object)
+        form.save_customer(self.customer)
 
         # invalidate caches
-        invalidate_caches('customeredit', [self.object.id, self.request.user.id])
-        invalidate_caches('dashboard', [self.object.id, self.request.user.id])
+        invalidate_caches('customeredit', [self.customer.id, self.request.user.id])
+        invalidate_caches('dashboard', [self.customer.id, self.request.user.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
         return super(EditCustomer, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        self.object = self.request.user.userprofile.customer
+        self.customer = self.request.user.userprofile.customer
 
         return super(EditCustomer, self).dispatch(*args, **kwargs)
 
@@ -79,27 +81,27 @@ class EditCustomerScript(CustomerMixin, FormView):
 
     def get_initial(self):
         initial = super(EditCustomerScript, self).get_initial()
-        initial['custom_reminder'] = self.object.custom_reminder
-        initial['reminder_sender'] = self.object.reminder_sender
-        initial['reminder_subject'] = self.object.reminder_subject
-        initial['reminder_email'] = self.object.reminder_email
-        initial['reminder_sms'] = self.object.reminder_sms
-        initial['show_confirm_link'] = self.object.show_confirm_link
-        initial['show_cancel_link'] = self.object.show_cancel_link
+        initial['custom_reminder'] = self.customer.custom_reminder
+        initial['reminder_sender'] = self.customer.reminder_sender
+        initial['reminder_subject'] = self.customer.reminder_subject
+        initial['reminder_email'] = self.customer.reminder_email
+        initial['reminder_sms'] = self.customer.reminder_sms
+        initial['show_confirm_link'] = self.customer.show_confirm_link
+        initial['show_cancel_link'] = self.customer.show_cancel_link
         return initial
 
     def form_valid(self, form):
-        form.save_script(self.object)
+        form.save_script(self.customer)
 
         # invalidate caches
-        invalidate_caches('customerscript', [self.object.id, self.request.user.id])
+        invalidate_caches('customerscript', [self.customer.id, self.request.user.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
         return super(EditCustomerScript, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        self.object = self.request.user.userprofile.customer
+        self.customer = self.request.user.userprofile.customer
 
         return super(EditCustomerScript, self).dispatch(*args, **kwargs)
 
@@ -111,37 +113,38 @@ class EditCustomerSettings(CustomerMixin, FormView):
 
     def get_initial(self):
         initial = super(EditCustomerSettings, self).get_initial()
-        initial['shown_days'] = self.object.shown_days
-        initial['allow_overlap'] = self.object.allow_overlap
-        initial['send_sms'] = self.object.send_sms
-        initial['send_email'] = self.object.send_email
+        initial['shown_days'] = self.customer.shown_days
+        initial['allow_overlap'] = self.customer.allow_overlap
+        initial['send_sms'] = self.customer.send_sms
+        initial['send_email'] = self.customer.send_email
         return initial
 
     def form_valid(self, form):
-        form.save_settings(self.object)
+        form.save_settings(self.customer)
 
         # invalidate caches
-        invalidate_caches('customersettings', [self.object.id, self.request.user.id])
-        invalidate_caches('dashboard', [self.object.id, self.request.user.id])
+        invalidate_caches('customersettings', [self.customer.id, self.request.user.id])
+        invalidate_caches('dashboard', [self.customer.id, self.request.user.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
         return super(EditCustomerSettings, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        self.object = self.request.user.userprofile.customer
+        self.customer = self.request.user.userprofile.customer
 
         return super(EditCustomerSettings, self).dispatch(*args, **kwargs)
 
 
 class PlanView(FormMixin, DetailView):
     model = Subscription
+    template_name = 'customers/subscription_detail.html'
 
     def get_success_url(self):
         return reverse('dashboard')
 
     def get_form_class(self):
-        return None
+        return MPESAForm
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
@@ -163,3 +166,13 @@ class PlanView(FormMixin, DetailView):
         self.object = self.get_object()
         self.customer = self.request.user.userprofile.customer
         return super(PlanView, self).dispatch(*args, **kwargs)
+
+
+class SubscriptionListView(ListView):
+
+    model = Subscription
+    template_name = 'customers/subscription_list.html'
+
+    def dispatch(self, *args, **kwargs):
+        self.customer = self.request.user.userprofile.customer
+        return super(SubscriptionListView, self).dispatch(*args, **kwargs)

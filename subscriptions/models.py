@@ -139,5 +139,13 @@ class CustomerSubscription(models.Model):
         self.status = self.ACTIVE
         self.save()
 
+    @property
+    def next_charge_date(self):
+        if self.status == self.TRIALING:
+            return self.trial_end - timedelta(days=1)
+        if self.current_period_end:
+            return self.current_period_end - timedelta(days=1)
+        return timezone.now()
+
     def __str__(self):
         return "{customer} {sub}".format(customer=self.customer, sub=self.subscription)

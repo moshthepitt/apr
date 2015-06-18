@@ -173,3 +173,19 @@ class CustomerSettingsForm(forms.ModelForm):
         customer.send_sms = self.cleaned_data['send_sms']
         customer.send_email = self.cleaned_data['send_email']
         customer.save()
+
+
+class MPESAForm(forms.Form):
+    receipt = forms.CharField(label=_("MPESA confirmation code"))
+
+    def __init__(self, *args, **kwargs):
+        super(MPESAForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-mpesa-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('receipt'),
+            ButtonHolder(
+                Submit('submit', _('Submit'), css_class='btn-success')
+            )
+        )

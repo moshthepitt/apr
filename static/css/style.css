@@ -54,3 +54,7 @@ th.control-group.error .form-control {
   width: 191px;
   margin-bottom:20px;
 }
+
+.container {
+  min-height:500px;
+}
