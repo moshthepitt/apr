@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from appointments.ajax import venue_event_feed, printable_event_feed, calendar_event_feed
@@ -10,7 +10,7 @@ from appointments.views import AppointmentEdit, AppointmentDatatableView, Appoin
 from venues.views import VenueCalendarView
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     # ajax
     url(r'^feed/venue/(?P<pk>\d+)/$', venue_event_feed, name='venue_event_feed'),
     url(r'^printable-feed/$', login_required(printable_event_feed), name='printable_event_feed'),
@@ -35,4 +35,4 @@ urlpatterns = patterns('',
     url(r'^edit-event-form/(?P<pk>\d+)/$', login_required(process_edit_event_form), name='process_edit_event_form'),
     url(r'^snippet/(?P<pk>\d+)/$', login_required(AppointmentSnippetView.as_view()), name='appointment_snippet'),
     url(r'^client-snippet/$', login_required(AddAppointmentSnippetView.as_view()), name='appointment_client_snippet'),
-)
+]

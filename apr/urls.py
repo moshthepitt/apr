@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
@@ -8,7 +8,7 @@ from apr.views import SupportView
 from appointments.views import AppointmentClientConfirm, AppointmentClientCancel
 from customers.views import NewCustomer
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^pricing/$', PricingView.as_view(), name='pricing'),
     url(r'^support/$', SupportView.as_view(), name='support'),
@@ -36,10 +36,10 @@ urlpatterns = patterns('',
 
     # flat pages
     url(r'^', include('django.contrib.flatpages.urls')),
-)
+]
 
 if settings.DEBUG:
     # static files (images, css, javascript, etc.)
-    urlpatterns += patterns('',
-        (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT})
-    )
+    urlpatterns += [
+        url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT})
+    ]
