@@ -1,5 +1,7 @@
 from django.views.generic.edit import FormView
-from django.core.urlresolvers import reverse_lazy
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import FormMixin
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.shortcuts import redirect
 from django.contrib import messages
 from django.utils.translation import ugettext as _
@@ -130,3 +132,34 @@ class EditCustomerSettings(CustomerMixin, FormView):
         self.object = self.request.user.userprofile.customer
 
         return super(EditCustomerSettings, self).dispatch(*args, **kwargs)
+
+
+class PlanView(FormMixin, DetailView):
+    model = Subscription
+
+    def get_success_url(self):
+        return reverse('dashboard')
+
+    def get_form_class(self):
+        return None
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        return super(PlanView, self).form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super(PlanView, self).get_context_data(**kwargs)
+        form = self.get_form()
+        context['form'] = form
+        return context
+
+    def dispatch(self, *args, **kwargs):
+        self.object = self.get_object()
+        self.customer = self.request.user.userprofile.customer
+        return super(PlanView, self).dispatch(*args, **kwargs)
