@@ -141,7 +141,7 @@ class PlanView(FormMixin, DetailView):
     template_name = 'customers/subscription_detail.html'
 
     def get_success_url(self):
-        return reverse('dashboard')
+        return reverse('customer:subscription')
 
     def get_form_class(self):
         return MPESAForm

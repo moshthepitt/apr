@@ -61,7 +61,7 @@ class Invoice(models.Model):
         verbose_name_plural = _("Invoices")
 
     def __str__(self):
-        return self.pk
+        return str(self.pk)
 
 
 class MPESAReceipt(models.Model):

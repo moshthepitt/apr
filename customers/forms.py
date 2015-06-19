@@ -9,6 +9,7 @@ from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
 from customers.models import Customer
 
 from subscriptions.models import Subscription, CustomerSubscription
+from invoices.models import Invoice, MPESAReceipt
 from venues.utils import new_default_venue
 
 
@@ -177,6 +178,23 @@ class CustomerSettingsForm(forms.ModelForm):
 
 class MPESAForm(forms.Form):
     receipt = forms.CharField(label=_("MPESA confirmation code"))
+
+    def save_receipt(self, customer, subscription):
+        invoice = Invoice(
+            customer=customer,
+            date=timezone.now(),
+            name=customer.name,
+            description=_("Upgrade/downgrade {subscription}").format(subscription=subscription.name),
+            amount=subscription.price,
+            method=Invoice.LIPA_NA_MPESA,
+            upgrade_to=subscription
+        )
+        invoice.save()
+        receipt, created = MPESAReceipt.objects.get_or_create(
+            receipt=self.cleaned_data['receipt'],
+            customer=customer,
+            invoice=invoice
+        )
 
     def __init__(self, *args, **kwargs):
         super(MPESAForm, self).__init__(*args, **kwargs)
