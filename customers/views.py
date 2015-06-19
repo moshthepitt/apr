@@ -38,7 +38,8 @@ class NewCustomer(FormView):
         return super(NewCustomer, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        # if current user is already tied to a customer that has a subscription then redirect them away
+        # if current user is already tied to a customer that has a subscription
+        # then redirect them away
         if self.request.user.userprofile.customer and self.request.user.userprofile.customer.has_subscription():
             return redirect('dashboard')
         return super(NewCustomer, self).dispatch(*args, **kwargs)
@@ -152,7 +153,7 @@ class PlanView(CustomerMixin, FormMixin, DetailView):
     def form_valid(self, form):
         form.save_receipt(self.customer, self.object)
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved'))
+            self.request, messages.SUCCESS, _('Thank you for your payment, we will update your account shortly.'))
 
         # ivalidate caches
         invalidate_caches('customersubscription', [self.customer.id])
@@ -201,7 +202,7 @@ class PayView(LesserCustomerMixin, FormView):
         invalidate_caches('customerpay', [self.customer.id])
 
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved'))
+            self.request, messages.SUCCESS, _('Thank you for your payment, we will update your account shortly.'))
         return super(PayView, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
