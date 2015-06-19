@@ -11,7 +11,7 @@
 {% block title %}{% trans "Edit Client" %} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-	{% cache 1200 cueditview request.user.pk object.pk %}
+	{% cache 1200 cueditview CUSTOMER.pk object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

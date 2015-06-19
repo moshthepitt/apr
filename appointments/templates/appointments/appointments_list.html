@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block main_content %}
-	{% cache 1200 applist CUSTOMER.pk request.user.pk %}
+	{% cache 1200 applist CUSTOMER.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

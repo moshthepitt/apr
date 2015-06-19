@@ -6,7 +6,7 @@
 
 {% block title %}{{object.get_full_name}} | {{site.name}}{% endblock %}
 {% block main_content %}
-	{% cache 1200 cudetailview request.user.pk object.pk %}
+	{% cache 1200 cudetailview CUSTOMER.pk object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

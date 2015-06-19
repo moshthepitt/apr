@@ -12,7 +12,7 @@
 {% block title %}{% trans "Edit" %} {{object.event.title}} | {{site.name}}{% endblock %}
 
 {% block main_content %}
-	{% cache 600 evedit request.user.pk object.pk %}
+	{% cache 600 evedit CUSTOMER.pk object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

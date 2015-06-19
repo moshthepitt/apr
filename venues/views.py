@@ -70,10 +70,10 @@ class VenueUpdate(CustomerMixin, UpdateView):
 
         # invalidate caches
         invalidate_caches('vuedit', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('vuview', [self.get_object().customer.pk, self.request.user.pk, self.get_object().pk])
-        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.pk])
-        invalidate_caches('vucal', [self.request.user.pk, self.get_object().pk])
-        invalidate_caches('vudel', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('vuview', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('dashboard', [self.get_object().customer.pk])
+        invalidate_caches('vucal', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('vudel', [self.get_object().customer.pk, self.get_object().pk])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))

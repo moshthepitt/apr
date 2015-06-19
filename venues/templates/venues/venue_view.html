@@ -6,7 +6,7 @@
 
 {% block title %}{{object}} {% trans "Schedule details" %} | {{site.name}}{% endblock %}
 {% block main_content %}
-	{% cache 1200 vuview CUSTOMER.pk request.user.pk object.pk %}
+	{% cache 1200 vuview CUSTOMER.pk object.pk %}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">

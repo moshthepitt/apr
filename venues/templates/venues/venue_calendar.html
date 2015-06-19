@@ -6,7 +6,7 @@
 {% block title %}{{object}} {% trans "Calendar" %}{% endblock %}
 {% block calendar_title %}{{object}} {% trans "Calendar" %}{% endblock %}
 
-{% cache 600 vucal request.user.pk object.pk %}
+{% cache 600 vucal CUSTOMER.pk object.pk %}
 {% block schedule_specific_js %}
 	daysToShow: {{object.shown_days}},
 	data: "{% url 'appointments:venue_event_feed' pk=object.pk %}",

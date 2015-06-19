@@ -60,8 +60,8 @@ class EditCustomer(CustomerMixin, FormView):
         form.save_customer(self.customer)
 
         # invalidate caches
-        invalidate_caches('customeredit', [self.customer.id, self.request.user.id])
-        invalidate_caches('dashboard', [self.customer.id, self.request.user.id])
+        invalidate_caches('customeredit', [self.customer.id])
+        invalidate_caches('dashboard', [self.customer.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
@@ -92,7 +92,7 @@ class EditCustomerScript(CustomerMixin, FormView):
         form.save_script(self.customer)
 
         # invalidate caches
-        invalidate_caches('customerscript', [self.customer.id, self.request.user.id])
+        invalidate_caches('customerscript', [self.customer.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
@@ -120,8 +120,8 @@ class EditCustomerSettings(CustomerMixin, FormView):
         form.save_settings(self.customer)
 
         # invalidate caches
-        invalidate_caches('customersettings', [self.customer.id, self.request.user.id])
-        invalidate_caches('dashboard', [self.customer.id, self.request.user.id])
+        invalidate_caches('customersettings', [self.customer.id])
+        invalidate_caches('dashboard', [self.customer.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
@@ -155,7 +155,7 @@ class PlanView(CustomerMixin, FormMixin, DetailView):
             self.request, messages.SUCCESS, _('Successfully saved'))
 
         # ivalidate caches
-        invalidate_caches('customersubscription', [self.customer.id, self.request.user.id])
+        invalidate_caches('customersubscription', [self.customer.id])
         return super(PlanView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):

@@ -50,11 +50,11 @@ class ClientUpdate(CustomerMixin, UpdateView):
 
     def form_valid(self, form):
         # invalidate caches
-        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.pk])
-        invalidate_caches('cudelview', [self.request.user.pk, self.get_object().pk])
-        invalidate_caches('cueditview', [self.request.user.pk, self.get_object().pk])
-        invalidate_caches('culistview', [self.get_object().customer.pk, self.request.user.pk])
-        invalidate_caches('cudetailview', [self.request.user.pk, self.get_object().pk])
+        invalidate_caches('dashboard', [self.get_object().customer.pk])
+        invalidate_caches('cudelview', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('cueditview', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('culistview', [self.get_object().customer.pk])
+        invalidate_caches('cudetailview', [self.get_object().customer.pk, self.get_object().pk])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
