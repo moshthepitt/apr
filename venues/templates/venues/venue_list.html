@@ -19,11 +19,9 @@
 	    </h3>
 	  </div>
 	  <div class="panel-body">
-	  	<div class="alert alert-info" role="alert">	  		
-	  		{% blocktrans with CUSTOMER.number_of_venues as venues and CUSTOMER.customersubscription.subscription.max_schedules as max_schedules %}
-	  		<p>A schedule represents one resource -- a room, service provider, machine, etc -- whose appointments need to be tracked. You have <strong>{{venues}} schedules</strong> and can create up to <strong>{{max_schedules}} schedules</strong> at your subscription level. If you need more, please <strong><a href="#">upgrade your account</a></strong>.</p>
-	  		<p>You can configure what days and times are available for each schedule (for example, Monday ~ Friday, 10 AM to 7 PM, etc).</p>
-	  		{% endblocktrans %}
+	  	<div class="alert alert-info" role="alert">	 
+	  		<p>{% trans "A schedule represents one resource -- a room, service provider, machine, etc -- whose appointments need to be tracked. You have" %} <strong>{{CUSTOMER.number_of_venues}} {% trans "schedules" %}</strong> {% trans "and can create up to" %} <strong>{{CUSTOMER.customersubscription.subscription.max_schedules}} {% trans "schedules" %}</strong> {% trans "at your subscription level. If you need more, please" %} <strong><a href="{% url 'customer:subscription' %}">{% trans "upgrade your account" %}</a></strong>.</p>
+	  		<p>{% trans "You can configure what days and times are available for each schedule (for example, Monday ~ Friday, 10 AM to 7 PM, etc)." %}</p>
 	  	</div>
 	    {{ datatable }}
 	  </div>
