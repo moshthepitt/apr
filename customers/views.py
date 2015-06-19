@@ -154,6 +154,9 @@ class PlanView(FormMixin, DetailView):
             return self.form_invalid(form)
 
     def form_valid(self, form):
+        form.save_receipt(self.customer, self.object)
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved'))
         return super(PlanView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):

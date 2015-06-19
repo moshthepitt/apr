@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
 from customers.models import Customer
+from subscriptions.models import Subscription
 
 
 class Invoice(models.Model):
@@ -52,6 +53,8 @@ class Invoice(models.Model):
         _("Subscription Period Start"), blank=True, null=True, default=None)
     subscription_period_end = models.DateTimeField(
         _("Subscription Period End"), blank=True, null=True, default=None)
+    upgrade_to = models.ForeignKey(Subscription, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name=_(
+        "Subscription"), help_text=_("Use this field in case the payment was for a subscription upgrade/downgrade"))
 
     class Meta:
         verbose_name = _("Invoice")
@@ -65,7 +68,7 @@ class MPESAReceipt(models.Model):
     created_on = models.DateTimeField(_("Created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("Updated on"), auto_now=True)
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT, verbose_name=_("Customer"))
-    receipt = models.CharField(_("MPESA Confirmation Code"), max_length=50)
+    receipt = models.CharField(_("MPESA Confirmation Code"), max_length=50, unique=True)
     invoice = models.ForeignKey(Invoice, on_delete=models.PROTECT, verbose_name=_("Invoice"))
 
     class Meta:
@@ -74,4 +77,3 @@ class MPESAReceipt(models.Model):
 
     def __str__(self):
         return self.receipt
-
