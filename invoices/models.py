@@ -54,7 +54,7 @@ class Invoice(models.Model):
     subscription_period_end = models.DateTimeField(
         _("Subscription Period End"), blank=True, null=True, default=None)
     upgrade_to = models.ForeignKey(Subscription, on_delete=models.PROTECT, blank=True, null=True, default=None, verbose_name=_(
-        "Subscription"), help_text=_("Use this field in case the payment was for a subscription upgrade/downgrade"))
+        "Upgrade to Subscription"), help_text=_("Use this field in case the payment was for a subscription upgrade/downgrade"))
 
     class Meta:
         verbose_name = _("Invoice")

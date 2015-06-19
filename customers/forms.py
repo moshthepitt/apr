@@ -184,7 +184,7 @@ class MPESAForm(forms.Form):
             customer=customer,
             date=timezone.now(),
             name=customer.name,
-            description=_("Upgrade/downgrade {subscription}").format(subscription=subscription.name),
+            description=_("Upgrade/downgrade to {subscription}").format(subscription=subscription.name),
             amount=subscription.price,
             method=Invoice.LIPA_NA_MPESA,
             upgrade_to=subscription
