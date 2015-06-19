@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% load i18n %}
+{% load crispy_forms_tags %}
 {% load cache %}
+{% load humanize %}
 
 {% block title %}{% trans "Your Subscription" %}{% endblock %}
 
@@ -23,10 +25,41 @@
 
                 <p>
                 <strong>{% trans "Account Type" %}</strong>: {{CUSTOMER.customersubscription.subscription.name}}</br>
-                <strong>{% trans "Price Per Month" %}</strong>: {% trans "KES" %} {{CUSTOMER.customersubscription.subscription.price}}</br>
+                <strong>{% trans "Price Per Month" %}</strong>: {% trans "KES" %} {{CUSTOMER.customersubscription.subscription.price|floatformat:2|intcomma}}</br>
                 <strong>{% trans "Next Charge" %}</strong>: {{CUSTOMER.customersubscription.next_charge_date}} {% trans "(We charge one day before your account expires, to prevent anything from causing you a lapse in service.)" %}
                 </p>
                 </br>
+
+                {% if not CUSTOMER.customersubscription.active %}
+                <h4>{% trans "Make Payment" %}</h4>
+                <div class="row">
+                  <div class="col-md-8 no-padding bottom-20">
+                    <div class="panel panel-info">
+                      <div class="panel-heading">{% trans "Instructions on how to pay" %}</div>
+                      <div class="panel-body">
+                        <h4>{% trans "Please send" %} <strong>{% trans "KES" %} {{CUSTOMER.customersubscription.subscription.price|floatformat:2|intcomma}}</strong> {% trans "to Till No." %} <strong>594874</strong></h4>
+
+                        <div class="mpesa-instructions">
+                          <p>
+                            <h5>{% trans "Steps to follow" %}</h5>
+                            <ol>
+                              <li>{% trans "On your Safaricom phone go the M-PESA menu" %}</li>
+                              <li>{% trans "Select Lipa Na M-PESA and then select Buy Goods and Services" %}</li>
+                              <li>{% trans "Enter the Till Number <strong>594874</strong> " %}</li>
+                              <li>{% trans "Enter exactly" %} <strong>{% trans "KES" %} {{CUSTOMER.customersubscription.subscription.price|floatformat:2|intcomma}}</strong> {% trans "as the amount" %}</li>
+                              <li>{% trans "Follow subsequent prompts to complete the transaction." %}</li>
+                              <li>{% trans "Please input the confirmation code that you received from M-PESA below." %}</li>
+                            </ol>
+                          </p>
+                        </div>
+                        {% crispy form MPESAFormHelper %}
+                      </div>
+                    </div>        
+                  </div>      
+                  <div class="clearfix"></div>        
+                </div>                
+                {% endif %}
+                
                 <h4>{% trans "Upgrading Or Downgrading Your Account" %}</h4>
                 <p>{% trans "You can upgrade or downgrade your account at any time." %}</p>
                 <p>
@@ -37,9 +70,9 @@
                     {% for object in object_list %}
                         <li>
                             {% if CUSTOMER.customersubscription.subscription == object%}
-                            <strong>{{object.name}} ({% trans "Your current plan." %} {{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price}} {% trans "per month" %})</strong>
+                            <strong>{{object.name}} ({% trans "Your current plan." %} {{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})</strong>
                             {% else %}
-                            <a href="{% url 'customer:plan' object.pk %}">{% trans "Switch to" %} {{object.name}}</a> ({{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price}} {% trans "per month" %})
+                            <a href="{% url 'customer:plan' object.pk %}">{% trans "Switch to" %} {{object.name}}</a> ({{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})
                             {% endif %}
                         </li>
                     {% endfor %}

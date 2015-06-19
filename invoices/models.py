@@ -59,6 +59,7 @@ class Invoice(models.Model):
     class Meta:
         verbose_name = _("Invoice")
         verbose_name_plural = _("Invoices")
+        ordering = ['-date']
 
     def __str__(self):
         return str(self.pk)

@@ -2,6 +2,7 @@
 from django import forms
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.core.urlresolvers import reverse
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
@@ -184,10 +185,28 @@ class MPESAForm(forms.Form):
             customer=customer,
             date=timezone.now(),
             name=customer.name,
-            description=_("Upgrade/downgrade to {subscription}").format(subscription=subscription.name),
+            description=_(
+                "Upgrade/downgrade to {subscription}").format(subscription=subscription.name),
             amount=subscription.price,
             method=Invoice.LIPA_NA_MPESA,
             upgrade_to=subscription
+        )
+        invoice.save()
+        receipt, created = MPESAReceipt.objects.get_or_create(
+            receipt=self.cleaned_data['receipt'],
+            customer=customer,
+            invoice=invoice
+        )
+
+    def save_payment(self, customer):
+        invoice = Invoice(
+            customer=customer,
+            date=timezone.now(),
+            name=customer.name,
+            description=_("{subscription} subscription payment").format(
+                subscription=customer.customersubscription.subscription),
+            amount=customer.customersubscription.subscription.price,
+            method=Invoice.LIPA_NA_MPESA,
         )
         invoice.save()
         receipt, created = MPESAReceipt.objects.get_or_create(
@@ -207,3 +226,19 @@ class MPESAForm(forms.Form):
                 Submit('submit', _('Submit'), css_class='btn-success')
             )
         )
+
+
+def MPESAFormHelper():
+    """the MPESA form with action to payment page"""
+    helper = FormHelper()
+    helper.form_id = 'id-mpesa-form'
+    helper.form_action = reverse('customer:pay')
+    helper.form_method = 'post'
+    helper.layout = Layout(
+        Field('receipt'),
+        ButtonHolder(
+            Submit('submit', _('Submit'), css_class='btn-success')
+        )
+    )
+
+    return helper

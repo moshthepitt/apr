@@ -1,8 +1,11 @@
 from django.shortcuts import redirect
 from django.http import Http404
+from django.contrib import messages
+from django.utils.translation import ugettext as _
 
 
 class CustomerMixin(object):
+
     """
     Alters view behaviour based on Customer
         if customer does not exist then redirect to new customer signup page
@@ -14,17 +17,24 @@ class CustomerMixin(object):
         if self.request.user.is_authenticated():
             # if current user is not tied to a customer then redirect them away
             if not self.request.user.userprofile.customer:
+                messages.add_message(
+                    self.request, messages.INFO, _('Please set up your account to get started'))
                 return redirect('new_customer')
             # if current user is not tied to a subscription then redirect them away
             if not self.request.user.userprofile.customer.has_subscription():
+                messages.add_message(
+                    self.request, messages.INFO, _('Please set up your account to get started'))
                 return redirect('new_customer')
             # if subscription not active redirect to payment page
             if not self.request.user.userprofile.customer.customersubscription.active:
+                messages.add_message(self.request, messages.INFO, _(
+                    'Your account is not active, please make a payment to activate it.'))
                 return redirect('customer:subscription')
         return super(CustomerMixin, self).dispatch(*args, **kwargs)
 
 
 class Customer404Mixin(object):
+
     """
     Like CustomerMixin but raises Http404 is wrong/no customer
     """
@@ -44,6 +54,7 @@ class Customer404Mixin(object):
 
 
 class LesserCustomerMixin(object):
+
     """
     Like CustomerMixin but raises Http404 is wrong/no customer but does not check if sub is active
     """

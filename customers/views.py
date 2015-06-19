@@ -11,7 +11,7 @@ from core.utils import invalidate_caches
 
 from customers.mixins import CustomerMixin, LesserCustomerMixin
 from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm, CustomerSettingsForm
-from customers.forms import MPESAForm
+from customers.forms import MPESAForm, MPESAFormHelper
 from subscriptions.models import Subscription
 
 
@@ -156,6 +156,8 @@ class PlanView(CustomerMixin, FormMixin, DetailView):
 
         # ivalidate caches
         invalidate_caches('customersubscription', [self.customer.id])
+        invalidate_caches('customerpay', [self.customer.id])
+
         return super(PlanView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -175,6 +177,33 @@ class SubscriptionListView(LesserCustomerMixin, ListView):
     model = Subscription
     template_name = 'customers/subscription_list.html'
 
+    def get_context_data(self, **kwargs):
+        context = super(SubscriptionListView, self).get_context_data(**kwargs)
+        context['form'] = MPESAForm()
+        context['MPESAFormHelper'] = MPESAFormHelper
+        return context
+
     def dispatch(self, *args, **kwargs):
         self.customer = self.request.user.userprofile.customer
         return super(SubscriptionListView, self).dispatch(*args, **kwargs)
+
+
+class PayView(LesserCustomerMixin, FormView):
+    template_name = 'customers/pay.html'
+    form_class = MPESAForm
+    success_url = reverse_lazy('customer:subscription')
+
+    def form_valid(self, form):
+        form.save_payment(self.customer)
+
+        # invalidate caches
+        invalidate_caches('customersubscription', [self.customer.id])
+        invalidate_caches('customerpay', [self.customer.id])
+
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved'))
+        return super(PayView, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        self.customer = self.request.user.userprofile.customer
+        return super(PayView, self).dispatch(*args, **kwargs)
