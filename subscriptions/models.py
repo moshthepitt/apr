@@ -106,8 +106,8 @@ class CustomerSubscription(models.Model):
     subscription = models.ForeignKey(
         Subscription, verbose_name=_("Subscription"), null=False, blank=False)
     start = models.DateTimeField(default=timezone.now, verbose_name=_("Subscription Date"))
-    current_period_start = models.DateTimeField(null=True, verbose_name=_("Period Start"))
-    current_period_end = models.DateTimeField(null=True, verbose_name=_("Period End"))
+    current_period_start = models.DateTimeField(null=True, default=None, blank=True, verbose_name=_("Period Start"))
+    current_period_end = models.DateTimeField(null=True, default=None, blank=True, verbose_name=_("Period End"))
     ended_at = models.DateTimeField(_("Ended at"), null=True, blank=True)
     trial_end = models.DateTimeField(_("Trial end"), null=True, blank=True)
     trial_start = models.DateTimeField(_("Trial start"), null=True, blank=True)

@@ -9,7 +9,7 @@ from django.utils.translation import ugettext as _
 
 from core.utils import invalidate_caches
 
-from customers.mixins import CustomerMixin
+from customers.mixins import CustomerMixin, LesserCustomerMixin
 from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm, CustomerSettingsForm
 from customers.forms import MPESAForm
 from subscriptions.models import Subscription
@@ -41,7 +41,6 @@ class NewCustomer(FormView):
         # if current user is already tied to a customer that has a subscription then redirect them away
         if self.request.user.userprofile.customer and self.request.user.userprofile.customer.has_subscription():
             return redirect('dashboard')
-
         return super(NewCustomer, self).dispatch(*args, **kwargs)
 
 
@@ -70,7 +69,6 @@ class EditCustomer(CustomerMixin, FormView):
 
     def dispatch(self, *args, **kwargs):
         self.customer = self.request.user.userprofile.customer
-
         return super(EditCustomer, self).dispatch(*args, **kwargs)
 
 
@@ -102,7 +100,6 @@ class EditCustomerScript(CustomerMixin, FormView):
 
     def dispatch(self, *args, **kwargs):
         self.customer = self.request.user.userprofile.customer
-
         return super(EditCustomerScript, self).dispatch(*args, **kwargs)
 
 
@@ -132,11 +129,10 @@ class EditCustomerSettings(CustomerMixin, FormView):
 
     def dispatch(self, *args, **kwargs):
         self.customer = self.request.user.userprofile.customer
-
         return super(EditCustomerSettings, self).dispatch(*args, **kwargs)
 
 
-class PlanView(FormMixin, DetailView):
+class PlanView(CustomerMixin, FormMixin, DetailView):
     model = Subscription
     template_name = 'customers/subscription_detail.html'
 
@@ -157,6 +153,9 @@ class PlanView(FormMixin, DetailView):
         form.save_receipt(self.customer, self.object)
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
+
+        # ivalidate caches
+        invalidate_caches('customersubscription', [self.customer.id, self.request.user.id])
         return super(PlanView, self).form_valid(form)
 
     def get_context_data(self, **kwargs):
@@ -171,7 +170,7 @@ class PlanView(FormMixin, DetailView):
         return super(PlanView, self).dispatch(*args, **kwargs)
 
 
-class SubscriptionListView(ListView):
+class SubscriptionListView(LesserCustomerMixin, ListView):
 
     model = Subscription
     template_name = 'customers/subscription_list.html'

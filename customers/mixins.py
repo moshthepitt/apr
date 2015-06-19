@@ -7,6 +7,7 @@ class CustomerMixin(object):
     Alters view behaviour based on Customer
         if customer does not exist then redirect to new customer signup page
         if customer exists but has no active subscription redirect to upgrade page
+        if customer has no active subscription then we need to make them pay
     """
 
     def dispatch(self, *args, **kwargs):
@@ -17,6 +18,9 @@ class CustomerMixin(object):
             # if current user is not tied to a subscription then redirect them away
             if not self.request.user.userprofile.customer.has_subscription():
                 return redirect('new_customer')
+            # if subscription not active redirect to payment page
+            if not self.request.user.userprofile.customer.customersubscription.active:
+                return redirect('customer:subscription')
         return super(CustomerMixin, self).dispatch(*args, **kwargs)
 
 
@@ -33,4 +37,23 @@ class Customer404Mixin(object):
             # if current user is not tied to a subscription then redirect them away
             if not self.request.user.userprofile.customer.has_subscription():
                 raise Http404
+            # if subscription not active redirect to payment page
+            if not self.request.user.userprofile.customer.customersubscription.active:
+                raise Http404
         return super(Customer404Mixin, self).dispatch(*args, **kwargs)
+
+
+class LesserCustomerMixin(object):
+    """
+    Like CustomerMixin but raises Http404 is wrong/no customer but does not check if sub is active
+    """
+
+    def dispatch(self, *args, **kwargs):
+        if self.request.user.is_authenticated():
+            # if current user is not tied to a customer then redirect them away
+            if not self.request.user.userprofile.customer:
+                return redirect('new_customer')
+            # if current user is not tied to a subscription then redirect them away
+            if not self.request.user.userprofile.customer.has_subscription():
+                return redirect('new_customer')
+        return super(LesserCustomerMixin, self).dispatch(*args, **kwargs)
