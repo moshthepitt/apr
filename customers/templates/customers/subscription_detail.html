@@ -20,21 +20,20 @@
             <div class="row">
                 <div class="col-md-8 no-padding bottom-20">
                     <div class="panel panel-info">
-                      <div class="panel-heading">Instructions on how to pay</div>
+                      <div class="panel-heading">{% trans "Instructions on how to pay" %}</div>
                       <div class="panel-body">
-                        <h4>Please send <strong>KES {{object.price}}</strong> to Till No. <strong>594874</strong></h4>
+                        <h4>{% trans "Please send" %} <strong>{% trans "KES" %} {{object.price}}</strong> {% trans "to Till No." %}" <strong>594874</strong></h4>
 
                         <div class="mpesa-instructions">
                           <p>
-                            <h5>Steps to follow</h5>
+                            <h5>{% trans "Steps to follow" %}</h5>
                             <ol>
-                              <li>On your Safaricom phone go the M-PESA menu</li>
-                              <li>Select Lipa Na M-PESA and then select Buy Goods and Services</li>
-                              <li>Enter the Till Number <strong>594874</strong> </li>
-                              <li>Enter exactly <strong>KES {{object.price}}</strong> as the amount</li>
-                              <li>Follow subsequent prompts to complete the transaction. </li>
-                              <li>Please input the confirmation code that you received from M-PESA above.</li>
-                              <li>You will then get a confirmation message from M-PESA and an email from EatOut with your PDF tickets attached.  Please remember to print these tickets for the event.</li>
+                              <li>{% trans "On your Safaricom phone go the M-PESA menu" %}</li>
+                              <li>{% trans "Select Lipa Na M-PESA and then select Buy Goods and Services" %}</li>
+                              <li>{% trans "Enter the Till Number <strong>594874</strong> " %}</li>
+                              <li>{% trans "Enter exactly" %} <strong>{% trans "KES" %} {{object.price}}</strong> {% trans "as the amount" %}</li>
+                              <li>{% trans "Follow subsequent prompts to complete the transaction." %}</li>
+                              <li>{% trans "Please input the confirmation code that you received from M-PESA below." %}</li>
                             </ol>
                           </p>
                         </div>                   
