@@ -13,7 +13,7 @@
 {% block title %}{% trans "Welcome to AppointWare" %}{% endblock %}
 
 {% block all_content %}
-{% cache 600 newcustomersignup CUSTOMER.pk %}
+{% cache 600 newcustomersignup request.user.pk %}
 <div class="row content-section page">
   <div class="container">
     <div class="col-md-12">
