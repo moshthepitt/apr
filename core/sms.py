@@ -33,8 +33,8 @@ class InfoBip(object):
         if self.get_balance > 0:
             client = SmsClient(self.username, self.password)
             sms = SMSRequest()
-            sms.sender_address = "IBSMS"
+            sms.sender_address = "appointware"
             sms.address = to
             sms.message = message
             sms.callback_data = ''
-            result = client.send_sms(sms)
+            client.send_sms(sms)
