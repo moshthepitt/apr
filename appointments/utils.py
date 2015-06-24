@@ -36,12 +36,12 @@ def send_period_reminders(event_ids, sendsms=False, turn_off_reminders=False, ma
                 if appointment.status != Appointment.CONFIRMED and appointment.status != Appointment.CANCELED:
                     appointment.status = Appointment.NOTIFIED
                     appointment.save()
-            reminder = Reminder(
-                customer=appointment.customer,
-                appointment=appointment,
-                client_name=appointment.client.get_full_name(),
-                appointment_time=timezone.localtime(appointment.event.start),
-                sent_email=sent_email,
-                sent_sms=sent_sms
-            )
-            reminder.save()
+                reminder = Reminder(
+                    customer=appointment.customer,
+                    appointment=appointment,
+                    client_name=appointment.client.get_full_name(),
+                    appointment_time=timezone.localtime(appointment.event.start),
+                    sent_email=sent_email,
+                    sent_sms=sent_sms
+                )
+                reminder.save()
