@@ -59,7 +59,7 @@ def task_morning_reminders():
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=False, mailgun_campaign_id="ffz23")
+    send_period_reminders(event_ids, sendsms=True, mailgun_campaign_id="ffz23")
 
 
 @periodic_task(
