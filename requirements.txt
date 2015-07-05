@@ -7,7 +7,7 @@ billiard==3.3.0.20
 celery==3.1.18
 coverage==3.7.1
 django-ajaxerrors==1.1
-django-allauth==0.20.0
+django-allauth==0.21.0
 django-annoying==0.8.2
 django-appconf==1.0.1
 django-cacheops==2.3.2
