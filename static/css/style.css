@@ -58,3 +58,12 @@ th.control-group.error .form-control {
 .container {
   min-height:500px;
 }
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding:0!important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  border:none!important;
+  background:transparent!important;
+}

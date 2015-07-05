@@ -11,6 +11,8 @@
 	<link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
 	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'jquery.growl/css/jquery.growl.css' %}" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2-bootstrap.css' %}" />
 {% endblock %}
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}} {% trans "Calendar" %} | {{site.name}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
@@ -40,7 +42,7 @@
 	</div>	
 
 	<!-- Add Appointment Modal -->
-	<div class="modal fade" id="add-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="add-appointment-modalLabel" aria-hidden="true">
+	<div class="modal fade" id="add-appointment-modal" role="dialog" aria-labelledby="add-appointment-modalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -56,7 +58,7 @@
 	</div>
 
 	<!-- Edit Appointment Modal -->
-	<div class="modal fade" id="edit-appointment-modal" tabindex="-1" role="dialog" aria-labelledby="edit-appointment-modalLabel" aria-hidden="true">
+	<div class="modal fade" id="edit-appointment-modal" role="dialog" aria-labelledby="edit-appointment-modalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
@@ -92,6 +94,7 @@
 	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 	<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
 	<script src="{% static 'jquery.growl/js/jquery.growl.js' %}"></script>	
+	<script src="{% static 'select2/js/select2.full.min.js' %}"></script>
 {% endblock %}
 {% block calendarjs %}
  	<script type='text/javascript'>
@@ -107,7 +110,7 @@
  		$(document).on('click', '#go-next', function(event) {
  			event.preventDefault();
  			$("#calendar").weekCalendar("nextWeek");
- 		});
+ 		}); 		
 
  		// change event status
  		$(document).on('click', '.status-changer', function(event) {
@@ -377,6 +380,11 @@
  					var url = "{% url 'appointments:appointment_client_snippet' %}" + '?' + $.param(data);
  					$("#add-appointment-snippet-content" ).load(url, function(){
  						$('#add-appointment-modal').modal();
+ 						// secelt2 		
+ 						$("#id-select-client").select2({
+ 							placeholder: "{% trans 'Select a client' %}",
+ 							width:'100%',
+ 						});
  					});
  				},
  				eventDrop: function(calEvent, $event) {

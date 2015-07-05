@@ -98,7 +98,7 @@ class AppointmentForm(forms.Form):
                     css_class='form-group row form-inline'
                 ),
                 Div(
-                    'venue',
+                    Field('venue', id="id-venue"),
                     css_class='form-group'
                 ),
                 Div(

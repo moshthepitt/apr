@@ -41,6 +41,14 @@ class AppointmentEdit(CustomerMixin, FormView):
         result.update(self.object.get_form_data())
         return result
 
+    def get_context_data(self, **kwargs):
+        context = super(AppointmentEdit, self).get_context_data(**kwargs)
+        form = self.get_form()
+        form.fields['venue'].queryset = Venue.objects.filter(
+            customer=self.request.user.userprofile.customer)
+        context['form'] = form
+        return context
+
     def form_valid(self, form):
         form.edit_appointment(self.object)
 

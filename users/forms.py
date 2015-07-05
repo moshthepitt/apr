@@ -50,7 +50,7 @@ class AddClientForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'email', 'phone']
+        fields = ['first_name', 'last_name', 'email', 'phone', 'client_id']
 
     def create_client(self, user):
         new_client = Client(
@@ -76,10 +76,11 @@ class AddClientForm(forms.ModelForm):
         self.helper.layout = Layout(
             Fieldset(
                 getattr(labels, 'CREATE_CLIENT', _('Create new client')),
-                'email',
-                'phone',
-                'first_name',
-                'last_name',
+                Field('email', css_class="input-sm"),
+                Field('phone', css_class="input-sm"),
+                Field('first_name', css_class="input-sm"),
+                Field('last_name', css_class="input-sm"),
+                Field('client_id', css_class="input-sm"),
             ),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')

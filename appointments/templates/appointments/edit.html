@@ -7,6 +7,8 @@
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
 	<link rel="stylesheet" href="{% static 'css/jquery.timepicker.css' %}" type="text/css" />
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2-bootstrap.css' %}" />
 {% endblock %}
 
 {% block title %}{% trans "Edit" %} {{object.event.title}} | {{site.name}}{% endblock %}
@@ -33,6 +35,7 @@
 	<script src="{% static 'js/jquery.timepicker.min.js' %}"></script>
 	<script src="{% static 'js/datepair.min.js' %}"></script>
 	<script src="{% static 'js/jquery.datepair.min.js' %}"></script>
+	<script src="{% static 'select2/js/select2.full.min.js' %}"></script>
 	<script>
 		$(document).ready(function() {			
 			//date time selects
@@ -48,6 +51,12 @@
 
 		    // initialize datepair
 		    $('#id-datetime-pairs').datepair();	
+
+		    // secelt2 		
+		    $("#id-venue").select2({
+		    	placeholder: "{% trans 'Select a schedule' %}",
+		    	width:'100%',
+		    });
 	  	});	
 	</script>
 {% endblock %}

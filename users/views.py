@@ -75,11 +75,12 @@ class ClientDatatableView(CustomerMixin, DatatableView):
         'columns': [
             'first_name',
             'last_name',
+            'client_id',
             'email',
             'phone',
             (_("Actions"), 'id', 'get_actions'),
         ],
-        'search_fields': ['first_name', 'last_name', 'email'],
+        'search_fields': ['first_name', 'last_name', 'email', 'client_id'],
         'unsortable_columns': ['id'],
     }
 

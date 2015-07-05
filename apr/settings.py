@@ -165,6 +165,7 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'Africa/Nairobi'
+CELERY_ENABLE_UTC = True
 
 # APR STUFF
 REMINDER_FROM_EMAIL = "noreply-reminder <no-reply@appointware.com>"

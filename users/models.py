@@ -28,7 +28,7 @@ class Client(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     client_id = models.CharField(
-        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True)
+        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True, help_text=_("Optional unique client ID"))
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     email = models.EmailField(_('Email address'), blank=True, help_text=_("Needed to send reminders by email"))
