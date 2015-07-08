@@ -12,7 +12,7 @@ class VenueForm(forms.ModelForm):
 
     class Meta:
         model = Venue
-        fields = ['name', 'main_calendar', 'shown_days', 'allow_overlap', 'send_sms', 'send_email']
+        fields = ['name', 'main_calendar', 'shown_days', 'allow_overlap', 'send_sms', 'send_email', 'client_display']
 
     def create_venue(self, user):
         new_venue = Venue(
@@ -32,8 +32,9 @@ class VenueForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Field('name'),
-            Field('main_calendar'),
             Field('shown_days'),
+            Field('client_display'),
+            Field('main_calendar'),
             Field('allow_overlap'),
             Field('send_sms'),
             Field('send_email'),
@@ -53,10 +54,11 @@ class NoSubmitVenueFormHelper(FormHelper):
         self.layout = Layout(
             Field('name'),
             Field('shown_days'),
+            Field('client_display'),
+            Field('main_calendar'),
             Field('allow_overlap'),
             Field('send_sms'),
             Field('send_email'),
-            Field('main_calendar'),
         )
 
 

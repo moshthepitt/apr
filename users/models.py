@@ -7,6 +7,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 from core import labels
 
+from venues.models import Venue
 from doctors.models import Doctor
 from customers.models import Customer
 
@@ -55,6 +56,28 @@ class Client(models.Model):
 
     def get_absolute_url(self):
         return reverse('users:client', args=[self.pk])
+
+    def display_name(self, venue=None):
+        if venue and venue.client_display != Venue.SHOW_CLIENT_NAME:
+            if venue.client_display == Venue.SHOW_CLIENT_PHONE:
+                return "{}".format(self.phone)
+            elif venue.client_display == Venue.SHOW_CLIENT_EMAIL:
+                return "{}".format(self.email)
+            elif venue.client_display == Venue.SHOW_CLIENT_ID:
+                return "{}".format(self.client_id)
+            elif venue.client_display == Venue.SHOW_CLIENT_NAME_AND_ID:
+                return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
+        elif self.customer.client_display != Customer.SHOW_CLIENT_NAME:
+            if self.customer.client_display == Customer.SHOW_CLIENT_PHONE:
+                return "{}".format(self.phone)
+            elif self.customer.client_display == Customer.SHOW_CLIENT_EMAIL:
+                return "{}".format(self.email)
+            elif self.customer.client_display == Customer.SHOW_CLIENT_ID:
+                return "{}".format(self.client_id)
+            elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_AND_ID:
+                return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
+
+        return self.__str__()
 
     def __str__(self):
         if self.get_full_name():

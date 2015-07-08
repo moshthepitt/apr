@@ -19,11 +19,13 @@ class Venue(models.Model):
     SHOW_CLIENT_PHONE = '2'
     SHOW_CLIENT_EMAIL = '3'
     SHOW_CLIENT_ID = '4'
+    SHOW_CLIENT_NAME_AND_ID = '5'
     CLIENT_DISPLAY_CHOICES = (
         (SHOW_CLIENT_NAME, _('Client Name')),
         (SHOW_CLIENT_PHONE, _('Client Phone')),
         (SHOW_CLIENT_EMAIL, _('Client Email')),
         (SHOW_CLIENT_ID, _('Client ID')),
+        (SHOW_CLIENT_NAME_AND_ID, _('Client Name & Client ID')),
     )
 
     NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]
@@ -64,7 +66,7 @@ class Venue(models.Model):
         _("Show a link to cancel appointment"), default=True, blank=False)
     # client display
     client_display = models.CharField(_("Client Display"), max_length=1, choices=CLIENT_DISPLAY_CHOICES, blank=False, default=SHOW_CLIENT_NAME, help_text=_(
-        "How should the client be represented in the calendar?"))
+        "How should the client be represented in the calendar?  This will be used only on this schedule's calendar."))
 
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Schedule"))

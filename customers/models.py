@@ -20,11 +20,13 @@ class Customer(models.Model):
     SHOW_CLIENT_PHONE = '2'
     SHOW_CLIENT_EMAIL = '3'
     SHOW_CLIENT_ID = '4'
+    SHOW_CLIENT_NAME_AND_ID = '5'
     CLIENT_DISPLAY_CHOICES = (
         (SHOW_CLIENT_NAME, _('Client Name')),
         (SHOW_CLIENT_PHONE, _('Client Phone')),
         (SHOW_CLIENT_EMAIL, _('Client Email')),
         (SHOW_CLIENT_ID, _('Client ID')),
+        (SHOW_CLIENT_NAME_AND_ID, _('Client Name & Client ID')),
     )
 
     NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]

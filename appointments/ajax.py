@@ -106,7 +106,7 @@ def calendar_event_feed(request):
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().client),
+                     'title': "{}".format(x.event.appointment_set.first().client.display_name()),
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
@@ -130,7 +130,7 @@ def venue_event_feed(request, pk):
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().client),
+                     'title': "{}".format(x.event.appointment_set.first().client.display_name(venue)),
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
