@@ -15,6 +15,17 @@ class Venue(models.Model):
     Model to store "schedules"
     """
 
+    SHOW_CLIENT_NAME = '1'
+    SHOW_CLIENT_PHONE = '2'
+    SHOW_CLIENT_EMAIL = '3'
+    SHOW_CLIENT_ID = '4'
+    CLIENT_DISPLAY_CHOICES = (
+        (SHOW_CLIENT_NAME, _('Client Name')),
+        (SHOW_CLIENT_PHONE, _('Client Phone')),
+        (SHOW_CLIENT_EMAIL, _('Client Email')),
+        (SHOW_CLIENT_ID, _('Client ID')),
+    )
+
     NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]
 
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
@@ -51,6 +62,9 @@ class Venue(models.Model):
         _("Show a link to confirm appointment"), default=True, blank=False)
     show_cancel_link = models.BooleanField(
         _("Show a link to cancel appointment"), default=True, blank=False)
+    # client display
+    client_display = models.CharField(_("Client Display"), max_length=1, choices=CLIENT_DISPLAY_CHOICES, blank=False, default=SHOW_CLIENT_NAME, help_text=_(
+        "How should the client be represented in the calendar?"))
 
     class Meta:
         verbose_name = getattr(labels, 'VENUE', _("Schedule"))
