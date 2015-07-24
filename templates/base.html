@@ -49,7 +49,7 @@
     </div>    
 
     <div id="sidebar" class="hidden-print">
-      <ul>
+      <ul id="sidebar-ul-menu">
         {% if request.user.is_authenticated %}
         {% block top_sidebar %}{% endblock %}
         <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>

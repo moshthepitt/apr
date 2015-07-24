@@ -1,0 +1,78 @@
+{% extends "appointments/calendar.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load cache %}
+
+{% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+
+{% block calendar_class %}dayview{% endblock %}
+
+{% cache 600 daycal CUSTOMER.pk object.pk %}
+	{% block calendar_navigation %}
+	$(document).on('click', '#go-prev', function(event) {
+		event.preventDefault();
+		$("#calendar").weekCalendar("prev");
+	});
+	$(document).on('click', '#go-today', function(event) {
+		event.preventDefault();
+		$("#calendar").weekCalendar("today");
+	});
+	$(document).on('click', '#go-next', function(event) {
+		event.preventDefault();
+		$("#calendar").weekCalendar("next");
+	}); 
+	$(document).on('click', '#go-fullscreen', function(event) {
+		event.preventDefault();
+		$("#user-nav").toggle();
+		$("#sidebar").toggle();
+		$("#content").toggleClass("fullscreen-mode");
+		$("#header").toggleClass("fullscreen-mode");
+	});	
+	{% endblock %}	
+
+	{% block schedule_specific_js %}
+	startOnFirstDayOfWeek: false,
+	daysToShow: 1,
+	data: "{% url 'appointments:calendar_event_feed' %}",
+		businessHours: {
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+			start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+		{% else %}
+			start: 8,
+		{% endif %}
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+        {% else %}
+        	end: 17,
+        {% endif %}
+        limitDisplay: true
+	},  
+	users: [
+		{% for venue in venues %}
+			{
+				'id': {{venue.id}},
+				'name': '{{venue.name|upper}}'
+			},
+		{% endfor %}
+		],	
+	{% if CUSTOMER.allow_overlap %}
+	allowCalEventOverlap: true,
+	overlapEventsSeparate: true,
+	{% endif %}
+	{% endblock %}
+{% endcache %}
+
+{% block calendar_footer_js %}
+	<script>
+		$(document).ready(function() {
+			// var header_row = $('.ui-widget-content.wc-header tr:last').clone();
+			// $('.ui-widget-content.wc-header tr:last').after(header_row);
+			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "appointments/snippets/venue-headers.html" %}{% endfilter %}');
+			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "appointments/snippets/notes.html" %}{% endfilter %}');
+			
+
+			// $('#go-fullscreen').click();
+		});
+	</script>
+{% endblock %}

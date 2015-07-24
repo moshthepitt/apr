@@ -8,6 +8,7 @@
 
 {% cache 600 vucal CUSTOMER.pk object.pk %}
 {% block schedule_specific_js %}
+	startOnFirstDayOfWeek: true,
 	daysToShow: {{object.shown_days}},
 	data: "{% url 'appointments:venue_event_feed' pk=object.pk %}",
 	businessHours: {

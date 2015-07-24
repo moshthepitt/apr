@@ -85,3 +85,13 @@
 	background-color: #209150;
 	border-color: #209150;
 }
+
+.dayview .ui-state-active {
+	background:inherit;
+	border:inherit;
+	color:inherit;
+}
+
+.wc-header .wc-today.wc-day-column-header {
+	border:none;
+}

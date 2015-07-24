@@ -23,6 +23,7 @@
 	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 	    </h3>
 	    <div class="btn-group pull-right">
+	    	<button class="btn btn-sm btn-default" id="go-fullscreen"><i class="fa fa-expand"></i></button>
 	    	<button class="btn btn-sm btn-default" id="go-prev"><i class="fa fa-chevron-left"></i> {% trans "Prev" %}</button>
 	    	<button class="btn btn-sm btn-default" id="go-today"><i class="fa fa-home"></i> {% trans "Today" %}</button>
 	    	<button class="btn btn-sm btn-default" id="go-next"><i class="fa fa-chevron-right"></i> {% trans "Next" %}</button>
@@ -37,7 +38,7 @@
 	  	  <p><strong>{% trans "Hint:" %}</strong> {% trans "Quickly create an appointment by clicking anywhere on the calendar below." %}</p>
 	  	</div>
 	  	{% endif %}
-	    <div id="calendar" class="row"></div>	    
+	    <div id="calendar" class="row {% block calendar_class %}{% endblock %}"></div>	    
 	  </div>
 	</div>	
 
@@ -99,6 +100,7 @@
 {% block calendarjs %}
  	<script type='text/javascript'>
  		// navigation
+ 		{% block calendar_navigation %}
  		$(document).on('click', '#go-prev', function(event) {
  			event.preventDefault();
  			$("#calendar").weekCalendar("prevWeek");
@@ -110,7 +112,15 @@
  		$(document).on('click', '#go-next', function(event) {
  			event.preventDefault();
  			$("#calendar").weekCalendar("nextWeek");
- 		}); 		
+ 		}); 
+ 		$(document).on('click', '#go-fullscreen', function(event) {
+ 			event.preventDefault();
+ 			$("#user-nav").toggle();
+ 			$("#sidebar").toggle();
+ 			$("#content").toggleClass("fullscreen-mode");
+ 			$("#header").toggleClass("fullscreen-mode");
+ 		});	
+ 		{% endblock %}		
 
  		// change event status
  		$(document).on('click', '.status-changer', function(event) {
@@ -325,41 +335,41 @@
  				displayFreeBusys: true,
  				defaultFreeBusy: {free: true},
  				readonly : false,
- 				firstDayOfWeek: 1, 				
- 				startOnFirstDayOfWeek: true, 
+ 				firstDayOfWeek: 1,
  				showHeader: false,				
             	height: function($calendar) {
              	return $(window).height() - $('h1').outerHeight(true);
             	},
             	minBodyHeight: 1200, 
             	{% block schedule_specific_js %}
-            	daysToShow: {{CUSTOMER.shown_days}},
-            	data: "{% url 'appointments:calendar_event_feed' %}",
- 				businessHours: {
-					{% if CUSTOMER.global_opening_time.from_hour.hour %}
-						start: {{CUSTOMER.global_opening_time.from_hour.hour}},
-					{% else %}
-						start: 8,
-					{% endif %}
-					{% if CUSTOMER.global_opening_time.from_hour.hour %}
-	                	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
-	                {% else %}
-	                	end: 17,
-	                {% endif %}
-	                limitDisplay: true
-            	},  
-            	users: [
-					{% for venue in venues %}
-						{
-							'id': {{venue.id}},
-							'name': '{{venue.name|upper}}'
-						},
-					{% endfor %}
- 				],	
- 				{% if CUSTOMER.allow_overlap %}
- 				allowCalEventOverlap: true,
- 				overlapEventsSeparate: true,
- 				{% endif %}
+            		startOnFirstDayOfWeek: true,
+	            	daysToShow: {{CUSTOMER.shown_days}},
+	            	data: "{% url 'appointments:calendar_event_feed' %}",
+	 				businessHours: {
+						{% if CUSTOMER.global_opening_time.from_hour.hour %}
+							start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+						{% else %}
+							start: 8,
+						{% endif %}
+						{% if CUSTOMER.global_opening_time.from_hour.hour %}
+		                	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+		                {% else %}
+		                	end: 17,
+		                {% endif %}
+		                limitDisplay: true
+	            	},  
+	            	users: [
+						{% for venue in venues %}
+							{
+								'id': {{venue.id}},
+								'name': '{{venue.name|upper}}'
+							},
+						{% endfor %}
+	 				],	
+	 				{% if CUSTOMER.allow_overlap %}
+		 				allowCalEventOverlap: true,
+		 				overlapEventsSeparate: true,
+	 				{% endif %}
  				{% endblock %}	
             	showAsSeparateUser: true,            	
             	getUserId: function(user, index, calendar) {
@@ -524,4 +534,5 @@
 
 		var interval = setInterval(updateCalendarPeriodically, 300000);
  	</script>		
+ 	{% block calendar_footer_js %}{% endblock %}
 {% endblock %}

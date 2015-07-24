@@ -67,3 +67,11 @@ th.control-group.error .form-control {
   border:none!important;
   background:transparent!important;
 }
+
+#content.fullscreen-mode {
+  padding-top:15px;
+  margin-left:0;
+}
+#header.fullscreen-mode {
+  height:115px;
+}
