@@ -86,12 +86,8 @@
 	border-color: #209150;
 }
 
-.dayview .ui-state-active {
+.dayview .wc-header .ui-state-active {
 	background:inherit;
 	border:inherit;
 	color:inherit;
-}
-
-.wc-header .wc-today.wc-day-column-header {
-	border:none;
 }
