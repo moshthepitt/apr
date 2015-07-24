@@ -57,6 +57,7 @@ INSTALLED_APPS = (
     'subscriptions',
     'reminders',
     'invoices',
+    'notes',
     'core',
 )
 
