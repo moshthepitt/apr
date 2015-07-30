@@ -136,6 +136,20 @@ class UserProfile(models.Model):
     def get_absolute_url(self):
         return reverse('users:staff', args=[self.pk])
 
+    def get_form_data(self):
+        """
+        returns a dictionary that can be used to populate initial data
+        """
+        return dict(
+            role=self.role,
+            staff=self.staff,
+            customer=self.customer,
+            user=self.user,
+            first_name=self.user.first_name,
+            last_name=self.user.last_name,
+            email=self.user.email,
+        )
+
     def __str__(self):
         return _("%s's profile") % self.user
 

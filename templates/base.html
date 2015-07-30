@@ -83,6 +83,13 @@
           </ul>
         </li>
         <li class="submenu">
+          <a href="#"><i class="fa fa-group"></i> <span>{% trans "Staff" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+          <ul>
+            <li><a href="{% url 'users:staff_add' %}">{% trans "Add Staff" %}</a></li>
+            <li><a href="{% url 'users:staff_list' %}">{% trans "Staff" %}</a></li>
+          </ul>
+        </li>
+        <li class="submenu">
           <a href="#"><i class="fa fa-cog"></i> <span>{% trans "Settings" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
           <ul>            
             <li><a href="{% url 'customer:edit' %}">{% trans "Edit Details" %}</a></li>

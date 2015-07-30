@@ -2,7 +2,8 @@ from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
 
 from users.views import ClientDatatableView, ClientAdd, ClientUpdate, ClientDelete, ClientView
-from users.views import UserProfileDatatableView, UserProfileAdd, UserProfileUpdate, UserProfileDelete, UserProfileView
+from users.views import UserProfileDatatableView, UserProfileAdd, UserProfileUpdate, UserProfileDelete
+from users.views import UserProfileUpdatePassword, UserProfileView
 
 urlpatterns = [
     url(r'^$', login_required(ClientDatatableView.as_view()), name='list'),
@@ -14,6 +15,7 @@ urlpatterns = [
     url(r'^staff/$', login_required(UserProfileDatatableView.as_view()), name='staff_list'),
     url(r'^staff/add/$', login_required(UserProfileAdd.as_view()), name='staff_add'),
     url(r'^staff/edit/(?P<pk>\d+)/$', login_required(UserProfileUpdate.as_view()), name='staff_edit'),
+    url(r'^staff/edit-password/(?P<pk>\d+)/$', login_required(UserProfileUpdatePassword.as_view()), name='staff_edit_password'),
     url(r'^staff/delete/(?P<pk>\d+)/$', login_required(UserProfileDelete.as_view()), name='staff_delete'),
     url(r'^staff/view/(?P<pk>\d+)/$', login_required(UserProfileView.as_view()), name='staff'),
 ]
