@@ -15,6 +15,7 @@ class NoteForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(NoteForm, self).__init__(*args, **kwargs)
+        self.fields['venue'].required = True
         self.fields['date'].widget = forms.HiddenInput()
         self.fields['note'].widget = forms.TextInput()
         self.helper = FormHelper()
