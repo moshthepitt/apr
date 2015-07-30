@@ -87,3 +87,10 @@ td.wc-day-column.bottom {
   background-color: #fff;
   border: 1px solid #ddd;
 }
+
+
+.single-top-note.list-group-item {
+  padding: 5px;
+  background-color: transparent;
+  border: none;
+}

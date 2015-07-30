@@ -3,9 +3,9 @@
 	<td class="{% if forloop.first %}wc-day-column-first{% endif %} {% if forloop.last %}wc-day-column-last{% endif %} wc-user-header printable-top ui-state-active wc-today">
 	{% for note in notes %}
 		{% if note.venue = venue %}			
-			<div>{{note.note}}</div>
+			<div class="single-top-note list-group-item">{{note.note}}</div>
 		{% else %}
-			<div></div>
+			<div class="single-top-note"></div>
 		{% endif %}
 	{% endfor %}
 	</td>
