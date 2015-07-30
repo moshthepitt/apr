@@ -1,9 +1,8 @@
 {% load i18n %}
-<tr>
+<tr id="tr-bottom-notes">
 	<td class="wc-time-column-header"></td>
 	<td colspan="{{venues|length}}">
 		<table class="table table-bordered notes-table">
-
 			<tr>			
 				{% for venue in venues %}
 				<th>{% trans "NOTES" %}</th>

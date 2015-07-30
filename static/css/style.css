@@ -72,6 +72,18 @@ th.control-group.error .form-control {
   padding-top:15px;
   margin-left:0;
 }
+
 #header.fullscreen-mode {
   height:115px;
+}
+
+td.wc-day-column.bottom {
+  padding:0px;
+}
+
+.single-bottom-note.list-group-item {
+  padding: 5px;
+  margin: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
 }

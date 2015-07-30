@@ -23,11 +23,14 @@
 	    {% block calendar_title %}{{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 	    </h3>
 	    <div class="btn-group pull-right">
-	    	<button class="btn btn-sm btn-default" id="go-fullscreen"><i class="fa fa-expand"></i></button>
+	    	{% block calendar_custom_buttons %}{% endblock %}
+	    	{% block calendar_fixed_buttons %}
+	    	<button class="btn btn-sm btn-default" id="go-fullscreen"><i class="fa fa-expand"></i> {% trans "Expland" %}</button>
 	    	<button class="btn btn-sm btn-default" id="go-prev"><i class="fa fa-chevron-left"></i> {% trans "Prev" %}</button>
 	    	<button class="btn btn-sm btn-default" id="go-today"><i class="fa fa-home"></i> {% trans "Today" %}</button>
 	    	<button class="btn btn-sm btn-default" id="go-next"><i class="fa fa-chevron-right"></i> {% trans "Next" %}</button>
-            <button class="btn btn-sm btn-inverse" id="choose-date"><i class="fa fa-calendar"></i> {% trans "Go To Date" %}</button>
+            <button class="btn btn-sm btn-default" id="choose-date"><i class="fa fa-calendar"></i> {% trans "Date" %}</button>
+            {% endblock %}
 	    </div>
 	  </div>
 	  {% cache 600 dashboard CUSTOMER.pk %}
@@ -85,6 +88,8 @@
 	    </div>
 	  </div>
 	</div>
+
+	{% block custom_calendar_modals %}{% endblock %}
 	{% endcache %}
 {% endblock %}
 {% block extrajs %}

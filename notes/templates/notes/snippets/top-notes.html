@@ -1,0 +1,12 @@
+<td class="wc-time-column-header"></td>
+{% for venue in venues %}
+	<td class="{% if forloop.first %}wc-day-column-first{% endif %} {% if forloop.last %}wc-day-column-last{% endif %} wc-user-header printable-top ui-state-active wc-today">
+	{% for note in notes %}
+		{% if note.venue = venue %}			
+			<div>{{note.note}}</div>
+		{% else %}
+			<div></div>
+		{% endif %}
+	{% endfor %}
+	</td>
+{% endfor %}

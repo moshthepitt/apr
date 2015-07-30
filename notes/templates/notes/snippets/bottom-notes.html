@@ -1,0 +1,26 @@
+{% load i18n %}
+<td class="wc-time-column-header"></td>
+<td colspan="{{venues|length}}">
+	<table class="table table-condensed table-bordered notes-table">
+		<tr>			
+			{% for venue in venues %}
+			<th>{% trans "NOTES" %}</th>
+			{% endfor %}
+		</tr>
+		
+		<tr>
+			{% for venue in venues %}	
+				<td class="wc-day-column bottom">
+				{% for note in notes %}
+					{% if note.venue = venue %}			
+						<div class="single-bottom-note list-group-item">{{note.note}}</div>
+					{% else %}
+						<div class="single-bottom-note"></div>
+					{% endif %}
+				{% endfor %}
+				</td>
+			{% endfor %}
+		</tr>
+
+	</table>
+</td>

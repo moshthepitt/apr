@@ -6,9 +6,31 @@
 {% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 
-{% block calendar_class %}dayview{% endblock %}
-
 {% cache 600 daycal CUSTOMER.pk object.pk %}
+	{% block calendar_class %}dayview{% endblock %}
+
+	{% block calendar_custom_buttons %}
+		<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+	{% endblock %}
+
+	{% block custom_calendar_modals %}
+		<!-- Add Note Modal -->
+		<div class="modal fade" id="add-note-modal" role="dialog" aria-labelledby="add-note-modalLabel" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Add Note" %}</h4>
+		      </div>
+		      <div class="modal-body" id="add-note-snippet-content"></div>
+		      <div class="modal-footer">
+		        <button type="button" id="add-note-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
+	{% endblock %}
+
 	{% block calendar_navigation %}
 	$(document).on('click', '#go-prev', function(event) {
 		event.preventDefault();
@@ -32,47 +54,101 @@
 	{% endblock %}	
 
 	{% block schedule_specific_js %}
-	startOnFirstDayOfWeek: false,
-	daysToShow: 1,
-	data: "{% url 'appointments:calendar_event_feed' %}",
-		businessHours: {
-		{% if CUSTOMER.global_opening_time.from_hour.hour %}
-			start: {{CUSTOMER.global_opening_time.from_hour.hour}},
-		{% else %}
-			start: 8,
+		startOnFirstDayOfWeek: false,
+		daysToShow: 1,
+		data: "{% url 'appointments:calendar_event_feed' %}",
+			businessHours: {
+			{% if CUSTOMER.global_opening_time.from_hour.hour %}
+				start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+			{% else %}
+				start: 8,
+			{% endif %}
+			{% if CUSTOMER.global_opening_time.from_hour.hour %}
+	        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+	        {% else %}
+	        	end: 17,
+	        {% endif %}
+	        limitDisplay: true
+		},  
+		users: [
+			{% for venue in venues %}
+				{
+					'id': {{venue.id}},
+					'name': '{{venue.name|upper}}'
+				},
+			{% endfor %}
+			],	
+		{% if CUSTOMER.allow_overlap %}
+			allowCalEventOverlap: true,
+			overlapEventsSeparate: true,
 		{% endif %}
-		{% if CUSTOMER.global_opening_time.from_hour.hour %}
-        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
-        {% else %}
-        	end: 17,
-        {% endif %}
-        limitDisplay: true
-	},  
-	users: [
-		{% for venue in venues %}
-			{
-				'id': {{venue.id}},
-				'name': '{{venue.name|upper}}'
-			},
-		{% endfor %}
-		],	
-	{% if CUSTOMER.allow_overlap %}
-	allowCalEventOverlap: true,
-	overlapEventsSeparate: true,
-	{% endif %}
+		calendarAfterLoad: function() {
+             loadNotes();
+        },
 	{% endblock %}
 {% endcache %}
 
 {% block calendar_footer_js %}
 	<script>
-		$(document).ready(function() {
-			// var header_row = $('.ui-widget-content.wc-header tr:last').clone();
-			// $('.ui-widget-content.wc-header tr:last').after(header_row);
-			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "appointments/snippets/venue-headers.html" %}{% endfilter %}');
-			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "appointments/snippets/notes.html" %}{% endfilter %}');
-			
 
-			// $('#go-fullscreen').click();
+		// load notes
+		function loadNotes() {
+			var data = {};
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toISOString();
+			var top_notes_url = "{% url 'notes:top_notes_snippet' %}" + '?' + $.param(data);
+			var bottom_notes_url = "{% url 'notes:bottom_notes_snippet' %}" + '?' + $.param(data);
+			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});
+			$("#tr-venue-headers" ).load(top_notes_url, function(){});
+		}
+		
+		$(document).ready(function() {
+			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
+			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
+		});
+
+		$(document).on('click', '#go-add-note', function(event) {
+			event.preventDefault();
+			$("#add-note-snippet-content").html("");
+			var data = {};
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toISOString();
+			var url = "{% url 'notes:add_note_snippet' %}" + '?' + $.param(data);
+			$("#add-note-snippet-content" ).load(url, function(){
+				$('#add-note-modal').modal();
+				// secelt2 		
+				$("#id-select-venue").select2({
+					placeholder: "{% trans 'Select a schedule' %}",
+					width:'100%',
+				});
+			});
+		});
+
+		// id-note-form
+		$(document).on('submit','#id-note-form',function(event){
+			event.preventDefault();
+			var add_note_form = '#id-note-form';
+			$.ajax({
+				url: "{% url 'notes:process_add_note_form' %}",
+				type: "POST",
+				data: $(add_note_form).serialize(),
+				dataType: 'json',
+				success: function(data) {				    	
+					if (!(data['success'])) {
+						$(add_note_form).replaceWith(data['form_html']);
+					}
+					else {
+						loadNotes();
+						$('#add-note-modal').modal('hide');
+						$.growl.notice({ 
+							location: 'br',
+							title: "{% trans 'Added Note' %}", 
+							message: '{% trans "Successfully added note" %}' 
+						});
+					}
+				},
+				error: function () {
+					$(add_note_form).find('.error-message').show()
+				}
+			});
 		});
 	</script>
 {% endblock %}

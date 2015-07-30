@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^schedules/', include('venues.urls', namespace='venues')),
     url(r'^customer/', include('customers.urls', namespace='customer')),
+    url(r'^notes/', include('notes.urls', namespace='notes')),
 
     url(r'^admin/', include(admin.site.urls)),
 
