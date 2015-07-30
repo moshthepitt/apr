@@ -94,11 +94,22 @@ class Client(models.Model):
 
 
 class UserProfile(models.Model):
+    ADMIN = '1'
+    EDITOR = '2'
+    USER = '3'
+    ROLE_CHOICES = (
+        (ADMIN, _('Admin')),
+        (EDITOR, _('Editor')),
+        (USER, _('User')),
+    )
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     user = models.OneToOneField(User, verbose_name=_("User"))
     customer = models.ForeignKey(Customer, verbose_name=_(
         "Customer"), on_delete=models.PROTECT, blank=True, null=True, default=None)
+    role = models.CharField(_("Role"), max_length=1, choices=ROLE_CHOICES, blank=False, default=ADMIN)
+    staff = models.BooleanField(_("Staff Member"), default=False)
 
     def is_doctor(self):
         "Checks if this userprofile is connected to a Doctor object"
@@ -121,6 +132,9 @@ class UserProfile(models.Model):
             doctor.last_name = self.user.last_name
             doctor.email = self.user.email
             doctor.save()
+
+    def get_absolute_url(self):
+        return reverse('users:staff', args=[self.pk])
 
     def __str__(self):
         return _("%s's profile") % self.user

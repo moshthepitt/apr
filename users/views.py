@@ -13,7 +13,7 @@ from customers.mixins import CustomerMixin
 from core import labels
 from core.utils import invalidate_caches
 
-from users.models import Client
+from users.models import Client, UserProfile
 from users.forms import AddClientForm
 
 
@@ -35,11 +35,11 @@ class ClientView(CustomerMixin, DetailView):
     template_name = "users/client_view.html"
 
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
 
-            return super(ClientView, self).dispatch(*args, **kwargs)
+        return super(ClientView, self).dispatch(*args, **kwargs)
 
 
 class ClientUpdate(CustomerMixin, UpdateView):
@@ -61,11 +61,11 @@ class ClientUpdate(CustomerMixin, UpdateView):
         return super(ClientUpdate, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
 
-            return super(ClientUpdate, self).dispatch(*args, **kwargs)
+        return super(ClientUpdate, self).dispatch(*args, **kwargs)
 
 
 class ClientDatatableView(CustomerMixin, DatatableView):
@@ -109,7 +109,105 @@ class ClientDelete(CustomerMixin, DeleteView):
         return super(ClientDelete, self).delete(request, *args, **kwargs)
 
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
-            if self.request.user.userprofile.customer != self.get_object().customer:
-                raise Http404
-            return super(ClientDelete, self).dispatch(*args, **kwargs)
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(ClientDelete, self).dispatch(*args, **kwargs)
+
+
+class UserProfileAdd(CustomerMixin, FormView):
+    model = UserProfile
+    form_class = AddClientForm
+    success_url = reverse_lazy('users:list')
+    template_name = "users/client_add.html"
+
+    def form_valid(self, form):
+        form.create_client(self.request.user)
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
+        return super(UserProfileAdd, self).form_valid(form)
+
+
+class UserProfileView(CustomerMixin, DetailView):
+    model = UserProfile
+    template_name = "users/client_view.html"
+
+    def dispatch(self, *args, **kwargs):
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+
+        return super(UserProfileView, self).dispatch(*args, **kwargs)
+
+
+class UserProfileUpdate(CustomerMixin, UpdateView):
+    model = UserProfile
+    form_class = AddClientForm
+    template_name = "users/client_edit.html"
+    success_url = reverse_lazy('users:list')
+
+    def form_valid(self, form):
+        # invalidate caches
+        invalidate_caches('dashboard', [self.get_object().customer.pk])
+        invalidate_caches('cudelview', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('cueditview', [self.get_object().customer.pk, self.get_object().pk])
+        invalidate_caches('culistview', [self.get_object().customer.pk])
+        invalidate_caches('cudetailview', [self.get_object().customer.pk, self.get_object().pk])
+
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
+        return super(UserProfileUpdate, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+
+        return super(UserProfileUpdate, self).dispatch(*args, **kwargs)
+
+
+class UserProfileDatatableView(CustomerMixin, DatatableView):
+    model = UserProfile
+    template_name = "users/staff_list.html"
+    datatable_options = {
+        'structure_template': "datatableview/bootstrap_structure.html",
+        'columns': [
+            (_("First Name"), 'user__first_name'),
+            (_("Last Name"), 'user__last_name'),
+            (_("Email"), 'user__email'),
+            'role',
+            (_("Actions"), 'id', 'get_actions'),
+        ],
+        'search_fields': ['user__last_name', 'user__first_name', 'user__email'],
+        'unsortable_columns': ['id'],
+    }
+
+    def get_actions(self, instance, *args, **kwargs):
+        return format_html(
+            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('users:staff_edit', args=[instance.pk]), reverse('users:staff_delete', args=[instance.pk])
+        )
+
+    def get_queryset(self, **kwargs):
+        queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
+        return queryset
+
+
+class UserProfileDelete(CustomerMixin, DeleteView):
+    model = UserProfile
+    success_url = reverse_lazy('users:list')
+    template_name = "users/client_delete.html"
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Delete all appointments first
+        """
+        self.get_object().appointment_set.all().delete()
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully deleted {}'.format(labels.APPOINTMENT)))
+        return super(UserProfileDelete, self).delete(request, *args, **kwargs)
+
+    def dispatch(self, *args, **kwargs):
+        # if this appointment does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(UserProfileDelete, self).dispatch(*args, **kwargs)
