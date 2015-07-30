@@ -33,7 +33,7 @@
             {% endblock %}
 	    </div>
 	  </div>
-	  {% cache 600 dashboard CUSTOMER.pk request.user.pk %}
+	  {# {% cache 600 dashboard CUSTOMER.pk request.user.pk %} #}
 	  <div class="panel-body">
 	  	{% if CUSTOMER.is_new %}
 	  	<div class="alert alert-warning" role="alert">
@@ -90,7 +90,7 @@
 	</div>
 
 	{% block custom_calendar_modals %}{% endblock %}
-	{% endcache %}
+	{# {% endcache %} #}
 {% endblock %}
 {% block extrajs %}
 	<script src="{% static 'js/jquery.cookie.js' %}"></script>

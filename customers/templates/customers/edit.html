@@ -13,7 +13,7 @@
 {% block title %}{% trans "Edit Your Details" %}{% endblock %}
 
 {% block main_content %}
-{% cache 600 customeredit CUSTOMER.pk %}
+{# {% cache 600 customeredit CUSTOMER.pk %} #}
 <div class="row content-section page">
   <div class="container">
     <div class="col-md-12 no-padding">
@@ -28,7 +28,7 @@
 		</div>
 	</div>
 </div>
-{% endcache %}
+{# {% endcache %} #}
 {% endblock %}
 
 

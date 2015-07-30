@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block main_content %}
-	{% cache 1200 vulist CUSTOMER.pk request.user.pk %}
+	{# {% cache 1200 vulist CUSTOMER.pk request.user.pk %} #}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -28,7 +28,7 @@
 	    {{ datatable }}
 	  </div>
 	</div>	
-	{% endcache %}
+	{# {% endcach e %} #}
 {% endblock %}
 
 {% block extrajs %}

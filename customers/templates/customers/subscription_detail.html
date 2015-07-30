@@ -8,7 +8,7 @@
 {% block title %}{{object.name}}{% endblock %}
 
 {% block main_content %}
-{% cache 600 customerselectplan CUSTOMER.pk object.pk %}
+{# {% cache 600 customerselectplan CUSTOMER.pk object.pk %} #}
 <div class="row content-section page">
     <div class="container">
         <div class="col-md-10 no-padding">
@@ -49,5 +49,5 @@
         </div>
     </div>
 </div>
-{% endcache %}
+{# {% endcache %} #}
 {% endblock %}

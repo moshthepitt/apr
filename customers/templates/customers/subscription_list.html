@@ -8,7 +8,7 @@
 {% block title %}{% trans "Your Subscription" %}{% endblock %}
 
 {% block main_content %}
-{% cache 600 customersubscription CUSTOMER.pk %}
+{# {% cache 600 customersubscription CUSTOMER.pk %} #}
 <div class="row content-section page">
     <div class="container">
         <div class="col-md-12 no-padding">
@@ -84,5 +84,5 @@
         </div>
     </div>
 </div>
-{% endcache %}
+{# {% endcache %} #}
 {% endblock %}

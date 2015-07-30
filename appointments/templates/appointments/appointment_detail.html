@@ -7,7 +7,7 @@
 {% block extracss %}{% endblock %}
 {% block title %}{{object.event.title}} | {{site.name}}{% endblock %}
 {% block main_content %}
-	{% cache 1200 appdetail CUSTOMER.pk object.pk %}
+	{# {% cache 1200 appdetail CUSTOMER.pk object.pk %} #}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -61,6 +61,6 @@
 	  	</div>
 	  </div>
 	</div>	
-	{% endcache %}
+	{# {% endcache %} #}
 {% endblock %}
 {% block extrajs %}{% endblock %}

@@ -6,7 +6,7 @@
 {% block title %}{{object}} {% trans "Calendar" %}{% endblock %}
 {% block calendar_title %}{{object}} {% trans "Calendar" %}{% endblock %}
 
-{% cache 600 vucal CUSTOMER.pk object.pk %}
+{# {% cache 600 vucal CUSTOMER.pk object.pk %} #}
 {% block schedule_specific_js %}
 	startOnFirstDayOfWeek: true,
 	daysToShow: {{object.shown_days}},
@@ -26,8 +26,8 @@
 	}, 
 	users: [{'id': {{object.id}}, 'name': '{{object.name|upper}}'},],
 	{% if object.allow_overlap %}
-	allowCalEventOverlap: true,
-	overlapEventsSeparate: true,
+		allowCalEventOverlap: true,
+		overlapEventsSeparate: true,
 	{% endif %}
 {% endblock %}
-{% endcache %}
+{# {% endcache %} #}

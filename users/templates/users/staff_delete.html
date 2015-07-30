@@ -4,7 +4,7 @@
 
 {% block title %}{{object}} | {{site.name}}{% endblock %}
 {% block main_content %}
-	{% cache 1200 staffdelview CUSTOMER.pk object.pk %}
+	{# {% cache 1200 staffdelview CUSTOMER.pk object.pk %} #}
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">
@@ -19,6 +19,6 @@
 	  	</form>
 	  </div>
 	</div>	
-	{% endcache %}
+	{# {% endcache %} #}
 {% endblock %}
 {% block extrajs %}{% endblock %}

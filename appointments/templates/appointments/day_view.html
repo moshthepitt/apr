@@ -6,7 +6,7 @@
 {% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 
-{% cache 600 daycal CUSTOMER.pk request.user.pk %}
+{# {% cache 600 daycal CUSTOMER.pk request.user.pk %} #}
 	{% block calendar_class %}dayview{% endblock %}
 
 	
@@ -89,7 +89,7 @@
              loadNotes();
         },
 	{% endblock %}
-{% endcache %}
+{# {% endcache %} #}
 
 {% block calendar_footer_js %}
 	<script>
