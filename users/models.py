@@ -111,6 +111,18 @@ class UserProfile(models.Model):
     role = models.CharField(_("Role"), max_length=1, choices=ROLE_CHOICES, blank=False, default=ADMIN)
     staff = models.BooleanField(_("Staff Member"), default=False)
 
+    @property
+    def is_admin(self):
+        return self.role == self.ADMIN
+
+    @property
+    def is_editor(self):
+        return self.role == self.EDITOR
+
+    @property
+    def is_user(self):
+        return self.role == self.USER
+
     def is_doctor(self):
         "Checks if this userprofile is connected to a Doctor object"
         return self.user.doctor_set.exists()

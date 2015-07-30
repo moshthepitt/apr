@@ -6,11 +6,14 @@
 {% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 
-{% cache 600 daycal CUSTOMER.pk object.pk %}
+{% cache 600 daycal CUSTOMER.pk request.user.pk %}
 	{% block calendar_class %}dayview{% endblock %}
 
+	
 	{% block calendar_custom_buttons %}
+		{% if not request.user.userprofile.is_user %}
 		<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+		{% endif %}
 	{% endblock %}
 
 	{% block custom_calendar_modals %}

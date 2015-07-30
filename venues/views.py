@@ -71,8 +71,8 @@ class VenueUpdate(CustomerMixin, UpdateView):
         # invalidate caches
         invalidate_caches('vuedit', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('vuview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('dashboard', [self.get_object().customer.pk])
-        invalidate_caches('daycal', [self.get_object().customer.pk])
+        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.id])
+        invalidate_caches('daycal', [self.get_object().customer.pk, self.request.user.id])
         invalidate_caches('vucal', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('vudel', [self.get_object().customer.pk, self.get_object().pk])
 
@@ -121,10 +121,20 @@ class VenueDatatableView(CustomerMixin, DatatableView):
     }
 
     def get_actions(self, instance, *args, **kwargs):
-        return format_html(
-            '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a> | <a href="{}">Script</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
-            ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk]), reverse('venues:script', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
-        )
+        if self.request.user.userprofile.is_admin:
+            return format_html(
+                '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a> | <a href="{}">Script</a> | <a href="{}">Delete</a>', instance.get_absolute_url(
+                ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk]), reverse('venues:script', args=[instance.pk]), reverse('venues:delete', args=[instance.pk])
+            )
+        elif self.request.user.userprofile.is_editor:
+            return format_html(
+                '<a href="{}">Details</a> | <a href="{}">Calendar</a> | <a href="{}">Edit</a>', instance.get_absolute_url(
+                ), reverse('venues:calendar', args=[instance.pk]), reverse('venues:edit', args=[instance.pk])
+            )
+        else:
+            return format_html(
+                '<a href="{}">Calendar</a>', reverse('venues:calendar', args=[instance.pk])
+            )
 
     def get_queryset(self, **kwargs):
         queryset = Venue.objects.filter(customer=self.request.user.userprofile.customer)

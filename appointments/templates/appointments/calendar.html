@@ -33,7 +33,7 @@
             {% endblock %}
 	    </div>
 	  </div>
-	  {% cache 600 dashboard CUSTOMER.pk %}
+	  {% cache 600 dashboard CUSTOMER.pk request.user.pk %}
 	  <div class="panel-body">
 	  	{% if CUSTOMER.is_new %}
 	  	<div class="alert alert-warning" role="alert">
@@ -339,7 +339,11 @@
  				defaultEventLength: 4,
  				displayFreeBusys: true,
  				defaultFreeBusy: {free: true},
+ 				{% if request.user.userprofile.is_user %}
+ 				readonly : true,
+ 				{% else %}
  				readonly : false,
+ 				{% endif %}
  				firstDayOfWeek: 1,
  				showHeader: false,				
             	height: function($calendar) {
@@ -409,11 +413,12 @@
  					editEvent(calEvent);
  				},
  				eventClick: function(calEvent, $event) {
+ 					{% if not request.user.userprofile.is_user %}
  					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
  					$("#view-appointment-content").load(url, function() {
  						$('#edit-appointment-modal').modal();
  					});	 					
- 				    
+ 				    {% endif %}
  				},
  				noEvents: function() {
  				    $.growl.notice({ 

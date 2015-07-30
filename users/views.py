@@ -50,11 +50,11 @@ class ClientUpdate(CustomerMixin, UpdateView):
 
     def form_valid(self, form):
         # invalidate caches
-        invalidate_caches('dashboard', [self.get_object().customer.pk])
-        invalidate_caches('daycal', [self.get_object().customer.pk])
+        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.id])
+        invalidate_caches('daycal', [self.get_object().customer.pk, self.request.user.id])
         invalidate_caches('cudelview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('cueditview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('culistview', [self.get_object().customer.pk])
+        invalidate_caches('culistview', [self.get_object().customer.pk, self.request.user.id])
         invalidate_caches('cudetailview', [self.get_object().customer.pk, self.get_object().pk])
 
         messages.add_message(
@@ -86,9 +86,14 @@ class ClientDatatableView(CustomerMixin, DatatableView):
     }
 
     def get_actions(self, instance, *args, **kwargs):
-        return format_html(
-            '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('users:edit', args=[instance.pk]), reverse('users:delete', args=[instance.pk])
-        )
+        if self.request.user.userprofile.is_admin:
+            return format_html(
+                '<a href="{}">View</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>', instance.get_absolute_url(), reverse('users:edit', args=[instance.pk]), reverse('users:delete', args=[instance.pk])
+            )
+        else:
+            return format_html(
+                '<a href="{}">View</a> | <a href="{}">Edit</a>', instance.get_absolute_url(), reverse('users:edit', args=[instance.pk])
+            )
 
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
