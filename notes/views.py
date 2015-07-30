@@ -29,7 +29,7 @@ class AddNoteSnippetView(Customer404Mixin, TemplateView):
 
         note_form = NoteForm()
         note_form.fields['venue'].queryset = Venue.objects.filter(
-            customer=self.request.user.userprofile.customer)
+            customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
         note_form.fields['date'].initial = date
         context['NoteForm'] = note_form
         return context
