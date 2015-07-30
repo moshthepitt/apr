@@ -25,7 +25,7 @@ class DayView(CustomerMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DayView, self).get_context_data(**kwargs)
-        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer)
+        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
         return context
 
 
