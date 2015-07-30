@@ -26,7 +26,7 @@ class ClientAdd(CustomerMixin, FormView):
     def form_valid(self, form):
         form.create_client(self.request.user)
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
+            self.request, messages.SUCCESS, _('Successfully saved client'))
         return super(ClientAdd, self).form_valid(form)
 
 
@@ -58,7 +58,7 @@ class ClientUpdate(CustomerMixin, UpdateView):
         invalidate_caches('cudetailview', [self.get_object().customer.pk, self.get_object().pk])
 
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
+            self.request, messages.SUCCESS, _('Successfully saved client'))
         return super(ClientUpdate, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
