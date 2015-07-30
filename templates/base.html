@@ -52,7 +52,8 @@
       <ul id="sidebar-ul-menu">
         {% if request.user.is_authenticated %}
         {% block top_sidebar %}{% endblock %}
-        <li><a href="{% url 'dashboard' %}"><i class="fa fa-home"></i> <span>{% trans "Calendar" %}</span></a></li>
+        <li><a href="{% url 'dashboard' %}"><i class="fa fa-calendar"></i> <span>{% trans "Calendar" %}</span></a></li>
+        <li><a href="{% url 'day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Day View" %}</span></a></li>
         
         <li class="submenu">
           <a href="#"><i class="fa fa-th-list"></i> <span>{% trans "Appointments" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
