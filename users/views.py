@@ -51,6 +51,7 @@ class ClientUpdate(CustomerMixin, UpdateView):
     def form_valid(self, form):
         # invalidate caches
         invalidate_caches('dashboard', [self.get_object().customer.pk])
+        invalidate_caches('daycal', [self.get_object().customer.pk])
         invalidate_caches('cudelview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('cueditview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('culistview', [self.get_object().customer.pk])
@@ -154,7 +155,6 @@ class UserProfileUpdate(CustomerMixin, UpdateView):
 
     def form_valid(self, form):
         # invalidate caches
-        invalidate_caches('dashboard', [self.get_object().customer.pk])
         invalidate_caches('staffdelview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('staffeditview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('stafflistview', [self.get_object().customer.pk])

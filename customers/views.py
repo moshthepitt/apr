@@ -63,6 +63,7 @@ class EditCustomer(CustomerMixin, FormView):
         # invalidate caches
         invalidate_caches('customeredit', [self.customer.id])
         invalidate_caches('dashboard', [self.customer.id])
+        invalidate_caches('daycal', [self.customer.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))
@@ -124,6 +125,7 @@ class EditCustomerSettings(CustomerMixin, FormView):
         # invalidate caches
         invalidate_caches('customersettings', [self.customer.id])
         invalidate_caches('dashboard', [self.customer.id])
+        invalidate_caches('daycal', [self.customer.id])
 
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved'))

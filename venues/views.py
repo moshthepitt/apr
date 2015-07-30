@@ -72,6 +72,7 @@ class VenueUpdate(CustomerMixin, UpdateView):
         invalidate_caches('vuedit', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('vuview', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('dashboard', [self.get_object().customer.pk])
+        invalidate_caches('daycal', [self.get_object().customer.pk])
         invalidate_caches('vucal', [self.get_object().customer.pk, self.get_object().pk])
         invalidate_caches('vudel', [self.get_object().customer.pk, self.get_object().pk])
 
