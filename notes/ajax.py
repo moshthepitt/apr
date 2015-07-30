@@ -1,9 +1,14 @@
+import json
+
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 from jsonview.decorators import json_view
 from crispy_forms.utils import render_crispy_form
 
 from notes.forms import NoteForm
+from notes.models import Note
 from venues.models import Venue
 
 
@@ -19,3 +24,14 @@ def process_add_note_form(request):
         }
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
+
+
+def delete_note(request, pk):
+    note = get_object_or_404(Note, pk=pk)
+    success = False
+    if request.user.userprofile.customer != note.customer:
+        return False
+    if request.is_ajax() and request.method == 'POST':
+        note.delete()
+        success = True
+    return HttpResponse(json.dumps(success), content_type="application/json")

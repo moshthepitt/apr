@@ -81,6 +81,10 @@ td.wc-day-column.bottom {
   padding:0px;
 }
 
+td.wc-day-column.empty-notes {
+  padding:10px;
+}
+
 .single-bottom-note.list-group-item {
   padding: 5px;
   margin: -1px;
@@ -93,4 +97,14 @@ td.wc-day-column.bottom {
   padding: 5px;
   background-color: transparent;
   border: none;
+}
+
+.badge.icon {
+  display:none;
+  color:#fff;
+  cursor: pointer;
+}
+
+.note-item:hover .badge.icon {
+  display:block;
 }

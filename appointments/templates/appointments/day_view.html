@@ -100,10 +100,37 @@
 			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});
 			$("#tr-venue-headers" ).load(top_notes_url, function(){});
 		}
+
+		function deleteNote(id) {
+			var note_id = id;
+			var csrftoken = $.cookie('csrftoken');
+			var url = '{% url "notes:ajax_delete_note" 0 %}'.replace (0, note_id);
+			$.post(url, {
+			        csrfmiddlewaretoken: csrftoken,
+			        id: note_id,
+			    },
+			    function(data) {
+			        if(data) {
+			        	loadNotes();
+			        } else {
+			        	loadNotes();
+			        }
+			    }
+			);
+		}
 		
 		$(document).ready(function() {
 			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
 			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
+
+			// $('.note-region').on({
+			//     mouseenter: function () {			    	
+			//         $('.badge.icon').show();
+			//     },
+			//     mouseleave: function () {
+			//         $('.badge.icon').hide();
+			//     }
+			// });
 		});
 
 		$(document).on('click', '#go-add-note', function(event) {

@@ -8,19 +8,35 @@
 			{% endfor %}
 		</tr>
 		
-		<tr>
-			{% for venue in venues %}	
-				<td class="wc-day-column bottom">
-				{% for note in notes %}
-					{% if note.venue = venue %}			
-						<div class="single-bottom-note list-group-item">{{note.note}}</div>
-					{% else %}
-						<div class="single-bottom-note"></div>
-					{% endif %}
+		{% if notes %}
+			<tr>
+				{% for venue in venues %}	
+					<td class="wc-day-column bottom">
+					{% for note in notes %}
+						{% if note.venue = venue %}			
+							<div class="single-bottom-note note-item list-group-item">
+								<span class="badge icon" onclick="deleteNote({{note.id}});"><i class="glyphicon glyphicon-trash"></i></span>
+								{{note.note}}
+							</div>
+						{% else %}
+							<div class="single-bottom-note"></div>
+						{% endif %}
+					{% endfor %}
+					</td>
 				{% endfor %}
-				</td>
-			{% endfor %}
-		</tr>
+			</tr>
+		{% else %}
+			<tr>
+				{% for venue in venues %}			
+				<td class="wc-day-column empty-notes"></td>
+				{% endfor %}
+			</tr>
+			<tr>
+				{% for venue in venues %}			
+				<td class="wc-day-column empty-notes"></td>
+				{% endfor %}
+			</tr>
+		{% endif %}
 
 	</table>
 </td>
