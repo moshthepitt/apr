@@ -67,14 +67,18 @@
                 </p>
                 <p>
                     <ul>
-                    {% for object in object_list %}
+                    {% for object in object_list %}                        
+                      {% if CUSTOMER.customersubscription.subscription == object %}
                         <li>
-                            {% if CUSTOMER.customersubscription.subscription == object%}
-                            <strong>{{object.name}} ({% trans "Your current plan." %} {{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})</strong>
-                            {% else %}
-                            <a href="{% url 'customer:plan' object.pk %}">{% trans "Switch to" %} {{object.name}}</a> ({{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})
-                            {% endif %}
+                          <strong>{{object.name}} ({% trans "Your current plan." %} {{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})</strong>
                         </li>
+                      {% else %}
+                        {% if not object.hidden %}
+                          <li>
+                            <a href="{% url 'customer:plan' object.pk %}">{% trans "Switch to" %} {{object.name}}</a> ({{object.max_appointments}} {% trans "appointments per month for KES" %} {{object.price|floatformat:2|intcomma}} {% trans "per month" %})
+                          </li>
+                        {% endif %}
+                      {% endif %}                        
                     {% endfor %}
                     </ul>
                 </p>
