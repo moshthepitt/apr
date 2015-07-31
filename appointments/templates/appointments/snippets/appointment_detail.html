@@ -9,6 +9,9 @@
 				<li><span class="appointment-label"><strong>{% trans "Name" %}:</strong></span> <span class="appointment-info">{{object.client.get_full_name}}</span></li>
 				<li><span class="appointment-label"><strong>{% trans "Phone" %}:</strong></span> <span class="appointment-info">{{object.client.phone}}</span></li>
 				<li><span class="appointment-label"><strong>{% trans "Email" %}:</strong></span> <span class="appointment-info">{{object.client.email}}</span></li>
+				{% if object.client.client_id %}
+					<li><span class="appointment-label"><strong>{% trans "Client ID" %}:</strong></span> <span class="appointment-info">{{object.client.client_id}}</span></li>
+				{% endif %}
 			</ul>
 			<h5>{% trans "Appointment Details" %}</h5>
 			<ul class="list-unstyled">

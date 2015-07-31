@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit, HTML
+from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit, HTML, Div
 from allauth.utils import generate_unique_username, email_address_exists
 
 from users.models import Client, UserProfile
@@ -86,7 +86,9 @@ class AddClientForm(forms.ModelForm):
                 Field('client_id', css_class="input-sm"),
             ),
             ButtonHolder(
-                Submit('submit', _('Save'), css_class='btn-success')
+                Submit('submit', _('Save'), css_class='btn-success'),
+                HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
+                css_class="form-group"
             )
         )
 
@@ -102,10 +104,62 @@ def edit_client_helper():
             'phone',
             'first_name',
             'last_name',
+            'client_id',
         ),
         ButtonHolder(
             Submit('submit', _('Save'), css_class='btn-success'),
-            HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>")
+            HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
+            css_class="form-group"
+        )
+    )
+
+    return helper
+
+
+def add_client_form_modal_helper():
+    helper = FormHelper()
+    helper.form_id = 'id-add-client-form'
+    helper.form_method = 'post'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-3'
+    helper.field_class = 'col-lg-9'
+    helper.layout = Layout(
+        Field('email', css_class="input-sm"),
+        Field('phone', css_class="input-sm", id="id_phone"),
+        Field('first_name', css_class="input-sm"),
+        Field('last_name', css_class="input-sm"),
+        Field('client_id', css_class="input-sm"),
+        Div(
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+                css_class="col-lg-offset-3 col-lg-9"
+            ),
+            css_class="form-group"
+        )
+    )
+
+    return helper
+
+
+def edit_client_form_modal_helper():
+    helper = FormHelper()
+    helper.form_id = 'id-edit-client-form'
+    helper.form_method = 'post'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-3'
+    helper.field_class = 'col-lg-9'
+    helper.layout = Layout(
+        Field('email', css_class="input-sm"),
+        Field('phone', css_class="input-sm", id="id_phone"),
+        Field('first_name', css_class="input-sm"),
+        Field('last_name', css_class="input-sm"),
+        Field('client_id', css_class="input-sm"),
+        Div(
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+                css_class="col-lg-offset-3 col-lg-9"
+            ),
+            css_class="form-group"
         )
     )
 

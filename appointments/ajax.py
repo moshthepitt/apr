@@ -13,7 +13,7 @@ from jsonview.decorators import json_view
 from schedule.models import Event
 from schedule.periods import Period
 
-from users.forms import AddClientForm, SelectClientForm
+from users.forms import AddClientForm, SelectClientForm, add_client_form_modal_helper, edit_client_form_modal_helper
 from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm, IDForm
 from appointments.models import Appointment
 from users.models import Client
@@ -44,7 +44,7 @@ def process_add_client_form(request):
             'success': True,
             'client_id': client.id
         }
-    form_html = render_crispy_form(form)
+    form_html = render_crispy_form(form, helper=add_client_form_modal_helper)
     return {'success': False, 'form_html': form_html}
 
 
@@ -59,7 +59,7 @@ def process_edit_client_form(request, pk):
             'success': True,
             'client_id': client.id
         }
-    form_html = render_crispy_form(form)
+    form_html = render_crispy_form(form, helper=edit_client_form_modal_helper)
     return {'success': False, 'form_html': form_html}
 
 

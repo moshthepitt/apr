@@ -36,6 +36,12 @@
 	  	  		<th>{% trans "Email" %}</th>
 	  	  		<td width="80%">{{object.client.email}}</td>
 	  	  	</tr>
+	  	  	{% if object.client.client_id %}
+	  	  	<tr>
+	  	  		<th>{% trans "Client ID" %}</th>
+	  	  		<td width="80%">{{object.client.client_id}}</td>
+	  	  	</tr>
+	  	  	{% endif %}
 	  	  	<tr><th colspan="2">{% trans "Appointment details" %}</th></tr>
 	  	    <tr>
 	  	    	<th>{% trans "Title" %}</th>

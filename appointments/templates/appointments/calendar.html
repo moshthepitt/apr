@@ -403,7 +403,7 @@
  						$("#id-select-client").select2({
  							placeholder: "{% trans 'Select a client' %}",
  							width:'100%',
- 						});
+ 						}); 						
  					});
  				},
  				eventDrop: function(calEvent, $event) {
@@ -417,6 +417,13 @@
  					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
  					$("#view-appointment-content").load(url, function() {
  						$('#edit-appointment-modal').modal();
+ 						// intlTelInput
+ 						$("#id_phone").intlTelInput({
+ 							autoFormat: true,
+ 							nationalMode: false,
+ 						  	preferredCountries: ['ke'],
+ 						  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+ 						});
  					});	 					
  				    {% endif %}
  				},

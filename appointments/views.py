@@ -11,7 +11,8 @@ from django.http import Http404
 
 from datatableview.views import DatatableView
 
-from users.forms import SelectClientForm, AddClientForm, edit_client_helper
+from users.forms import SelectClientForm, AddClientForm, edit_client_form_modal_helper as edit_client_helper
+from users.forms import add_client_form_modal_helper as add_client_helper
 from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, hidden_appointment_form_helper
 from appointments.models import Appointment
 from appointments.tasks import task_send_cancel_email
@@ -176,6 +177,7 @@ class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
             customer=self.request.user.userprofile.customer)
         context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
+        context['add_client_helper'] = add_client_helper
         appointment_form = SimpleAppointmentForm()
         context['AppointmentForm'] = appointment_form
         # set initial data based on GET parameters to facilitate new advert creation

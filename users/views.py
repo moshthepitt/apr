@@ -14,7 +14,8 @@ from core import labels
 from core.utils import invalidate_caches
 
 from users.models import Client, UserProfile
-from users.forms import AddClientForm, EditUserProfileForm, AddUserProfileForm, EditUserPasswordForm
+from users.forms import AddClientForm, EditUserProfileForm, AddUserProfileForm
+from users.forms import EditUserPasswordForm, edit_client_helper
 
 
 class ClientAdd(CustomerMixin, FormView):
@@ -47,6 +48,11 @@ class ClientUpdate(CustomerMixin, UpdateView):
     form_class = AddClientForm
     template_name = "users/client_edit.html"
     success_url = reverse_lazy('users:list')
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientUpdate, self).get_context_data(**kwargs)
+        context['form_helper'] = edit_client_helper
+        return context
 
     def form_valid(self, form):
         # invalidate caches

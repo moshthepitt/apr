@@ -125,15 +125,6 @@
 		$(document).ready(function() {
 			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
 			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
-
-			// $('.note-region').on({
-			//     mouseenter: function () {			    	
-			//         $('.badge.icon').show();
-			//     },
-			//     mouseleave: function () {
-			//         $('.badge.icon').hide();
-			//     }
-			// });
 		});
 
 		$(document).on('click', '#go-add-note', function(event) {
