@@ -4,7 +4,7 @@ from subscriptions.models import Subscription, CustomerSubscription
 
 
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'max_appointments', 'default', 'highlighted']
+    list_display = ['name', 'price', 'max_appointments', 'default', 'highlighted', 'hidden']
 
 
 class CustomerSubscriptionAdmin(admin.ModelAdmin):

@@ -181,6 +181,11 @@ class SubscriptionListView(LesserCustomerMixin, ListView):
     model = Subscription
     template_name = 'customers/subscription_list.html'
 
+    def get_queryset(self):
+        queryset = super(SubscriptionListView, self).get_queryset()
+        queryset = queryset.exclude(hidden=True)
+        return queryset
+
     def get_context_data(self, **kwargs):
         context = super(SubscriptionListView, self).get_context_data(**kwargs)
         context['form'] = MPESAForm()
