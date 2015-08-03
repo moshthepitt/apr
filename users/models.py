@@ -57,7 +57,7 @@ class Client(models.Model):
     def get_absolute_url(self):
         return reverse('users:client', args=[self.pk])
 
-    def display_name(self, venue=None):
+    def display_name(self, venue=None, title=None):
         if venue and venue.client_display != Venue.SHOW_CLIENT_NAME:
             if venue.client_display == Venue.SHOW_CLIENT_PHONE:
                 return "{}".format(self.phone)
@@ -67,6 +67,10 @@ class Client(models.Model):
                 return "{}".format(self.client_id)
             elif venue.client_display == Venue.SHOW_CLIENT_NAME_AND_ID:
                 return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
+            elif venue.client_display == Venue.SHOW_CLIENT_NAME_PHONE_AND_ID:
+                return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+            elif venue.client_display == Venue.SHOW_APPOINTMENT_TITLE and title:
+                return "{}".format(title)
         elif self.customer.client_display != Customer.SHOW_CLIENT_NAME:
             if self.customer.client_display == Customer.SHOW_CLIENT_PHONE:
                 return "{}".format(self.phone)
@@ -76,6 +80,10 @@ class Client(models.Model):
                 return "{}".format(self.client_id)
             elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_AND_ID:
                 return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
+            elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_PHONE_AND_ID:
+                return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+            elif self.customer.client_display == Customer.SHOW_APPOINTMENT_TITLE and title:
+                return "{}".format(title)
 
         return self.__str__()
 

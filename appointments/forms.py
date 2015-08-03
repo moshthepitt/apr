@@ -221,7 +221,7 @@ class SimpleAppointmentForm(forms.Form):
             event = Event(
                 start=parser.parse(self.cleaned_data['start_datetime']),
                 end=parser.parse(self.cleaned_data['end_datetime']),
-                title="{}'s appointment".format(client.get_full_name()),
+                title="{name} {phone} {id}".format(name=client.get_full_name(), phone=client.phone, id=client.client_id),
                 creator=user
             )
             event.save()
