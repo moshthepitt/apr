@@ -85,6 +85,7 @@ class ClientDatatableView(CustomerMixin, DatatableView):
             'client_id',
             'email',
             'phone',
+            "birth_date",
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id'],
