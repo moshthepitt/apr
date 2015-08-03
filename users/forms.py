@@ -47,8 +47,6 @@ class SelectClientForm(forms.Form):
 class AddClientForm(forms.ModelForm):
     """
     Add a new client form
-    We have two phone fields
-    one will receive the full international number with country code => this is a hidden field
     """
 
     class Meta:
@@ -61,6 +59,7 @@ class AddClientForm(forms.ModelForm):
             phone=self.cleaned_data['phone'],
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
+            client_id=self.cleaned_data['client_id'],
             creator=user,
             customer=user.userprofile.customer
         )
@@ -93,9 +92,60 @@ class AddClientForm(forms.ModelForm):
         )
 
 
+class FullClientForm(forms.ModelForm):
+    """
+    Add a new client form
+    Has all fields
+    """
+
+    class Meta:
+        model = Client
+        fields = ['first_name', 'last_name', 'birth_date', 'email', 'phone', 'client_id']
+
+    def create_client(self, user):
+        new_client = Client(
+            email=self.cleaned_data['email'],
+            phone=self.cleaned_data['phone'],
+            first_name=self.cleaned_data['first_name'],
+            last_name=self.cleaned_data['last_name'],
+            client_id=self.cleaned_data['client_id'],
+            birth_date=self.cleaned_data['birth_date'],
+            creator=user,
+            customer=user.userprofile.customer
+        )
+        new_client.save()
+        return new_client
+
+    def __init__(self, *args, **kwargs):
+        super(FullClientForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = False
+        self.fields['phone'].required = False
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = False
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-full-add-client-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Fieldset(
+                getattr(labels, 'CREATE_CLIENT', _('Create new client')),
+                Field('email', css_class="input-sm"),
+                Field('phone', css_class="input-sm"),
+                Field('first_name', css_class="input-sm"),
+                Field('last_name', css_class="input-sm"),
+                Field('birth_date', css_class="input-sm", id="id_birth_date"),
+                Field('client_id', css_class="input-sm"),
+            ),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success'),
+                HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
+                css_class="form-group"
+            )
+        )
+
+
 def edit_client_helper():
     helper = FormHelper()
-    helper.form_id = 'id-edit-client-form'
+    helper.form_id = 'id-edit-full-client-form'
     helper.form_method = 'post'
     helper.layout = Layout(
         Fieldset(
@@ -104,6 +154,7 @@ def edit_client_helper():
             'phone',
             'first_name',
             'last_name',
+            Field('birth_date', id="id_birth_date"),
             'client_id',
         ),
         ButtonHolder(

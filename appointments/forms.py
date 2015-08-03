@@ -218,10 +218,16 @@ class SimpleAppointmentForm(forms.Form):
     def add_new(self, user):
         try:
             client = Client.objects.get(pk=self.cleaned_data['client'])
+
+            if client.phone:
+                event_title = "{name} {phone} {id}".format(name=client.get_full_name(), phone=client.phone, id=client.client_id)
+            else:
+                event_title = "{name} {id}".format(name=client.get_full_name(), id=client.client_id)
+
             event = Event(
                 start=parser.parse(self.cleaned_data['start_datetime']),
                 end=parser.parse(self.cleaned_data['end_datetime']),
-                title="{name} {phone} {id}".format(name=client.get_full_name(), phone=client.phone, id=client.client_id),
+                title=event_title,
                 creator=user
             )
             event.save()

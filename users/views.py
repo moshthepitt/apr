@@ -14,13 +14,13 @@ from core import labels
 from core.utils import invalidate_caches
 
 from users.models import Client, UserProfile
-from users.forms import AddClientForm, EditUserProfileForm, AddUserProfileForm
+from users.forms import EditUserProfileForm, AddUserProfileForm, FullClientForm
 from users.forms import EditUserPasswordForm, edit_client_helper
 
 
 class ClientAdd(CustomerMixin, FormView):
     model = Client
-    form_class = AddClientForm
+    form_class = FullClientForm
     success_url = reverse_lazy('users:list')
     template_name = "users/client_add.html"
 
@@ -45,7 +45,7 @@ class ClientView(CustomerMixin, DetailView):
 
 class ClientUpdate(CustomerMixin, UpdateView):
     model = Client
-    form_class = AddClientForm
+    form_class = FullClientForm
     template_name = "users/client_edit.html"
     success_url = reverse_lazy('users:list')
 

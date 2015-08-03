@@ -6,6 +6,7 @@
 
 {% block extracss %}
 	<link rel="stylesheet" href="{% static 'intlTelInput/css/intlTelInput.css' %}" type="text/css" />
+	<link rel="stylesheet" href="{% static 'css/datepicker3.css' %}" type="text/css" />
 {% endblock %}
 
 {% block title %}{% trans "Add Client" %} | {{site.name}}{% endblock %}
@@ -30,6 +31,7 @@
 
 {% block extrajs %}
 	<script src="{% static 'intlTelInput/js/intlTelInput.min.js' %}"></script>
+	<script src="{% static 'js/bootstrap-datepicker.js' %}"></script>
 	<script>
 		$(document).ready(function() {			
 			$("#id_phone").intlTelInput({
@@ -37,6 +39,10 @@
 				nationalMode: false,
 			  	preferredCountries: ['ke'],
 			  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+			});
+
+			$('#id_birth_date').datepicker({
+				format: 'yyyy-mm-dd',
 			});
 	  	});	
 

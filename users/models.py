@@ -72,7 +72,10 @@ class Client(models.Model):
             elif venue.client_display == Venue.SHOW_CLIENT_NAME_AND_ID:
                 return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
             elif venue.client_display == Venue.SHOW_CLIENT_NAME_PHONE_AND_ID:
-                return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                if self.phone:
+                    return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                else:
+                    return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
             elif venue.client_display == Venue.SHOW_APPOINTMENT_TITLE and title:
                 return "{}".format(title)
         elif self.customer.client_display != Customer.SHOW_CLIENT_NAME:
@@ -85,7 +88,10 @@ class Client(models.Model):
             elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_AND_ID:
                 return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
             elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_PHONE_AND_ID:
-                return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                if self.phone:
+                    return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                else:
+                    return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
             elif self.customer.client_display == Customer.SHOW_APPOINTMENT_TITLE and title:
                 return "{}".format(title)
 
