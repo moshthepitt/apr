@@ -13,7 +13,7 @@ from customers.utils import customer_has_subscription
 class Customer(models.Model):
 
     """
-    This model stores customers i.e. peopl who sign up to user APR
+    This model stores customers i.e. people who sign up to user APR
     """
 
     SHOW_CLIENT_NAME = '1'
@@ -21,12 +21,17 @@ class Customer(models.Model):
     SHOW_CLIENT_EMAIL = '3'
     SHOW_CLIENT_ID = '4'
     SHOW_CLIENT_NAME_AND_ID = '5'
+    SHOW_CLIENT_NAME_PHONE_AND_ID = '6'
+    SHOW_APPOINTMENT_TITLE = '7'
+
     CLIENT_DISPLAY_CHOICES = (
         (SHOW_CLIENT_NAME, _('Client Name')),
         (SHOW_CLIENT_PHONE, _('Client Phone')),
         (SHOW_CLIENT_EMAIL, _('Client Email')),
         (SHOW_CLIENT_ID, _('Client ID')),
         (SHOW_CLIENT_NAME_AND_ID, _('Client Name & Client ID')),
+        (SHOW_CLIENT_NAME_PHONE_AND_ID, _('Client Name, Client Phone & Client ID')),
+        (SHOW_APPOINTMENT_TITLE, _('Appointment Title')),
     )
 
     NUMBER_OF_DAYS_CHOICES = [(x, "{}".format(x)) for x in range(1, 8)]
