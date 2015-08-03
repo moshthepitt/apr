@@ -20,6 +20,11 @@ class UserAdmin(UserAdmin):
     inlines = (UserProfileInline, )
 
 
+class UserProfileAdmin(admin.ModelAdmin):
+    list_display = ['user', 'customer']
+    list_filter = ['customer']
+
+
 class ClientAdmin(admin.ModelAdmin):
     list_display = ['first_name', 'last_name', 'email', 'phone', 'customer']
     list_filter = ['customer']
@@ -28,4 +33,5 @@ class ClientAdmin(admin.ModelAdmin):
 # Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+admin.site.register(UserProfile, UserProfileAdmin)
 admin.site.register(Client, ClientAdmin)
