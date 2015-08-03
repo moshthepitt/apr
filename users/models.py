@@ -32,8 +32,12 @@ class Client(models.Model):
         getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True, help_text=_("Optional unique client ID"))
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
-    email = models.EmailField(_('Email address'), blank=True, help_text=_("Needed to send reminders by email"))
-    phone = PhoneNumberField(_('Phone Number'), max_length=255, blank=True, help_text=_("Needed to send reminders by SMS"))
+    birth_date = models.DateField(_("Date of Birth"), blank=True, default=None, null=True, help_text=_(
+        "Needed to send birthday greetings"))
+    email = models.EmailField(
+        _('Email address'), blank=True, help_text=_("Needed to send reminders by email"))
+    phone = PhoneNumberField(
+        _('Phone Number'), max_length=255, blank=True, help_text=_("Needed to send reminders by SMS"))
     payment = models.CharField(_("Payment Method"), max_length=1, choices=PAYMENT_CHOICES, blank=False, help_text=_(
         "How will payment be made?"))
     insurance_company = models.CharField(_('Insurance Company'), max_length=255, blank=True)
@@ -116,7 +120,8 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, verbose_name=_("User"))
     customer = models.ForeignKey(Customer, verbose_name=_(
         "Customer"), on_delete=models.PROTECT, blank=True, null=True, default=None)
-    role = models.CharField(_("Role"), max_length=1, choices=ROLE_CHOICES, blank=False, default=ADMIN)
+    role = models.CharField(
+        _("Role"), max_length=1, choices=ROLE_CHOICES, blank=False, default=ADMIN)
     staff = models.BooleanField(_("Staff Member"), default=False)
 
     @property
