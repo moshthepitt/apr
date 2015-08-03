@@ -62,7 +62,7 @@ class Client(models.Model):
         return reverse('users:client', args=[self.pk])
 
     def display_name(self, venue=None, title=None):
-        if venue and venue.client_display != Venue.SHOW_CLIENT_NAME:
+        if venue:
             if venue.client_display == Venue.SHOW_CLIENT_PHONE:
                 return "{}".format(self.phone)
             elif venue.client_display == Venue.SHOW_CLIENT_EMAIL:
@@ -95,7 +95,7 @@ class Client(models.Model):
             elif self.customer.client_display == Customer.SHOW_APPOINTMENT_TITLE and title:
                 return "{}".format(title)
 
-        return self.__str__()
+        return self.get_full_name()
 
     def __str__(self):
         if self.get_full_name():
