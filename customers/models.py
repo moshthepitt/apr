@@ -15,6 +15,21 @@ class Customer(models.Model):
     """
     This model stores customers i.e. people who sign up to user APR
     """
+    DAY = 1
+    WEEK = 2
+    MONTH = 3
+    YEAR = 4
+
+    TIME_UNIT_CHOICES = [
+        (DAY, _("Day")),
+        (WEEK, _("Week")),
+        (MONTH, _("Month")),
+        (YEAR, _("Year")),
+    ]
+
+    WEEKDAYS = 7
+    MONTHDAYS = 30.44
+    YEARDAYS = 365.25
 
     SHOW_CLIENT_NAME = '1'
     SHOW_CLIENT_PHONE = '2'
@@ -72,6 +87,38 @@ class Customer(models.Model):
     # client display
     client_display = models.CharField(_("Client Display"), max_length=1, choices=CLIENT_DISPLAY_CHOICES, blank=False, default=SHOW_CLIENT_NAME, help_text=_(
         "How should the client be represented in the calendar?"))
+    # greetings
+    birthday_greeting_active = models.BooleanField(_("Activate birthday greetings"), help_text=_(
+        "Birthday greetings are sent to clients on their birth days"), default=False)
+    birthday_greeting_sender = models.EmailField(
+        _("Birthday greeting from address"), blank=False, default=settings.REMINDER_FROM_EMAIL_ONLY)
+    birthday_greeting_subject = models.CharField(_("Birthday greeting subject line"), max_length=100, blank=False, default=_(
+        "Happy Birthday, $FIRST_NAME"))
+    birthday_greeting_email = models.TextField(_("Birthday greeting email message"), blank=False, default=_(
+        "We are thinking of you on this important day and hope that it is filled with happiness. Wishing you many joyous years ahead!"))
+    birthday_greeting_sms = models.CharField(_("Birthday greeting SMS message"), max_length=255, blank=False, default=_(
+        "Happy Birthday! Wishing you all the best today and always! $OUR_NAME"))
+    birthday_greeting_send_email = models.BooleanField(
+        _("Birthday greeting send email"), default=True)
+    birthday_greeting_send_sms = models.BooleanField(_("Birthday greeting send SMS"), default=True)
+    # Rebooking
+    rebooking_active = models.BooleanField(
+        _("Activate Rebooking"), help_text=_(
+            "These are booking reminders which are sent to clients a while after their last appointment to encourage them to book a new appointment"), default=False)
+    rebooking_period = models.PositiveIntegerField(
+        _("Rebooking period length"), blank=True, default=6)
+    rebooking_period_unit = models.PositiveIntegerField(
+        _("Rebooking period units"), choices=TIME_UNIT_CHOICES, default=MONTH)
+    rebooking_sender = models.EmailField(
+        _("Rebooking from address"), blank=False, default=settings.REMINDER_FROM_EMAIL_ONLY)
+    rebooking_subject = models.CharField(_("Rebooking subject line"), max_length=100, blank=False, default=_(
+        "$FIRST_NAME, we miss you"))
+    rebooking_email = models.TextField(_("Rebooking email message"), blank=False, default=_(
+        "We wanted to remind you that your next appointment is due soon.  Feel free to call us on $OUR_PHONE to book an appointment."))
+    rebooking_sms = models.CharField(_("Rebooking SMS message"), max_length=255, blank=False, default=_(
+        "Your next appointment with $OUR_NAME is due soon. Call $OUR_PHONE to book."))
+    rebooking_send_email = models.BooleanField(_("Rebooking send email"), default=True)
+    rebooking_send_sms = models.BooleanField(_("Rebooking send SMS"), default=True)
 
     class Meta:
         verbose_name = _("Customer")
