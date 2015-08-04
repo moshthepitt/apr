@@ -7,7 +7,7 @@ from core.utils import replace_client_script_variables
 
 
 def send_email_birthday_greeting(client, mailgun_campaign_id=None):
-    if client.customer.birthday_greeting_active and client.customer.birthday_greeting_send_email:
+    if client.customer.birthday_greeting_active and client.customer.birthday_greeting_send_email and client.email:
         current_site = Site.objects.get_current()
         current_site_domain = "http://" + current_site.domain
 
@@ -19,8 +19,6 @@ def send_email_birthday_greeting(client, mailgun_campaign_id=None):
             'message': replace_client_script_variables(client.customer.birthday_greeting_email, client)
         }
 
-        sender_email = client.customer.birthday_greeting_sender
-
         c = Context(context_variables)
 
         email_subject = render_to_string(
@@ -28,6 +26,7 @@ def send_email_birthday_greeting(client, mailgun_campaign_id=None):
         email_txt_body = render_to_string('users/email/birthday_greeting_email_body.txt', c)
         email_html_body = render_to_string('users/email/birthday_greeting_email_body.html', c)
 
+        sender_email = client.customer.birthday_greeting_sender
         sender = "{name} <{email}>".format(name=client.customer.name, email=sender_email)
         client_email = "{name} <{email}>".format(name=client.get_full_name(), email=client.email)
 

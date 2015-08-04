@@ -20,10 +20,10 @@ def replace_script_variables(some_string, appointment):
     """
     start_time = timezone.localtime(appointment.event.start)
 
-    some_string = some_string.replace("$NAME", appointment.client.get_full_name())
-    some_string = some_string.replace("$FIRST_NAME", appointment.client.first_name)
-    some_string = some_string.replace("$OUR_NAME", appointment.customer.name)
-    some_string = some_string.replace("$OUR_PHONE", appointment.customer.phone)
+    some_string = some_string.replace("$NAME", appointment.client.get_full_name().strip())
+    some_string = some_string.replace("$FIRST_NAME", appointment.client.first_name.strip())
+    some_string = some_string.replace("$OUR_NAME", appointment.customer.name.strip())
+    some_string = some_string.replace("$OUR_PHONE", appointment.customer.phone.as_e164)
     some_string = some_string.replace("$APPOINTMENT_DATE", start_time.strftime("%A, %B %-d"))
     some_string = some_string.replace("$APPOINTMENT_START_TIME", start_time.strftime("%-I%p"))
     return some_string
@@ -37,8 +37,8 @@ def replace_client_script_variables(some_string, client):
         $OUR_NAME The client-friendly name of the facility the appointment is at (e.g. Surri Inc).
         $OUR_PHONE The phone number of the facility the appointment is at
     """
-    some_string = some_string.replace("$NAME", client.get_full_name())
-    some_string = some_string.replace("$FIRST_NAME", client.first_name)
-    some_string = some_string.replace("$OUR_NAME", client.customer.name)
-    some_string = some_string.replace("$OUR_PHONE", client.customer.phone)
+    some_string = some_string.replace("$NAME", client.get_full_name().strip())
+    some_string = some_string.replace("$FIRST_NAME", client.first_name.strip())
+    some_string = some_string.replace("$OUR_NAME", client.customer.name.strip())
+    some_string = some_string.replace("$OUR_PHONE", client.customer.phone.as_e164)
     return some_string
