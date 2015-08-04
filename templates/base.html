@@ -96,7 +96,16 @@
               {% endif %}
               <li><a href="{% url 'venues:list' %}">{% trans "Schedules" %}</a></li>
             </ul>
-          </li>          
+          </li>     
+          {% if request.user.userprofile.is_admin %}
+          <li class="submenu">
+            <a href="#"><i class="fa fa-balance-scale"></i> <span>{% trans "Marketing" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+            <ul>
+              <li><a href="{% url 'customer:rebooking' %}">{% trans "Rebooking" %}</a></li>
+              <li><a href="{% url 'customer:birthday' %}">{% trans "Birthday Greetings" %}</a></li>
+            </ul>
+          </li>
+          {% endif %}     
           {% if not request.user.userprofile.is_user %}
           <li class="submenu">
             <a href="#"><i class="fa fa-cog"></i> <span>{% trans "Settings" %}</span> <i class="arrow fa fa-chevron-right"></i></a>

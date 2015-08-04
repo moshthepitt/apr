@@ -11,7 +11,7 @@ from core.utils import invalidate_caches
 
 from customers.mixins import CustomerMixin, LesserCustomerMixin
 from customers.forms import NewCustomerForm, CustomerForm, CustomerScriptForm, CustomerSettingsForm
-from customers.forms import MPESAForm, MPESAFormHelper
+from customers.forms import MPESAForm, MPESAFormHelper, CustomerRebookingForm, CustomerBirthdayGreetingsForm
 from subscriptions.models import Subscription
 
 
@@ -103,6 +103,62 @@ class EditCustomerScript(CustomerMixin, FormView):
     def dispatch(self, *args, **kwargs):
         self.customer = self.request.user.userprofile.customer
         return super(EditCustomerScript, self).dispatch(*args, **kwargs)
+
+
+class EditCustomerBirthdayGreetings(CustomerMixin, FormView):
+    template_name = 'customers/birthday.html'
+    form_class = CustomerBirthdayGreetingsForm
+    success_url = reverse_lazy('customer:birthday')
+
+    def get_initial(self):
+        initial = super(EditCustomerBirthdayGreetings, self).get_initial()
+        initial['birthday_greeting_active'] = self.customer.birthday_greeting_active
+        initial['birthday_greeting_sender'] = self.customer.birthday_greeting_sender
+        initial['birthday_greeting_subject'] = self.customer.birthday_greeting_subject
+        initial['birthday_greeting_email'] = self.customer.birthday_greeting_email
+        initial['birthday_greeting_sms'] = self.customer.birthday_greeting_sms
+        initial['birthday_greeting_send_email'] = self.customer.birthday_greeting_send_email
+        initial['birthday_greeting_send_sms'] = self.customer.birthday_greeting_send_sms
+        return initial
+
+    def form_valid(self, form):
+        form.save_settings(self.customer)
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved'))
+        return super(EditCustomerBirthdayGreetings, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        self.customer = self.request.user.userprofile.customer
+        return super(EditCustomerBirthdayGreetings, self).dispatch(*args, **kwargs)
+
+
+class EditCustomerRebooking(CustomerMixin, FormView):
+    template_name = 'customers/rebooking.html'
+    form_class = CustomerRebookingForm
+    success_url = reverse_lazy('customer:rebooking')
+
+    def get_initial(self):
+        initial = super(EditCustomerRebooking, self).get_initial()
+        initial['rebooking_active'] = self.customer.rebooking_active
+        initial['rebooking_period'] = self.customer.rebooking_period
+        initial['rebooking_period_unit'] = self.customer.rebooking_period_unit
+        initial['rebooking_sender'] = self.customer.rebooking_sender
+        initial['rebooking_subject'] = self.customer.rebooking_subject
+        initial['rebooking_email'] = self.customer.rebooking_email
+        initial['rebooking_sms'] = self.customer.rebooking_sms
+        initial['rebooking_send_email'] = self.customer.rebooking_send_email
+        initial['rebooking_send_sms'] = self.customer.rebooking_send_sms
+        return initial
+
+    def form_valid(self, form):
+        form.save_settings(self.customer)
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved'))
+        return super(EditCustomerRebooking, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        self.customer = self.request.user.userprofile.customer
+        return super(EditCustomerRebooking, self).dispatch(*args, **kwargs)
 
 
 class EditCustomerSettings(CustomerMixin, FormView):

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+
+{% block title %}{% trans "Birthday Greetings" %}{% endblock %}
+
+{% block main_content %}
+{# {% cache 600 customerscript CUSTOMER.pk %} #}
+<div class="row content-section page">
+  <div class="container">
+    <div class="col-md-12">
+  		<h3>{% trans "Birthday Greetings" %}</h3>
+
+  		<div class="row">
+    		<div class="col-md-8 no-padding bottom-20">
+        {% include "customers/snippets/script_instructions.html" %}
+  			{% crispy form %}
+  			</div>		
+        <div class="col-md-4 bottom-20">
+          <p>{% trans "It is important to keep in touch with your clients. Sending a nice and unique birthday message is a great way to do this." %}</li>
+          </ol>
+        </div>
+    		<div class="clearfix"></div>		
+			</div>
+		</div>
+  </div>
+</div>
+{# {% endcache %} #}
+{% endblock %}

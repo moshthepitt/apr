@@ -179,6 +179,99 @@ class CustomerSettingsForm(forms.ModelForm):
         customer.save()
 
 
+class CustomerBirthdayGreetingsForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = [
+            'birthday_greeting_active',
+            'birthday_greeting_sender',
+            'birthday_greeting_subject',
+            'birthday_greeting_email',
+            'birthday_greeting_sms',
+            'birthday_greeting_send_email',
+            'birthday_greeting_send_sms',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerBirthdayGreetingsForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-customer-birthday-greetings-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('birthday_greeting_active'),
+            Field('birthday_greeting_sender'),
+            Field('birthday_greeting_subject'),
+            Field('birthday_greeting_email'),
+            Field('birthday_greeting_sms'),
+            Field('birthday_greeting_send_email'),
+            Field('birthday_greeting_send_sms'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )
+
+    def save_settings(self, customer):
+        customer.birthday_greeting_active = self.cleaned_data['birthday_greeting_active']
+        customer.birthday_greeting_sender = self.cleaned_data['birthday_greeting_sender']
+        customer.birthday_greeting_subject = self.cleaned_data['birthday_greeting_subject']
+        customer.birthday_greeting_email = self.cleaned_data['birthday_greeting_email']
+        customer.birthday_greeting_sms = self.cleaned_data['birthday_greeting_sms']
+        customer.birthday_greeting_send_email = self.cleaned_data['birthday_greeting_send_email']
+        customer.birthday_greeting_send_sms = self.cleaned_data['birthday_greeting_send_sms']
+        customer.save()
+
+
+class CustomerRebookingForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = [
+            'rebooking_active',
+            'rebooking_period',
+            'rebooking_period_unit',
+            'rebooking_sender',
+            'rebooking_subject',
+            'rebooking_email',
+            'rebooking_sms',
+            'rebooking_send_email',
+            'rebooking_send_sms',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerRebookingForm, self).__init__(*args, **kwargs)
+        self.fields['rebooking_period'].required = True
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-customer-birthday-greetings-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('rebooking_active'),
+            Field('rebooking_period'),
+            Field('rebooking_period_unit'),
+            Field('rebooking_sender'),
+            Field('rebooking_subject'),
+            Field('rebooking_email'),
+            Field('rebooking_sms'),
+            Field('rebooking_send_email'),
+            Field('rebooking_send_sms'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )
+
+    def save_settings(self, customer):
+        customer.rebooking_active = self.cleaned_data['rebooking_active']
+        customer.rebooking_period = self.cleaned_data['rebooking_period']
+        customer.rebooking_period_unit = self.cleaned_data['rebooking_period_unit']
+        customer.rebooking_sender = self.cleaned_data['rebooking_sender']
+        customer.rebooking_subject = self.cleaned_data['rebooking_subject']
+        customer.rebooking_email = self.cleaned_data['rebooking_email']
+        customer.rebooking_sms = self.cleaned_data['rebooking_sms']
+        customer.rebooking_send_email = self.cleaned_data['rebooking_send_email']
+        customer.rebooking_send_sms = self.cleaned_data['rebooking_send_sms']
+        customer.save()
+
+
 class MPESAForm(forms.Form):
     receipt = forms.CharField(label=_("MPESA confirmation code"))
 

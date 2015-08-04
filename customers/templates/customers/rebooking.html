@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+
+{% block title %}{% trans "Rebooking" %}{% endblock %}
+
+{% block main_content %}
+{# {% cache 600 customerscript CUSTOMER.pk %} #}
+<div class="row content-section page">
+  <div class="container">
+    <div class="col-md-12">
+  		<h3>{% trans "Rebooking" %}</h3>
+
+  		<div class="row">
+    		<div class="col-md-8 no-padding bottom-20">
+        {% include "customers/snippets/script_instructions.html" %}
+  			{% crispy form %}
+  			</div>		
+        <div class="col-md-4 bottom-20">
+          <p>{% trans "You could be losing a mountain of money each year just because you aren't rebooking your clients." %}</p>
+          <p>{% trans "Most business owners don't push clients to rebook. They think that clients will come back when they are ready. This might be true, but it's also not likely that they will come back as often as they need to." %}</p>
+          <p>{% trans "As the professional it is up to us to educate our clients and make sure they rebook, because once they leave your premises, their life gets in the way and they don't call for an appointment when they should." %}</p>
+        </div>
+    		<div class="clearfix"></div>		
+			</div>
+		</div>
+  </div>
+</div>
+{# {% endcache %} #}
+{% endblock %}
