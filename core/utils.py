@@ -27,3 +27,18 @@ def replace_script_variables(some_string, appointment):
     some_string = some_string.replace("$APPOINTMENT_DATE", start_time.strftime("%A, %B %-d"))
     some_string = some_string.replace("$APPOINTMENT_START_TIME", start_time.strftime("%-I%p"))
     return some_string
+
+
+def replace_client_script_variables(some_string, client):
+    """
+    does string replacement for all our custom variables:
+        $NAME The client's name (e.g. John Doe).
+        $FIRST_NAME The client's first name (e.g. John).
+        $OUR_NAME The client-friendly name of the facility the appointment is at (e.g. Surri Inc).
+        $OUR_PHONE The phone number of the facility the appointment is at
+    """
+    some_string = some_string.replace("$NAME", client.get_full_name())
+    some_string = some_string.replace("$FIRST_NAME", client.first_name)
+    some_string = some_string.replace("$OUR_NAME", client.customer.name)
+    some_string = some_string.replace("$OUR_PHONE", client.customer.phone)
+    return some_string

@@ -1,0 +1,9 @@
+{% load i18n %}
+{% spaceless %}
+{{message|linebreaks}}
+<br>
+<p>{% trans "Regards," %}</p>
+<br>
+<p>{% trans "The Management" %}</p>
+<p>{% trans "P.S. We're sending you this message because your service provider asked us to.  If you didn't want to receive it, we apologize." %}</p>
+{% endspaceless %}

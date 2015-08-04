@@ -1,0 +1,12 @@
+{% load i18n %}
+{{message}}
+
+{% blocktrans %}
+Regards,
+
+
+The Management
+
+P.S. We're sending you this message because your service provider asked us to.
+If you didn't want to receive it, we apologize.
+{% endblocktrans %}
