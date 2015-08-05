@@ -25,7 +25,7 @@ def replace_script_variables(some_string, appointment):
     some_string = some_string.replace("$OUR_NAME", appointment.customer.name.strip())
     some_string = some_string.replace("$OUR_PHONE", appointment.customer.phone.as_e164)
     some_string = some_string.replace("$APPOINTMENT_DATE", start_time.strftime("%A, %B %-d"))
-    some_string = some_string.replace("$APPOINTMENT_START_TIME", start_time.strftime("%-I%p"))
+    some_string = some_string.replace("$APPOINTMENT_START_TIME", start_time.strftime("%-I:%M%p"))
     return some_string
 
 
