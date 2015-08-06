@@ -1,2 +1,2 @@
 {% load i18n %}
-{% trans "Reminder! Appointment with" %} {{customer.name|title}} {% trans "on" %} {{event.start|date:"D, M j"}} {% trans "from" %} {{event.start|date:"fa"}}
+{% trans "Reminder! Appointment with" %} {{customer.name|title}} {% trans "on" %} {{event.start|date:"D, M j"}} {% trans "from" %} {{event.start|date:"fa"}} 

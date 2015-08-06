@@ -14,7 +14,7 @@ def send_birthday_greetings(today=timezone.now()):
         for client in clients:
             if client.customer.birthday_greeting_active:
                 if client.customer.birthday_greeting_send_email:
-                    send_email_birthday_greeting(client, mailgun_campaign_id="")
+                    send_email_birthday_greeting(client, mailgun_campaign_id="fr06g")
                 if client.customer.birthday_greeting_send_sms:
                     send_sms_birthday_greeting(client)
     return
