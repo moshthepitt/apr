@@ -111,7 +111,8 @@ def calendar_event_feed(request):
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
                      'clientId': x.event.appointment_set.first().client.pk,
-                     'status': x.event.appointment_set.first().status
+                     'status': x.event.appointment_set.first().status,
+                     'body': x.event.description
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -135,7 +136,8 @@ def venue_event_feed(request, pk):
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
                      'clientId': x.event.appointment_set.first().client.pk,
-                     'status': x.event.appointment_set.first().status
+                     'status': x.event.appointment_set.first().status,
+                     'body': x.event.description
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -157,7 +159,9 @@ def printable_event_feed(request):
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().client.pk
+                     'clientId': x.event.appointment_set.first().client.pk,
+                     'status': x.event.appointment_set.first().status,
+                     'body': x.event.description
                      }
                     for x in period.get_occurrences()]
         return HttpResponse(json.dumps(data), content_type="application/json")

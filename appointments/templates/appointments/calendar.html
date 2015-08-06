@@ -347,7 +347,7 @@
  				firstDayOfWeek: 1,
  				showHeader: false,				
             	height: function($calendar) {
-             	return $(window).height() - $('h1').outerHeight(true);
+	             	return $(window).height() - $('h1').outerHeight(true);
             	},
             	minBodyHeight: 1200, 
             	{% block schedule_specific_js %}
@@ -389,6 +389,7 @@
  				},
  				eventRender: function(calEvent, $event) {
  					$event.addClass(calEvent.status);
+ 					console.log($event);
 				},
  				eventNew: function(calEvent, $event) {
  					$("#add-appointment-snippet-content").html("");
@@ -411,6 +412,13 @@
  				},
  				eventResize: function(calEvent, $event) {
  					editEvent(calEvent);
+ 				},
+ 				eventBody: function(calEvent, $event) {
+ 					var data = calEvent.title;
+ 					if (calEvent.body) {
+ 						data = data + "<br/>" + calEvent.body;	
+ 					} 					
+ 					return data;
  				},
  				eventClick: function(calEvent, $event) {
  					{% if not request.user.userprofile.is_user %}
