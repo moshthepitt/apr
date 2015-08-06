@@ -13,9 +13,11 @@
 				{% for venue in venues %}	
 					<td class="wc-day-column bottom">
 					{% for note in notes %}
-						{% if note.venue = venue %}			
+						{% if note.venue == venue %}			
 							<div class="single-bottom-note note-item list-group-item">
+								{% if not request.user.userprofile.is_user %}
 								<span class="badge icon" onclick="deleteNote({{note.id}});"><i class="glyphicon glyphicon-trash"></i></span>
+								{% endif %}
 								{{note.note}}
 							</div>
 						{% else %}
