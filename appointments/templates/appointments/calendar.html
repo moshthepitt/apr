@@ -347,10 +347,10 @@
  				firstDayOfWeek: 1,
  				showHeader: false,				
             	height: function($calendar) {
-	             	return $(window).height() - $('h1').outerHeight(true);
+	             	return $('table.wc-time-slots').outerHeight() + $('.ui-widget-content.wc-header').outerHeight();
             	},
-            	minBodyHeight: 1200, 
-            	{% block schedule_specific_js %}
+            	minBodyHeight: 1600, 
+            	{% block schedule_specific_js %}            		
             		startOnFirstDayOfWeek: true,
 	            	daysToShow: {{CUSTOMER.shown_days}},
 	            	data: "{% url 'appointments:calendar_event_feed' %}",
@@ -389,7 +389,6 @@
  				},
  				eventRender: function(calEvent, $event) {
  					$event.addClass(calEvent.status);
- 					console.log($event);
 				},
  				eventNew: function(calEvent, $event) {
  					$("#add-appointment-snippet-content").html("");

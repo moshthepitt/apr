@@ -44,7 +44,6 @@ INSTALLED_APPS = (
     'datatableview',
     'randomslugfield',
     'cacheops',
-    'wkhtmltopdf',
     'suit_redactor',
     # custom
     'appointments',

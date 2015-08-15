@@ -97,7 +97,7 @@ def process_add_event_form(request):
 
 
 def calendar_event_feed(request):
-    if request.is_ajax() and request.method == 'GET':
+    if request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
             fro = timezone.make_aware(
                 datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())

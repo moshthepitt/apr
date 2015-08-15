@@ -91,3 +91,39 @@
 	border:inherit;
 	color:inherit;
 }
+
+td.wc-day-column.bottom {
+  padding:0px;
+}
+
+td.wc-day-column.empty-notes {
+  padding:10px;
+}
+
+.single-bottom-note.list-group-item {
+  padding: 4px;
+  margin: -1px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  font-weight:normal;
+  font-size:13px;
+}
+
+
+.single-top-note.list-group-item {
+  padding: 4px;
+  background-color: transparent;
+  border: none;
+  font-weight:normal;
+  font-size:13px;
+}
+
+.badge.icon {
+  display:none;
+  color:#fff;
+  cursor: pointer;
+}
+
+.note-item:hover .badge.icon {
+  display:block;
+}

@@ -6,90 +6,89 @@
 {% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 {% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 
-{# {% cache 600 daycal CUSTOMER.pk request.user.pk %} #}
-	{% block calendar_class %}dayview{% endblock %}
+{% block calendar_class %}dayview{% endblock %}
 
-	
-	{% block calendar_custom_buttons %}
-		{% if not request.user.userprofile.is_user %}
-		<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+
+{% block calendar_custom_buttons %}
+	{% if not request.user.userprofile.is_user %}
+	<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+	{% endif %}
+{% endblock %}
+
+{% block custom_calendar_modals %}
+	<!-- Add Note Modal -->
+	<div class="modal fade" id="add-note-modal" role="dialog" aria-labelledby="add-note-modalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Add Note" %}</h4>
+	      </div>
+	      <div class="modal-body" id="add-note-snippet-content"></div>
+	      <div class="modal-footer">
+	        <button type="button" id="add-note-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+{% endblock %}
+
+{% block calendar_navigation %}
+$(document).on('click', '#go-prev', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("prev");
+});
+$(document).on('click', '#go-today', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("today");
+});
+$(document).on('click', '#go-next', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("next");
+}); 
+$(document).on('click', '#go-fullscreen', function(event) {
+	event.preventDefault();
+	$("#user-nav").toggle();
+	$("#sidebar").toggle();
+	$("#content").toggleClass("fullscreen-mode");
+	$("#header").toggleClass("fullscreen-mode");
+});	
+{% endblock %}	
+
+{% block schedule_specific_js %}
+	timeslotHeight: 25,
+	startOnFirstDayOfWeek: false,
+	daysToShow: 1,
+	data: "{% url 'appointments:calendar_event_feed' %}",
+		businessHours: {
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+			start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+		{% else %}
+			start: 8,
 		{% endif %}
-	{% endblock %}
-
-	{% block custom_calendar_modals %}
-		<!-- Add Note Modal -->
-		<div class="modal fade" id="add-note-modal" role="dialog" aria-labelledby="add-note-modalLabel" aria-hidden="true">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-		        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Add Note" %}</h4>
-		      </div>
-		      <div class="modal-body" id="add-note-snippet-content"></div>
-		      <div class="modal-footer">
-		        <button type="button" id="add-note-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
-		      </div>
-		    </div>
-		  </div>
-		</div>
-	{% endblock %}
-
-	{% block calendar_navigation %}
-	$(document).on('click', '#go-prev', function(event) {
-		event.preventDefault();
-		$("#calendar").weekCalendar("prev");
-	});
-	$(document).on('click', '#go-today', function(event) {
-		event.preventDefault();
-		$("#calendar").weekCalendar("today");
-	});
-	$(document).on('click', '#go-next', function(event) {
-		event.preventDefault();
-		$("#calendar").weekCalendar("next");
-	}); 
-	$(document).on('click', '#go-fullscreen', function(event) {
-		event.preventDefault();
-		$("#user-nav").toggle();
-		$("#sidebar").toggle();
-		$("#content").toggleClass("fullscreen-mode");
-		$("#header").toggleClass("fullscreen-mode");
-	});	
-	{% endblock %}	
-
-	{% block schedule_specific_js %}
-		startOnFirstDayOfWeek: false,
-		daysToShow: 1,
-		data: "{% url 'appointments:calendar_event_feed' %}",
-			businessHours: {
-			{% if CUSTOMER.global_opening_time.from_hour.hour %}
-				start: {{CUSTOMER.global_opening_time.from_hour.hour}},
-			{% else %}
-				start: 8,
-			{% endif %}
-			{% if CUSTOMER.global_opening_time.from_hour.hour %}
-	        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
-	        {% else %}
-	        	end: 17,
-	        {% endif %}
-	        limitDisplay: true
-		},  
-		users: [
-			{% for venue in venues %}
-				{
-					'id': {{venue.id}},
-					'name': '{{venue.name|upper}}'
-				},
-			{% endfor %}
-			],	
-		{% if CUSTOMER.allow_overlap %}
-			allowCalEventOverlap: true,
-			overlapEventsSeparate: true,
-		{% endif %}
-		calendarAfterLoad: function() {
-             loadNotes();
-        },
-	{% endblock %}
-{# {% endcache %} #}
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+        {% else %}
+        	end: 17,
+        {% endif %}
+        limitDisplay: true
+	},  
+	users: [
+		{% for venue in venues %}
+			{
+				'id': {{venue.id}},
+				'name': '{{venue.name|upper}}'
+			},
+		{% endfor %}
+		],	
+	{% if CUSTOMER.allow_overlap %}
+		allowCalEventOverlap: true,
+		overlapEventsSeparate: true,
+	{% endif %}
+	calendarAfterLoad: function() {
+         loadNotes();
+    },
+{% endblock %}
 
 {% block calendar_footer_js %}
 	<script>

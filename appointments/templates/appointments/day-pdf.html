@@ -9,9 +9,9 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{CUSTOMER.name|default_if_none:"AppointWare"}}</title>
+    <title>{{this_customer.name|default_if_none:"AppointWare"}}</title>
     <!-- Bootstrap core CSS -->
-    {% compress css inline %}
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/readable.bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
     <link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
@@ -29,65 +29,108 @@
     <div class="container">
       
       <div class="row">
-      <div class="col-md-12"><div id="calendar" class="printable row"></div></div>
+      <div class="col-md-12">
+        <center><h5>{{this_customer.name|upper}}</h5></center>
+        <div id="calendar" class="printable row center-block"></div>
+      </div>
       </div>
 
 
     </div> <!-- /container -->
-    {% compress js inline %}
+    {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
     <script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
-    <script src="{% static 'jquery-week-calendar/js/date.js' %}"></script>
     <script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     <script type='text/javascript'>
-      $(document).ready(function() {
+      $(document).ready(function() {  
+
+        var eventData = {
+          events: [
+            {% for item in data %}
+              {
+                "status": "{{item.status}}", 
+                "start": new Date("{{ item.start }}"), 
+                "body": "{{item.body}}", 
+                "end": new Date("{{ item.end }}"), 
+                "title": "{{item.title}}", 
+                "userId": {{item.userId}}, 
+                "id": {{item.id}}, 
+                "clientId": {{item.clientId}}
+              },
+            {% endfor %}
+          ]
+        } ;      
+
         $('#calendar').weekCalendar({
-          timeslotsPerHour: 2,
+          timeslotsPerHour: 4,
           timeslotHeight: 20,
-          defaultEventLength: 2,
-          // displayFreeBusys: true,
-          // defaultFreeBusy: {free: true},
+          defaultEventLength: 4,
+          displayFreeBusys: true,
+          defaultFreeBusy: {free: true},
           readonly : true,
+          firstDayOfWeek: 1,
+          showHeader: false,        
+          height: function($calendar) {
+            return $('table.wc-time-slots').outerHeight() + $('.ui-widget-content.wc-header').outerHeight();
+          },
+          minBodyHeight: 1600, 
+          startOnFirstDayOfWeek: false,
           daysToShow: 1,
+          // data: "{% url 'appointments:calendar_event_feed' %}",
+          data: eventData,
           businessHours: {
-            {% if CUSTOMER.global_opening_time.from_hour.hour %}
-              start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+            {% if this_customer.global_opening_time.from_hour.hour %}
+              start: {{this_customer.global_opening_time.from_hour.hour}},
             {% else %}
               start: 8,
             {% endif %}
-            {% if CUSTOMER.global_opening_time.from_hour.hour %}
-                      end: {{CUSTOMER.global_closing_time.to_hour.hour}},
-                    {% else %}
-                      end: 17,
-                    {% endif %}
-                    limitDisplay: true
-                  },
-                  height: function($calendar) {
-                    return $(window).height() - $('h1').outerHeight(true);
-                  },
-                  minBodyHeight: 1080,   
-                  users: [
+            {% if this_customer.global_opening_time.from_hour.hour %}
+              end: {{this_customer.global_closing_time.to_hour.hour}},
+            {% else %}
+              end: 17,
+            {% endif %}
+            limitDisplay: true
+          },  
+          users: [
             {% for venue in venues %}
-              {
-                'id': {{venue.id}},
-                'name': '{{venue.name|upper}}'
-              },
+            {
+              'id': {{venue.id}},
+              'name': '{{venue.name|upper}}'
+            },
             {% endfor %}
-          ],    
-                  showAsSeparateUser: true, 
-                  data: "{% url 'appointments:printable_event_feed' %}",
-                  getUserId: function(user, index, calendar) {
+          ],  
+          {% if this_customer.allow_overlap %}
+            allowCalEventOverlap: true,
+            overlapEventsSeparate: true,
+          {% endif %}
+          showAsSeparateUser: true,   
+          timeslotHeight: 25,          
+          getUserId: function(user, index, calendar) {
               return user.id;
           },
           getUserName: function(user, index, calendar) {
               return user.name;
           },
+          eventRender: function(calEvent, $event) {
+            $event.addClass(calEvent.status);
+          },
+          eventBody: function(calEvent, $event) {
+            var data = calEvent.title;
+            if (calEvent.body) {
+              data = data + "<br/>" + calEvent.body;  
+            }           
+            return data;
+          },
         });
-        $('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "appointments/snippets/venue-headers.html" %}{% endfilter %}');
-        $('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "appointments/snippets/notes.html" %}{% endfilter %}');
+
+      });
+
+      $(document).ready(function() {
+        $('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top-full.html" %}{% endfilter %}');
+        $('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom-full.html" %}{% endfilter %}');
       });
     </script>
     {% endcompress %}

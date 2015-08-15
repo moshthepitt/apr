@@ -1,4 +1,4 @@
-Django==1.8.2
+Django==1.8.3
 Django-Select2==4.3.1
 amqp==1.4.6
 anyjson==0.3.3
@@ -22,7 +22,6 @@ django-redis==4.1.0
 django-scheduler==0.7.5
 django-suit==0.2.13
 django-suit-redactor==0.0.2
-django-wkhtmltopdf==2.0.2
 funcy==1.5
 future==0.14.3
 icalendar==3.9.0
@@ -30,6 +29,7 @@ kombu==3.0.26
 msgpack-python==0.4.6
 oauthlib==0.7.2
 oneapi-python==0.3
+pdfcrowd==2.6
 phonenumbers==7.0.6
 psycopg2==2.6.1
 python-dateutil==2.4.2
