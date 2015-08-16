@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+
+{% block title %}{% trans "Something went wrong" %} | {{site.name}}{% endblock %}
+
+{% block main_content %}
+	{% cache 86400 help %}
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Something went wrong" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div class="row" id="feedback">
+	    	<p>
+	    	{% blocktrans %}
+	    		We are sorry, but something went wrong!.  We are already working to fix this!
+	    	{% endblocktrans %}
+	    	</p>
+	    </div>
+	  </div>
+	</div>	
+	{% endcache %}
+{% endblock %}

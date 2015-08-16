@@ -4,7 +4,7 @@ from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 
 from apr.views import HomeView, DashboardView, CustomerRedirect, DayView, PricingView
-from apr.views import SupportView, generate_pdf_view, PDFView
+from apr.views import SupportView, generate_pdf_view, PDFView, ErrorView
 from appointments.views import AppointmentClientConfirm, AppointmentClientCancel
 from customers.views import NewCustomer
 
@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^$', HomeView.as_view(), name='home'),
     url(r'^pricing/$', PricingView.as_view(), name='pricing'),
     url(r'^support/$', SupportView.as_view(), name='support'),
+    url(r'^error/$', ErrorView.as_view(), name='error'),
     url(r'^help/$', SupportView.as_view(template_name="core/help.html"), name='help'),
     url(r'^dashboard/$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^day/$', login_required(DayView.as_view()), name='day'),

@@ -1,4 +1,3 @@
-from datetime import datetime
 from urllib import urlencode
 
 from django.core.urlresolvers import reverse, reverse_lazy
@@ -8,9 +7,10 @@ from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.http import Http404
 from django.utils import timezone
+from django.utils.text import slugify
 from django.conf import settings
 
 import pdfcrowd
@@ -95,6 +95,12 @@ class PDFView(CustomerMixin, TemplateView):
 
 
 def generate_pdf_view(request):
+    data = {
+        'date': request.GET.get('date'),
+        'cid': request.user.userprofile.customer.pk,
+    }
+    url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
+    filename = slugify("%s %s".format(request.user.userprofile.customer.name, data['date']))
     try:
         # create an API client instance
         client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
@@ -102,25 +108,18 @@ def generate_pdf_view(request):
         client.setPageHeight(-1)
         client.setPdfScalingFactor(0.8)
 
-        data = {
-            'date': request.GET.get('date'),
-            'cid': request.user.userprofile.customer.pk,
-        }
-        url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
-
         pdf = client.convertURI(url)
 
         # set HTTP response headers
         response = HttpResponse(content_type="application/pdf")
         response["Cache-Control"] = "max-age=0"
         response["Accept-Ranges"] = "none"
-        response["Content-Disposition"] = "attachment; filename=google_com.pdf"
+        response["Content-Disposition"] = "attachment; filename=%s".format(filename)
 
         # send the generated PDF
         response.write(pdf)
     except pdfcrowd.Error, why:
-        response = HttpResponse(content_type="text/plain")
-        response.write(why)
+        return redirect(reverse('error'))
     return response
 
 
@@ -162,3 +161,7 @@ class SupportView(FormView):
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully sent email'))
         return super(SupportView, self).form_valid(form)
+
+
+class ErrorView(TemplateView):
+    template_name = 'core/error.html'
