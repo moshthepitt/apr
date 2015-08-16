@@ -12,7 +12,9 @@
 {% block calendar_custom_buttons %}
 	{% if not request.user.userprofile.is_user %}
 	<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
 	<a href="#" class="btn btn-sm btn-default" id="go-print" target="_blank"><i class="fa fa-print"></i> {% trans "Print" %}</a>
+	{% endif %}
 	{% endif %}
 {% endblock %}
 
@@ -122,6 +124,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 			);
 		}
 
+		{% if CUSTOMER.customersubscription.subscription.can_print %}
 		function getPrintURL() {
 			var data = {}
 			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toDateString();
@@ -129,6 +132,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 			var pdf_url = "{% url 'pdf' %}" + '?' + $.param(data);
 			return pdf_url;
 		}
+		{% endif %}
 		
 		$(document).ready(function() {
 			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
