@@ -100,7 +100,9 @@ def generate_pdf_view(request):
         'cid': request.user.userprofile.customer.pk,
     }
     url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
-    filename = slugify("%s %s".format(request.user.userprofile.customer.name, data['date']))
+    filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
+    print url
+    print filename
     try:
         # create an API client instance
         client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
@@ -114,7 +116,7 @@ def generate_pdf_view(request):
         response = HttpResponse(content_type="application/pdf")
         response["Cache-Control"] = "max-age=0"
         response["Accept-Ranges"] = "none"
-        response["Content-Disposition"] = "attachment; filename=%s".format(filename)
+        response["Content-Disposition"] = "attachment; filename={}".format(filename)
 
         # send the generated PDF
         response.write(pdf)
