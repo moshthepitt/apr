@@ -119,6 +119,7 @@ class Customer(models.Model):
         "Your next appointment with $OUR_NAME is due soon. Call $OUR_PHONE to book."))
     rebooking_send_email = models.BooleanField(_("Rebooking send email"), default=True)
     rebooking_send_sms = models.BooleanField(_("Rebooking send SMS"), default=True)
+    use_tags = models.BooleanField(_("Use Tags"), default=False, help_text=_("Tags are used to classify appointments"))
 
     class Meta:
         verbose_name = _("Customer")
