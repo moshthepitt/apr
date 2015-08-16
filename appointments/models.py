@@ -16,6 +16,20 @@ from customers.models import Customer
 from core import labels
 
 
+class Tag(models.Model):
+    created_on = models.DateTimeField(_("created on"), auto_now_add=True)
+    updated_on = models.DateTimeField(_("updated on"), auto_now=True)
+    name = models.CharField(_("Name"), max_length=255)
+    color = models.CharField(_("Color"), max_length=50)
+
+    class Meta:
+        verbose_name = _("Tag")
+        verbose_name_plural = _("Tags")
+
+    def __unicode__(self):
+        return self.name
+
+
 class Appointment(models.Model):
 
     """
@@ -53,6 +67,7 @@ class Appointment(models.Model):
     event = models.ForeignKey(Event, verbose_name=_("Event"), on_delete=models.PROTECT)
     status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
     no_reminders = models.BooleanField(_("No Reminders"), default=False, help_text=_("Do not send reminders for this appointment"))
+    tag = models.ForeignKey(Tag, verbose_name=_("Tag"), null=True, default=None, blank=True)
 
     def __unicode__(self):
         return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)
