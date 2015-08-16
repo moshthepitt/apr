@@ -16,7 +16,6 @@ urlpatterns = [
     url(r'^help/$', SupportView.as_view(template_name="core/help.html"), name='help'),
     url(r'^dashboard/$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^day/$', login_required(DayView.as_view()), name='day'),
-    url(r'^o2xMkx2NTLSB6NNPQtOu9lQqWuSzvi1k/$', PDFView.as_view(), name='secret_pdf'),
     url(r'^pdf/$', login_required(generate_pdf_view), name='pdf'),
     url(r'^new/$', login_required(NewCustomer.as_view()), name='new_customer'),
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),
@@ -24,6 +23,8 @@ urlpatterns = [
     url(r'^schedules/', include('venues.urls', namespace='venues')),
     url(r'^customer/', include('customers.urls', namespace='customer')),
     url(r'^notes/', include('notes.urls', namespace='notes')),
+
+    url(r'^WeAreGoingToIbiza2015/$', PDFView.as_view(), name='secret_pdf'),
 
     url(r'^admin/', include(admin.site.urls)),
 

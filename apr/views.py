@@ -107,6 +107,7 @@ def generate_pdf_view(request):
         client.setHtmlZoom(3000)
         client.setPageHeight(-1)
         client.setPdfScalingFactor(0.8)
+        client.enableJavaScript = True
 
         pdf = client.convertURI(url)
 
