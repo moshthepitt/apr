@@ -20,7 +20,8 @@ class Tag(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     name = models.CharField(_("Name"), max_length=255)
-    color = models.CharField(_("Color"), max_length=50)
+    color = models.CharField(_("Color"), max_length=50, blank=True)
+    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, null=True)
 
     class Meta:
         verbose_name = _("Tag")

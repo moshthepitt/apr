@@ -173,6 +173,7 @@ class EditCustomerSettings(CustomerMixin, FormView):
         initial['send_sms'] = self.customer.send_sms
         initial['send_email'] = self.customer.send_email
         initial['client_display'] = self.customer.client_display
+        initial['use_tags'] = self.customer.use_tags
         return initial
 
     def form_valid(self, form):

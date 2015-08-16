@@ -59,6 +59,12 @@
 	  	    	<th>{% trans "Schedule" %}</th>
 	  	    	<td width="80%">{{object.venue}}</td>
 	  	    </tr>
+	  	    {% if CUSTOMER.use_tags %}
+	  	    <tr>
+	  	    	<th>{% trans "Tag" %}</th>
+	  	    	<td width="80%">{{object.tag}}</td>
+	  	    </tr>
+	  	    {% endif %}
 	  	    <tr>
 	  	    	<th>{% trans "Notes" %}</th>
 	  	    	<td width="80%">{{object.event.description}}</td>

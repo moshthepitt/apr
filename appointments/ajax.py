@@ -68,7 +68,12 @@ def process_edit_client_form(request, pk):
 def process_edit_event_form(request, pk):
     event = get_object_or_404(Event, pk=pk)
     form = EventInfoForm(request.POST or None, instance=event)
-    if form.is_valid() and request.user.userprofile.customer == event.appointment_set.first().customer:
+    appointment = event.appointment_set.first()
+    if form.is_valid() and request.user.userprofile.customer == appointment.customer:
+        tag = form.cleaned_data.get('tag')
+        if tag:
+            appointment.tag = tag
+            appointment.save()
         form.save()
         return {
             'success': True,

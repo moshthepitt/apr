@@ -10,17 +10,9 @@ from schedule.models import Event
 from users.models import Client
 from doctors.models import Doctor
 from venues.models import Venue
-from appointments.models import Appointment
+from appointments.models import Appointment, Tag
 
 from core import labels
-
-
-class DoctorModelChoiceField(forms.ModelChoiceField):
-    pass
-
-
-class VenueModelChoiceField(forms.ModelChoiceField):
-    pass
 
 
 class AppointmentForm(forms.Form):
@@ -49,9 +41,14 @@ class AppointmentForm(forms.Form):
         label=_("End time"),
         required=False
     )
-    venue = VenueModelChoiceField(
+    venue = forms.ModelChoiceField(
         label=getattr(labels, 'VENUE', _("Venue")),
         queryset=Venue.objects.all(),
+    )
+    tag = forms.ModelChoiceField(
+        label=_("Tag"),
+        queryset=Tag.objects.all(),
+        required=False
     )
     description = forms.CharField(
         label=getattr(labels, 'DESCRIPTION', _("Description")),
@@ -99,6 +96,10 @@ class AppointmentForm(forms.Form):
                 ),
                 Div(
                     Field('venue', id="id-venue"),
+                    css_class='form-group'
+                ),
+                Div(
+                    Field('tag', id="id-tag"),
                     css_class='form-group'
                 ),
                 Div(
@@ -163,6 +164,7 @@ class AppointmentForm(forms.Form):
     def edit_appointment(self, appointment):
         self.edit_event(appointment.event)
         appointment.venue = self.cleaned_data['venue']
+        appointment.tag = self.cleaned_data['tag']
         appointment.save()
 
 
@@ -189,7 +191,7 @@ class SimpleAppointmentForm(forms.Form):
         label=_("End date"),
         required=False
     )
-    doctor = DoctorModelChoiceField(
+    doctor = forms.ModelChoiceField(
         label=getattr(labels, 'DOCTOR', _("Doctor")),
         queryset=Doctor.objects.all(),
         required=False
@@ -199,7 +201,7 @@ class SimpleAppointmentForm(forms.Form):
         required=False,
         widget=forms.HiddenInput
     )
-    venue = VenueModelChoiceField(
+    venue = forms.ModelChoiceField(
         label=getattr(labels, 'VENUE', _("Venue")),
         queryset=Venue.objects.all(),
         required=False
@@ -308,6 +310,11 @@ class EventInfoForm(forms.ModelForm):
     """
     Form used to edit event info. i.e title and description
     """
+    tag = forms.ModelChoiceField(
+        label=_("Tag"),
+        queryset=Tag.objects.all(),
+        required=False
+    )
 
     class Meta:
         model = Event
@@ -319,12 +326,20 @@ class EventInfoForm(forms.ModelForm):
         self.fields['description'].required = False
         self.helper = FormHelper()
         self.helper.form_id = 'id-event-info-form'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            Field('title'),
-            Field('description'),
-            ButtonHolder(
-                Submit('submit', _('Save'), css_class='btn-success')
+            Field('title', css_class="input-sm"),
+            Field('description', css_class="input-sm"),
+            Field('tag', id="id-tag", css_class="input-sm"),
+            Div(
+                ButtonHolder(
+                    Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+                    css_class="col-lg-offset-2 col-lg-10"
+                ),
+                css_class="form-group"
             )
         )
 

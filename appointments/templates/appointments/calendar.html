@@ -431,6 +431,11 @@
  						  	preferredCountries: ['ke'],
  						  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
  						});
+ 						// select2
+ 						$("#id-tag").select2({
+ 							placeholder: "{% trans 'Select Tag' %}",
+ 							width:'100%',
+ 						});
  					});	 					
  				    {% endif %}
  				},

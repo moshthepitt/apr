@@ -14,14 +14,13 @@ from datatableview.views import DatatableView
 from users.forms import SelectClientForm, AddClientForm, edit_client_form_modal_helper as edit_client_helper
 from users.forms import add_client_form_modal_helper as add_client_helper
 from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, hidden_appointment_form_helper
-from appointments.models import Appointment
+from appointments.models import Appointment, Tag
 from appointments.tasks import task_send_cancel_email
 from users.models import Client
 from venues.models import Venue
 from customers.mixins import CustomerMixin, Customer404Mixin
 
 from core import labels
-from core.utils import invalidate_caches
 
 from datatableview.utils import FIELD_TYPES
 from phonenumber_field.modelfields import PhoneNumberField
@@ -47,17 +46,13 @@ class AppointmentEdit(CustomerMixin, FormView):
         form = self.get_form()
         form.fields['venue'].queryset = Venue.objects.filter(
             customer=self.request.user.userprofile.customer)
+        form.fields['tag'].queryset = Tag.objects.filter(
+            customer=self.request.user.userprofile.customer)
         context['form'] = form
         return context
 
     def form_valid(self, form):
         form.edit_appointment(self.object)
-
-        # invalidate caches
-        invalidate_caches('evedit', [self.request.user.userprofile.customer, self.object.pk])
-        invalidate_caches('appdetail', [self.request.user.userprofile.customer, self.object.pk])
-        invalidate_caches('adddel', [self.request.user.userprofile.customer, self.object.pk])
-
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.APPOINTMENT)))
         return super(AppointmentEdit, self).form_valid(form)
@@ -151,6 +146,13 @@ class AppointmentSnippetView(Customer404Mixin, DetailView):
         context['edit_client_form'] = edit_client_form
         context['edit_client_helper'] = edit_client_helper
         event_info_form = EventInfoForm(instance=self.get_object().event)
+        if event_info_form.fields.get('tag'):
+            event_info_form.fields['tag'].queryset = Tag.objects.filter(
+                customer=self.request.user.userprofile.customer)
+            if self.object.customer.use_tags:
+                event_info_form.fields['tag'].initial = self.object.tag
+            else:
+                del event_info_form.fields['tag']
         context['event_info_form'] = event_info_form
         context['object'] = self.object
         return context
