@@ -2,8 +2,28 @@
   padding: 0;
 }
 
-.wc-container {
-  font-size: 12px;
+.wc-container,
+.single-bottom-note.list-group-item,
+.single-top-note.list-group-item {
+  font-size: 10px;
+}
+
+.wc-time.ui-corner-top {
+  display:none;
+}
+
+.wc-cal-event.ui-corner-all {
+  border-radius: none;
+  border:1px solid #efefef;
+}
+
+table,
+thead,
+tbody,
+tr,
+th,
+td { 
+  page-break-inside: avoid; 
 }
 
 th {

@@ -103,7 +103,7 @@ def generate_pdf_view(request):
 
     options = {
         'dpi': 300,
-        'zoom': 0.6,
+        'viewport-size': '900',
         'encoding': "UTF-8",
         'no-outline': None
     }
@@ -120,36 +120,6 @@ def generate_pdf_view(request):
     response.write(pdf)
 
     return response
-
-
-# def generate_pdf_view(request):
-#     data = {
-#         'date': request.GET.get('date'),
-#         'cid': request.user.userprofile.customer.pk,
-#     }
-#     url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
-#     filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
-#     try:
-#         # create an API client instance
-#         client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
-#         client.setHtmlZoom(3000)
-#         client.setPageHeight(-1)
-#         client.setPdfScalingFactor(0.8)
-#         client.enableJavaScript = True
-
-#         pdf = client.convertURI(url)
-
-#         # set HTTP response headers
-#         response = HttpResponse(content_type="application/pdf")
-#         response["Cache-Control"] = "max-age=0"
-#         response["Accept-Ranges"] = "none"
-#         response["Content-Disposition"] = "attachment; filename={}".format(filename)
-
-#         # send the generated PDF
-#         response.write(pdf)
-#     except pdfcrowd.Error, why:
-#         return redirect(reverse('error'))
-#     return response
 
 
 class HomeView(TemplateView):

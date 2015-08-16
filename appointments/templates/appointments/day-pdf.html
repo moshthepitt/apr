@@ -68,14 +68,15 @@
 
         $('#calendar').weekCalendar({
           date: this_date,
-          timeslotsPerHour: 4,
+          timeslotsPerHour: 2,
           timeslotHeight: 25,
           defaultEventLength: 4,
           displayFreeBusys: true,
           defaultFreeBusy: {free: true},
           readonly : true,
           firstDayOfWeek: 1,
-          showHeader: false,        
+          showHeader: false, 
+          textSize:10,       
           height: function($calendar) {
             return $('table.wc-time-slots').outerHeight() + $('.ui-widget-content.wc-header').outerHeight();
           },
@@ -120,7 +121,7 @@
             $event.addClass(calEvent.status);
           },
           eventBody: function(calEvent, $event) {
-            var data = calEvent.title;
+            var data = $("#calendar").weekCalendar('formatTime', calEvent.start) + " " + calEvent.title;
             if (calEvent.body) {
               data = data + "<br/>" + calEvent.body;  
             }           
