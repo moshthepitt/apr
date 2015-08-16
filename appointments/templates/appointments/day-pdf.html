@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{this_customer.name|default_if_none:"AppointWare"}}</title>
     <!-- Bootstrap core CSS -->
-    {% compress css %}
+    {% compress css inline %}
     <link rel="stylesheet" type="text/css" href="{% static 'bootstrap/css/readable.bootstrap.min.css' %}" />
     <link rel="stylesheet" href="{% static 'jquery-ui/jquery-ui.min.css' %}" media="all" type="text/css" />
     <link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
@@ -37,7 +37,7 @@
 
 
     </div> <!-- /container -->
-    {% compress js %}
+    {% compress js inline %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
