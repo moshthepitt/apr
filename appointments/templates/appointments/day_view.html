@@ -40,14 +40,17 @@
 $(document).on('click', '#go-prev', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("prev");
+	$('#go-print').attr("href", getPrintURL());
 });
 $(document).on('click', '#go-today', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("today");
+	$('#go-print').attr("href", getPrintURL());
 });
 $(document).on('click', '#go-next', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("next");
+	$('#go-print').attr("href", getPrintURL());
 }); 
 $(document).on('click', '#go-fullscreen', function(event) {
 	event.preventDefault();

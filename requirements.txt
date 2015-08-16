@@ -29,7 +29,7 @@ kombu==3.0.26
 msgpack-python==0.4.6
 oauthlib==0.7.2
 oneapi-python==0.3
-pdfcrowd==2.6
+pdfkit==0.5.0
 phonenumbers==7.0.6
 psycopg2==2.6.1
 python-dateutil==2.4.2

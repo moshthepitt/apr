@@ -2,6 +2,7 @@ from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
+from django.conf.urls.static import static
 
 from apr.views import HomeView, DashboardView, CustomerRedirect, DayView, PricingView
 from apr.views import SupportView, generate_pdf_view, PDFView, ErrorView
@@ -47,4 +48,4 @@ if settings.DEBUG:
     # static files (images, css, javascript, etc.)
     urlpatterns += [
         url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT})
-    ]
+    ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

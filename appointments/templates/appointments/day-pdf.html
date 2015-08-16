@@ -53,9 +53,9 @@
               {
                 "status": "{{item.status}}", 
                 "start": new Date("{{ item.start }}"), 
-                "body": "{{item.body}}", 
+                "body": "{% filter escapejs %}{{item.body|default_if_none:""}}{% endfilter %}", 
                 "end": new Date("{{ item.end }}"), 
-                "title": "{{item.title}}", 
+                "title": "{% filter escapejs %}{{item.title|default_if_none:""}}{% endfilter %}", 
                 "userId": {{item.userId}}, 
                 "id": {{item.id}}, 
                 "clientId": {{item.clientId}}

@@ -7,13 +7,12 @@ from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.utils import timezone
 from django.utils.text import slugify
-from django.conf import settings
 
-import pdfcrowd
+import pdfkit
 from schedule.models import Event
 from schedule.periods import Day
 from dateutil import parser
@@ -101,27 +100,56 @@ def generate_pdf_view(request):
     }
     url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
     filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
-    try:
-        # create an API client instance
-        client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
-        client.setHtmlZoom(3000)
-        client.setPageHeight(-1)
-        client.setPdfScalingFactor(0.8)
-        client.enableJavaScript = True
 
-        pdf = client.convertURI(url)
+    options = {
+        'dpi': 300,
+        'zoom': 0.6,
+        'encoding': "UTF-8",
+        'no-outline': None
+    }
 
-        # set HTTP response headers
-        response = HttpResponse(content_type="application/pdf")
-        response["Cache-Control"] = "max-age=0"
-        response["Accept-Ranges"] = "none"
-        response["Content-Disposition"] = "attachment; filename={}".format(filename)
+    pdf = pdfkit.from_url(url, False, options=options)
 
-        # send the generated PDF
-        response.write(pdf)
-    except pdfcrowd.Error, why:
-        return redirect(reverse('error'))
+    # set HTTP response headers
+    response = HttpResponse(content_type="application/pdf")
+    response["Cache-Control"] = "max-age=0"
+    response["Accept-Ranges"] = "none"
+    response["Content-Disposition"] = "attachment; filename={}".format(filename)
+
+    # send the generated PDF
+    response.write(pdf)
+
     return response
+
+
+# def generate_pdf_view(request):
+#     data = {
+#         'date': request.GET.get('date'),
+#         'cid': request.user.userprofile.customer.pk,
+#     }
+#     url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
+#     filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
+#     try:
+#         # create an API client instance
+#         client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
+#         client.setHtmlZoom(3000)
+#         client.setPageHeight(-1)
+#         client.setPdfScalingFactor(0.8)
+#         client.enableJavaScript = True
+
+#         pdf = client.convertURI(url)
+
+#         # set HTTP response headers
+#         response = HttpResponse(content_type="application/pdf")
+#         response["Cache-Control"] = "max-age=0"
+#         response["Accept-Ranges"] = "none"
+#         response["Content-Disposition"] = "attachment; filename={}".format(filename)
+
+#         # send the generated PDF
+#         response.write(pdf)
+#     except pdfcrowd.Error, why:
+#         return redirect(reverse('error'))
+#     return response
 
 
 class HomeView(TemplateView):
