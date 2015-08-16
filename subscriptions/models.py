@@ -44,6 +44,7 @@ class Subscription(models.Model):
     default = models.BooleanField(_("Default"), default=False, help_text=_(
         "The default subscription will be highlighted in price tables.  Ideally only one subscription should be default."))
     hidden = models.BooleanField(_("Hidden"), default=False)
+    can_print = models.BooleanField(_("Can Print"), default=False)
 
     class Meta:
         ordering = ('price', '-recurring_period')
