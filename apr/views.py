@@ -101,8 +101,6 @@ def generate_pdf_view(request):
     }
     url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
     filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
-    print url
-    print filename
     try:
         # create an API client instance
         client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
