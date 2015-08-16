@@ -43,7 +43,7 @@
     <script src="{% static 'jquery-ui/jquery-ui.min.js' %}"></script>
     <script src="{% static 'js/jquery-migrate-1.2.1.js' %}"></script>
     <script src="{% static 'jquery-week-calendar/js/jquery.weekcalendar.js' %}"></script>
-    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
+    <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>    
     <script type='text/javascript'>
       $(document).ready(function() {  
 
@@ -65,8 +65,9 @@
         } ;      
 
         $('#calendar').weekCalendar({
+          date: new Date('{{todays_date.isoformat}}'),
           timeslotsPerHour: 4,
-          timeslotHeight: 20,
+          timeslotHeight: 25,
           defaultEventLength: 4,
           displayFreeBusys: true,
           defaultFreeBusy: {free: true},
@@ -133,6 +134,6 @@
         $('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom-full.html" %}{% endfilter %}');
       });
     </script>
-    {% endcompress %}
+    {% endcompress %}    
   </body>
 </html>

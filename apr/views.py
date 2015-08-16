@@ -1,21 +1,22 @@
 from datetime import datetime
+from urllib import urlencode
 
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.contrib import messages
 from django.views.generic.edit import FormView
 from django.views.generic.base import TemplateView, RedirectView
 from django.views.generic.list import ListView
 from django.utils.translation import ugettext as _
 from django.http import HttpResponse
-from django.template.loader import render_to_string
-from django.template import RequestContext
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.utils import timezone
+from django.conf import settings
 
 import pdfcrowd
 from schedule.models import Event
-from schedule.periods import Period
+from schedule.periods import Day
+from dateutil import parser
 
 from venues.models import Venue
 from subscriptions.models import Subscription
@@ -49,8 +50,8 @@ class PDFView(CustomerMixin, TemplateView):
     template_name = 'appointments/day-pdf.html'
 
     def get_data(self):
-        period = Period(Event.objects.exclude(appointment=None).filter(
-            appointment__customer=self.customer), self.fro, self.to)
+        period = Day(Event.objects.exclude(appointment=None).filter(
+            appointment__customer=self.customer), self.date)
         data = [{'id': x.event.appointment_set.first().pk,
                  'title': "{}".format(x.event.appointment_set.first().client.display_name(title=x.event.title)),
                  'userId': [x.event.appointment_set.first().venue.pk],
@@ -73,35 +74,41 @@ class PDFView(CustomerMixin, TemplateView):
             date=self.date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
         context['bottom_notes'] = Note.objects.filter(customer=self.customer).filter(
             date=self.date).filter(note_type=Note.BOTTOM).order_by('venue', '-date', 'id')
+        context['todays_date'] = self.date
         return context
 
     def dispatch(self, *args, **kwargs):
         customer_id = self.request.GET.get('cid')
-        start = self.request.GET.get('start')
-        end = self.request.GET.get('end')
-        if not customer_id or not start or not end:
+        date = self.request.GET.get('date')
+        if customer_id and date:
+            try:
+                self.customer = get_object_or_404(Customer, pk=customer_id)
+            except ValueError:
+                raise Http404
+            try:
+                self.date = parser.parse(date)
+            except ValueError:
+                self.date = timezone.now().date()
+        else:
             raise Http404
-        self.customer = get_object_or_404(Customer, pk=customer_id)
-        self.fro = timezone.make_aware(
-            datetime.fromtimestamp(float(start)), timezone.get_current_timezone())
-        self.to = timezone.make_aware(
-            datetime.fromtimestamp(float(end)), timezone.get_current_timezone())
-        self.date = timezone.localtime(self.fro).date
         return super(PDFView, self).dispatch(*args, **kwargs)
 
 
 def generate_pdf_view(request):
     try:
         # create an API client instance
-        client = pdfcrowd.Client("moshthepitt", "cf5b6d7c0874852f662131f02dd4a1ac")
+        client = pdfcrowd.Client(settings.PDFCROWD_USERNAME, settings.PDFCROWD_PASSWORD)
+        client.setHtmlZoom(3000)
+        client.setPageHeight(-1)
+        client.setPdfScalingFactor(0.8)
 
-        # convert a web page and store the generated PDF to a variable
         data = {
-            'venues': Venue.objects.filter(customer=request.user.userprofile.customer).exclude(main_calendar=False)
+            'date': request.GET.get('date'),
+            'cid': request.user.userprofile.customer.pk,
         }
-        html = render_to_string('appointments/day-pdf.html', data, context_instance=RequestContext(request))
+        url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
 
-        pdf = client.convertHtml(html)
+        pdf = client.convertURI(url)
 
         # set HTTP response headers
         response = HttpResponse(content_type="application/pdf")

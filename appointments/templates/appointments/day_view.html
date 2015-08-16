@@ -12,6 +12,7 @@
 {% block calendar_custom_buttons %}
 	{% if not request.user.userprofile.is_user %}
 	<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+	<a href="#" class="btn btn-sm btn-default" id="go-print" target="_blank"><i class="fa fa-print"></i> {% trans "Print" %}</a>
 	{% endif %}
 {% endblock %}
 
@@ -100,7 +101,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 			var top_notes_url = "{% url 'notes:top_notes_snippet' %}" + '?' + $.param(data);
 			var bottom_notes_url = "{% url 'notes:bottom_notes_snippet' %}" + '?' + $.param(data);
 			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});
-			$("#tr-venue-headers" ).load(top_notes_url, function(){});
+			$("#tr-venue-headers" ).load(top_notes_url, function(){});			
 		}
 
 		function deleteNote(id) {
@@ -120,10 +121,19 @@ $(document).on('click', '#go-fullscreen', function(event) {
 			    }
 			);
 		}
+
+		function getPrintURL() {
+			var data = {}
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toDateString();
+			data['cid'] = {{CUSTOMER.id}};
+			var pdf_url = "{% url 'pdf' %}" + '?' + $.param(data);
+			return pdf_url;
+		}
 		
 		$(document).ready(function() {
 			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
 			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
+			$('#go-print').attr("href", getPrintURL());
 		});
 
 		$(document).on('click', '#go-add-note', function(event) {
