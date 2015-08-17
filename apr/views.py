@@ -17,6 +17,7 @@ from schedule.models import Event
 from schedule.periods import Day
 from dateutil import parser
 
+from appointments.models import Tag
 from venues.models import Venue
 from subscriptions.models import Subscription
 from core.forms import SupportForm
@@ -32,6 +33,8 @@ class DashboardView(CustomerMixin, TemplateView):
         context = super(DashboardView, self).get_context_data(**kwargs)
         context['venues'] = Venue.objects.filter(
             customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        context['tags'] = Tag.objects.filter(
+            customer=self.request.user.userprofile.customer)
         return context
 
 
@@ -42,6 +45,8 @@ class DayView(CustomerMixin, TemplateView):
         context = super(DayView, self).get_context_data(**kwargs)
         context['venues'] = Venue.objects.filter(
             customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        context['tags'] = Tag.objects.filter(
+            customer=self.request.user.userprofile.customer)
         return context
 
 
@@ -58,6 +63,7 @@ class PDFView(CustomerMixin, TemplateView):
                  'end': x.end.isoformat(),
                  'clientId': x.event.appointment_set.first().client.pk,
                  'status': x.event.appointment_set.first().status,
+                 'tag': getattr(x.event.appointment_set.first().tag, 'name', ""),
                  'body': x.event.description
                  }
                 for x in period.get_occurrences()]
@@ -67,6 +73,8 @@ class PDFView(CustomerMixin, TemplateView):
         context = super(PDFView, self).get_context_data(**kwargs)
         context['venues'] = Venue.objects.filter(
             customer=self.customer).exclude(main_calendar=False)
+        context['tags'] = Tag.objects.filter(
+            customer=self.customer)
         context['data'] = self.get_data()
         context['this_customer'] = self.customer
         context['top_notes'] = Note.objects.filter(customer=self.customer).filter(

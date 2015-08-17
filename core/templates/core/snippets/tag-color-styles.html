@@ -1,0 +1,11 @@
+{% if CUSTOMER.use_tags %}
+<style>
+	{% for tag in tags %}
+		{% if tag.color %}
+			.wc-cal-event.{{tag.name}} .wc-title, .wc-cal-event.{{tag.name}} {
+			  background-color: {{tag.color}}!important;
+			}
+		{% endif %}
+	{% endfor %}
+</style>
+{% endif %}

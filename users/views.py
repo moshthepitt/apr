@@ -11,7 +11,6 @@ from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
-from core.utils import invalidate_caches
 
 from users.models import Client, UserProfile
 from users.forms import EditUserProfileForm, AddUserProfileForm, FullClientForm
@@ -55,14 +54,6 @@ class ClientUpdate(CustomerMixin, UpdateView):
         return context
 
     def form_valid(self, form):
-        # invalidate caches
-        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.id])
-        invalidate_caches('daycal', [self.get_object().customer.pk, self.request.user.id])
-        invalidate_caches('cudelview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('cueditview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('culistview', [self.get_object().customer.pk, self.request.user.id])
-        invalidate_caches('cudetailview', [self.get_object().customer.pk, self.get_object().pk])
-
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved client'))
         return super(ClientUpdate, self).form_valid(form)
@@ -166,12 +157,6 @@ class UserProfileUpdate(CustomerMixin, UpdateView):
         return result
 
     def form_valid(self, form):
-        # invalidate caches
-        invalidate_caches('staffdelview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('staffeditview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('stafflistview', [self.get_object().customer.pk])
-        invalidate_caches('staffdetailview', [self.get_object().customer.pk, self.get_object().pk])
-
         form.save()
         form.save_user_details(self.get_object())
 

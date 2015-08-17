@@ -12,8 +12,8 @@ from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
-from core.utils import invalidate_caches
 from opening_hours.forms import OpeningHourFormSetHelper, OpeningHourFormSet
+from appointments.models import Tag
 
 from venues.models import Venue
 from venues.forms import VenueForm, NoSubmitVenueFormHelper, VenueScriptForm
@@ -68,14 +68,6 @@ class VenueUpdate(CustomerMixin, UpdateView):
         else:
             return self.form_invalid(form=self.get_form())
 
-        # invalidate caches
-        invalidate_caches('vuedit', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('vuview', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('dashboard', [self.get_object().customer.pk, self.request.user.id])
-        invalidate_caches('daycal', [self.get_object().customer.pk, self.request.user.id])
-        invalidate_caches('vucal', [self.get_object().customer.pk, self.get_object().pk])
-        invalidate_caches('vudel', [self.get_object().customer.pk, self.get_object().pk])
-
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueUpdate, self).form_valid(form)
@@ -94,9 +86,6 @@ class VenueScriptUpdate(CustomerMixin, UpdateView):
     success_url = reverse_lazy('venues:list')
 
     def form_valid(self, form):
-        # invalidate caches
-        invalidate_caches('vuscript', [self.get_object().customer.pk, self.get_object().pk])
-
         messages.add_message(
             self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueScriptUpdate, self).form_valid(form)
@@ -173,8 +162,14 @@ class VenueCalendarView(CustomerMixin, DetailView):
     model = Venue
     template_name = "venues/venue_calendar.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(VenueCalendarView, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.filter(
+            customer=self.request.user.userprofile.customer)
+        return context
+
     def dispatch(self, *args, **kwargs):
-            # if this appointment does not belong to the current customer then raise 404
+        # if this appointment does not belong to the current customer then raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
         return super(VenueCalendarView, self).dispatch(*args, **kwargs)

@@ -5,7 +5,7 @@ from django.utils.html import format_html
 from django.utils import timezone
 from django.views.generic import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import DeleteView, FormView, UpdateView
 from django.shortcuts import get_object_or_404
 from django.http import Http404
 
@@ -13,7 +13,8 @@ from datatableview.views import DatatableView
 
 from users.forms import SelectClientForm, AddClientForm, edit_client_form_modal_helper as edit_client_helper
 from users.forms import add_client_form_modal_helper as add_client_helper
-from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, hidden_appointment_form_helper
+from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm
+from appointments.forms import hidden_appointment_form_helper, TagForm
 from appointments.models import Appointment, Tag
 from appointments.tasks import task_send_cancel_email
 from users.models import Client
@@ -48,6 +49,8 @@ class AppointmentEdit(CustomerMixin, FormView):
             customer=self.request.user.userprofile.customer)
         form.fields['tag'].queryset = Tag.objects.filter(
             customer=self.request.user.userprofile.customer)
+        if not self.request.user.userprofile.customer.use_tags:
+            del form.fields['tag']
         context['form'] = form
         return context
 
@@ -220,3 +223,81 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
     def get_queryset(self):
         queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
         return queryset
+
+
+class TagAdd(CustomerMixin, FormView):
+    model = Tag
+    form_class = TagForm
+    success_url = reverse_lazy('appointments:tag_list')
+    template_name = "appointments/tag_add.html"
+
+    def form_valid(self, form):
+        form.create_tag(self.request.user)
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved tag'))
+        return super(TagAdd, self).form_valid(form)
+
+
+class TagUpdate(CustomerMixin, UpdateView):
+    model = Tag
+    form_class = TagForm
+    template_name = "appointments/tag_edit.html"
+    success_url = reverse_lazy('appointments:tag_list')
+
+    def form_valid(self, form):
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully saved tag'))
+        return super(TagUpdate, self).form_valid(form)
+
+    def dispatch(self, *args, **kwargs):
+        # if this tag does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+
+        return super(TagUpdate, self).dispatch(*args, **kwargs)
+
+
+class TagDatatableView(CustomerMixin, DatatableView):
+    model = Tag
+    datatable_options = {
+        'structure_template': "datatableview/bootstrap_structure.html",
+        'columns': [
+            'name',
+            (_("Actions"), 'id', 'get_actions'),
+        ],
+        'search_fields': ['name'],
+        'unsortable_columns': ['id'],
+    }
+
+    def get_actions(self, instance, *args, **kwargs):
+        if self.request.user.userprofile.is_admin:
+            return format_html(
+                '<a href="{}">Edit</a> | <a href="{}">Delete</a>', reverse('appointments:tag_edit', args=[instance.pk]), reverse('appointments:tag_delete', args=[instance.pk])
+            )
+        elif self.request.user.userprofile.is_editor:
+            return format_html(
+                '<a href="{}">Edit</a>', reverse('appointments:tag_edit', args=[instance.pk])
+            )
+        else:
+            return format_html("")
+
+    def get_queryset(self, **kwargs):
+        queryset = Tag.objects.filter(customer=self.request.user.userprofile.customer)
+        return queryset
+
+
+class TagDelete(CustomerMixin, DeleteView):
+    model = Tag
+    success_url = reverse_lazy('appointments:tag_list')
+    template_name = "appointments/tag_delete.html"
+
+    def delete(self, request, *args, **kwargs):
+        messages.add_message(
+            self.request, messages.SUCCESS, _('Successfully deleted tag'))
+        return super(TagDelete, self).delete(request, *args, **kwargs)
+
+    def dispatch(self, *args, **kwargs):
+        # if this Tag does not belong to the current customer then raise 404
+        if self.request.user.userprofile.customer != self.get_object().customer:
+            raise Http404
+        return super(TagDelete, self).dispatch(*args, **kwargs)

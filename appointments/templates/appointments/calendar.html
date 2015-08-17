@@ -14,6 +14,9 @@
 	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2.min.css' %}" />
 	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2-bootstrap.css' %}" />
 {% endblock %}
+{% block extrahead %}
+	{% include 'core/snippets/tag-color-styles.html' %}
+{% endblock %}
 {% block title %}{{CUSTOMER.name|default_if_none:"AppointWare"}} {% trans "Calendar" %} | {{site.name}}{% endblock %}
 {% block top_sidebar %}<div id="datepicker"></div>{% endblock %}
 {% block main_content %}	
@@ -389,6 +392,7 @@
  				},
  				eventRender: function(calEvent, $event) {
  					$event.addClass(calEvent.status);
+ 					$event.addClass(calEvent.tag);
 				},
  				eventNew: function(calEvent, $event) {
  					$("#add-appointment-snippet-content").html("");

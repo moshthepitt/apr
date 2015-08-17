@@ -56,7 +56,7 @@ th.control-group.error .form-control {
 }
 
 .container {
-  min-height:500px;
+  min-height:1000px;
 }
 
 .dataTables_wrapper .dataTables_paginate .paginate_button {

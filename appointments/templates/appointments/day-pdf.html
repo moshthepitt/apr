@@ -17,6 +17,8 @@
     <link rel="stylesheet" href="{% static 'jquery-week-calendar/css/jquery.weekcalendar.css' %}" media="all" type="text/css" />
     <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
     <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/pdf.css' %}" />
+
+    {% include 'core/snippets/tag-color-styles.html' with CUSTOMER=this_customer%}
     
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -51,7 +53,8 @@
           events: [
             {% for item in data %}
               {
-                "status": "{{item.status}}", 
+                "status": "{{item.status}}",
+                "tag": "{{item.tag}}", 
                 "start": new Date("{{ item.start }}"), 
                 "body": "{% filter escapejs %}{{item.body|default_if_none:""}}{% endfilter %}", 
                 "end": new Date("{{ item.end }}"), 
@@ -119,6 +122,7 @@
           },
           eventRender: function(calEvent, $event) {
             $event.addClass(calEvent.status);
+            $event.addClass(calEvent.tag);
           },
           eventBody: function(calEvent, $event) {
             var data = $("#calendar").weekCalendar('formatTime', calEvent.start) + " " + calEvent.title;

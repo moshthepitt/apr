@@ -7,6 +7,7 @@ from appointments.ajax import process_edit_client_form, edit_event, add_event, p
 from appointments.ajax import edit_appointment_status
 from appointments.views import AddEventView, AppointmentView, AppointmentDelete, AddAppointmentSnippetView
 from appointments.views import AppointmentEdit, AppointmentDatatableView, AppointmentSnippetView
+from appointments.views import TagAdd, TagUpdate, TagDatatableView, TagDelete
 from venues.views import VenueCalendarView
 
 
@@ -35,4 +36,9 @@ urlpatterns = [
     url(r'^edit-event-form/(?P<pk>\d+)/$', login_required(process_edit_event_form), name='process_edit_event_form'),
     url(r'^snippet/(?P<pk>\d+)/$', login_required(AppointmentSnippetView.as_view()), name='appointment_snippet'),
     url(r'^client-snippet/$', login_required(AddAppointmentSnippetView.as_view()), name='appointment_client_snippet'),
+    # tags
+    url(r'^tags/$', login_required(TagDatatableView.as_view()), name='tag_list'),
+    url(r'^tags/add/$', login_required(TagAdd.as_view()), name='tag_add'),
+    url(r'^tags/edit/(?P<pk>\d+)/$', login_required(TagUpdate.as_view()), name='tag_edit'),
+    url(r'^tags/delete/(?P<pk>\d+)/$', login_required(TagDelete.as_view()), name='tag_delete'),
 ]

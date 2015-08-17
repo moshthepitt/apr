@@ -1,6 +1,9 @@
+from re import match
 from django import forms
 from django.utils.translation import ugettext as _
 from django.utils import timezone
+from django.forms import ValidationError
+from django.utils.encoding import smart_unicode
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Div, Submit
@@ -222,7 +225,8 @@ class SimpleAppointmentForm(forms.Form):
             client = Client.objects.get(pk=self.cleaned_data['client'])
 
             if client.phone:
-                event_title = "{name} {phone} {id}".format(name=client.get_full_name(), phone=client.phone, id=client.client_id)
+                event_title = "{name} {phone} {id}".format(
+                    name=client.get_full_name(), phone=client.phone, id=client.client_id)
             else:
                 event_title = "{name} {id}".format(name=client.get_full_name(), id=client.client_id)
 
@@ -307,6 +311,7 @@ def hidden_appointment_form_helper():
 
 
 class EventInfoForm(forms.ModelForm):
+
     """
     Form used to edit event info. i.e title and description
     """
@@ -345,6 +350,7 @@ class EventInfoForm(forms.ModelForm):
 
 
 class IDForm(forms.Form):
+
     """
     contains just the id field
     """
@@ -353,3 +359,43 @@ class IDForm(forms.Form):
         required=True,
         widget=forms.HiddenInput
     )
+
+
+class TagForm(forms.ModelForm):
+
+    class Meta:
+        model = Tag
+        fields = ['name', 'color']
+
+    def create_tag(self, user):
+        new_tag = Tag(
+            name=self.cleaned_data['name'],
+            color=self.cleaned_data['color'],
+            customer=user.userprofile.customer
+        )
+        new_tag.save()
+        return new_tag
+
+    def clean_color(self):
+        value = self.cleaned_data['color']
+        if value:
+            value = smart_unicode(value)
+            value_length = len(value)
+            if value_length != 7 or not match('^\#([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$', value):
+                raise ValidationError(
+                    _("This is an invalid color code. It must be a html hex color code e.g. #000000"))
+        return value
+
+    def __init__(self, *args, **kwargs):
+        super(TagForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_id = 'tag-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('name'),
+            Field('color', id="id-color"),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success'),
+                css_class="form-group"
+            )
+        )
