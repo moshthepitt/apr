@@ -2,7 +2,7 @@
 <style>
 	{% for tag in tags %}
 		{% if tag.color %}
-			.wc-cal-event.{{tag.name}} .wc-title, .wc-cal-event.{{tag.name}} {
+			.wc-cal-event.{{tag.html_name}} .wc-title, .wc-cal-event.{{tag.html_name}} {
 			  background-color: {{tag.color}}!important;
 			}
 		{% endif %}

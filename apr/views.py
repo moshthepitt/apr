@@ -63,7 +63,7 @@ class PDFView(CustomerMixin, TemplateView):
                  'end': x.end.isoformat(),
                  'clientId': x.event.appointment_set.first().client.pk,
                  'status': x.event.appointment_set.first().status,
-                 'tag': getattr(x.event.appointment_set.first().tag, 'name', ""),
+                 'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                  'body': x.event.description
                  }
                 for x in period.get_occurrences()]
