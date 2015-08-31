@@ -174,6 +174,8 @@ class EditCustomerSettings(CustomerMixin, FormView):
         initial['send_email'] = self.customer.send_email
         initial['client_display'] = self.customer.client_display
         initial['use_tags'] = self.customer.use_tags
+        initial['use_four_day'] = self.customer.use_four_day
+        initial['use_no_background_print'] = self.customer.use_no_background_print
         return initial
 
     def form_valid(self, form):

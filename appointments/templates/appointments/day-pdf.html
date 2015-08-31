@@ -19,6 +19,18 @@
     <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/pdf.css' %}" />
 
     {% include 'core/snippets/tag-color-styles.html' with CUSTOMER=this_customer%}
+
+    {% if CUSTOMER.use_no_background_print %}
+      <style>
+        .wc-cal-event {
+          background-color: transparent;
+          color:#333;
+        }
+        .wc-cal-event.ui-corner-all {
+          border: 1px solid #999;
+        }
+      </style>
+    {% endif %}
     
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
