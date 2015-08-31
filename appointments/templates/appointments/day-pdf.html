@@ -23,8 +23,11 @@
     {% if this_customer.use_no_background_print %}
       <style>
         .wc-cal-event {
-          background-color: transparent;
+          background-color: transparent!important;
           color:#333;
+        }
+        .wc-cal-event .wc-title {
+          background-color: transparent!important;
         }
         .wc-cal-event.ui-corner-all {
           border: 1px solid #999;
