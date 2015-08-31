@@ -18,9 +18,9 @@
     <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/week-calendar.css' %}" />
     <link rel="stylesheet" type="text/css" media="all" href="{% static 'css/pdf.css' %}" />
 
-    {% include 'core/snippets/tag-color-styles.html' with CUSTOMER=this_customer%}
+    {% include 'core/snippets/tag-color-styles.html' with CUSTOMER=this_customer %}
 
-    {% if CUSTOMER.use_no_background_print %}
+    {% if this_customer.use_no_background_print %}
       <style>
         .wc-cal-event {
           background-color: transparent;
