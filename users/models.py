@@ -97,6 +97,13 @@ class Client(models.Model):
 
         return self.get_full_name()
 
+    def get_last_appointment(self):
+        return self.appointment_set.order_by('-event__start').first()
+
+    @property
+    def last_appointment(self):
+        return self.get_last_appointment()
+
     def __str__(self):
         if self.get_full_name():
             return self.get_full_name()

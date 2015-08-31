@@ -80,6 +80,8 @@
               <li><a href="{% url 'users:add' %}">{% trans "Add Client" %}</a></li>
               {% endif %}
               <li><a href="{% url 'users:list' %}">{% trans "Clients" %}</a></li>
+              <li><a href="{% url 'users:clients_pending' %}">{% trans "Pending Clients" %}</a></li>
+              <li><a href="{% url 'users:clients_canceled' %}">{% trans "Canceled Clients" %}</a></li>
             </ul>
           </li>
           {% if not request.user.userprofile.is_user %}
