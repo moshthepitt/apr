@@ -64,7 +64,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 {% block schedule_specific_js %}
 	timeslotHeight: 25,
 	startOnFirstDayOfWeek: false,
-	daysToShow: {{days_to_show}},
+	daysToShow: 1,
 	data: "{% url 'appointments:calendar_event_feed' %}",
 		businessHours: {
 		{% if CUSTOMER.global_opening_time.from_hour.hour %}

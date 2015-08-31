@@ -52,6 +52,12 @@ class DayView(CustomerMixin, TemplateView):
         return context
 
 
+FourDayView = DayView.as_view(
+    days_to_show=4,
+    template_name='appointments/four_day_view.html'
+)
+
+
 class PDFView(CustomerMixin, TemplateView):
     template_name = 'appointments/day-pdf.html'
 

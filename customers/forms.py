@@ -152,7 +152,16 @@ class CustomerSettingsForm(forms.ModelForm):
 
     class Meta:
         model = Customer
-        fields = ['shown_days', 'allow_overlap', 'send_sms', 'send_email', 'client_display', 'use_tags']
+        fields = [
+            'shown_days',
+            'allow_overlap',
+            'send_sms',
+            'send_email',
+            'client_display',
+            'use_tags',
+            'use_four_day',
+            'use_no_background_print',
+        ]
 
     def __init__(self, *args, **kwargs):
         super(CustomerSettingsForm, self).__init__(*args, **kwargs)
@@ -166,6 +175,8 @@ class CustomerSettingsForm(forms.ModelForm):
             Field('send_sms'),
             Field('send_email'),
             Field('use_tags'),
+            Field('use_four_day'),
+            Field('use_no_background_print'),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
@@ -178,6 +189,8 @@ class CustomerSettingsForm(forms.ModelForm):
         customer.send_email = self.cleaned_data['send_email']
         customer.client_display = self.cleaned_data['client_display']
         customer.use_tags = self.cleaned_data['use_tags']
+        customer.use_four_day = self.cleaned_data['use_four_day']
+        customer.use_no_background_print = self.cleaned_data['use_no_background_print']
         customer.save()
 
 
