@@ -182,6 +182,8 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
         if keep:
             keep = list(set(keep))
             queryset = queryset.filter(id__in=keep).distinct()
+        else:
+            queryset = Client.objects.none()
         return queryset
 
 
@@ -220,6 +222,8 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
         if keep:
             keep = list(set(keep))
             queryset = queryset.filter(id__in=keep).distinct()
+        else:
+            queryset = Client.objects.none()
         return queryset
 
 

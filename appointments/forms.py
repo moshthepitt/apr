@@ -58,6 +58,11 @@ class AppointmentForm(forms.Form):
         required=False,
         widget=forms.Textarea
     )
+    status = forms.ChoiceField(
+        label=_("Status"),
+        required=True,
+        choices=Appointment.STATUS_CHOICES
+    )
 
     def __init__(self, *args, **kwargs):
         super(AppointmentForm, self).__init__(*args, **kwargs)
@@ -109,7 +114,11 @@ class AppointmentForm(forms.Form):
                     'description',
                     Field('client', id="id-create-appointment-client"),
                     css_class='form-group'
-                )
+                ),
+                Div(
+                    Field('status'),
+                    css_class='form-group'
+                ),
             ),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')
@@ -168,6 +177,7 @@ class AppointmentForm(forms.Form):
         self.edit_event(appointment.event)
         appointment.venue = self.cleaned_data['venue']
         appointment.tag = self.cleaned_data['tag']
+        appointment.status = self.cleaned_data['status']
         appointment.save()
 
 

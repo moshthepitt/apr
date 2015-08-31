@@ -89,6 +89,11 @@ class Appointment(models.Model):
             return self.doctor.id
         return None
 
+    def get_tag_id(self):
+        if self.tag:
+            return self.tag.id
+        return None
+
     def get_form_data(self):
         """
         returns a dictionary that can be used to populate initial data from appointments.AppointmentForm
@@ -103,6 +108,8 @@ class Appointment(models.Model):
             doctor=self.get_doctor_id(),
             venue=self.venue.id,
             description=self.event.description,
+            tag=self.get_tag_id(),
+            status=self.status
         )
 
     class Meta:
