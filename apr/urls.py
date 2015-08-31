@@ -17,6 +17,7 @@ urlpatterns = [
     url(r'^help/$', SupportView.as_view(template_name="core/help.html"), name='help'),
     url(r'^dashboard/$', login_required(DashboardView.as_view()), name='dashboard'),
     url(r'^day/$', login_required(DayView.as_view()), name='day'),
+    url(r'^four-day/$', login_required(DayView.as_view(days_to_show=4)), name='four_day'),
     url(r'^pdf/$', login_required(generate_pdf_view), name='pdf'),
     url(r'^new/$', login_required(NewCustomer.as_view()), name='new_customer'),
     url(r'^appointments/', include('appointments.urls', namespace='appointments')),

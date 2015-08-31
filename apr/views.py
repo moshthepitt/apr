@@ -40,6 +40,7 @@ class DashboardView(CustomerMixin, TemplateView):
 
 class DayView(CustomerMixin, TemplateView):
     template_name = 'appointments/day_view.html'
+    days_to_show = 1
 
     def get_context_data(self, **kwargs):
         context = super(DayView, self).get_context_data(**kwargs)
@@ -47,6 +48,7 @@ class DayView(CustomerMixin, TemplateView):
             customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
         context['tags'] = Tag.objects.filter(
             customer=self.request.user.userprofile.customer)
+        context['days_to_show'] = self.days_to_show
         return context
 
 
