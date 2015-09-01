@@ -120,7 +120,8 @@ def calendar_event_feed(request):
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
                      }
-                    for x in period.get_occurrences()]
+                    for x in period.get_occurrences()
+                    if x.event.appointment_set.first()]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -146,7 +147,8 @@ def venue_event_feed(request, pk):
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
                      }
-                    for x in period.get_occurrences()]
+                    for x in period.get_occurrences()
+                    if x.event.appointment_set.first()]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -171,7 +173,8 @@ def printable_event_feed(request):
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
                      }
-                    for x in period.get_occurrences()]
+                    for x in period.get_occurrences()
+                    if x.event.appointment_set.first()]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
