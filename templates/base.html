@@ -55,7 +55,7 @@
           <li><a href="{% url 'dashboard' %}"><i class="fa fa-calendar"></i> <span>{% trans "Calendar" %}</span></a></li>
           <li><a href="{% url 'day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Day View" %}</span></a></li>
           {% if CUSTOMER.use_four_day %}
-          <li><a href="{% url 'four_day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Four Day View" %}</span></a></li>
+          <li><a href="{% url 'four_day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Three Day View" %}</span></a></li>
           {% endif %}
           
           {% if not request.user.userprofile.is_user %}

@@ -120,7 +120,7 @@ class Customer(models.Model):
     rebooking_send_email = models.BooleanField(_("Rebooking send email"), default=True)
     rebooking_send_sms = models.BooleanField(_("Rebooking send SMS"), default=True)
     use_tags = models.BooleanField(_("Use Tags"), default=False, help_text=_("Tags are used to classify appointments"))
-    use_four_day = models.BooleanField(_("Activate Four-day View"), default=False)
+    use_four_day = models.BooleanField(_("Activate Three-day View"), default=False)
     use_no_background_print = models.BooleanField(_("No background color on print"), default=False)
 
     class Meta:
