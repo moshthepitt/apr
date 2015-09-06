@@ -3,6 +3,9 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.conf.urls.static import static
+from django.views.decorators.cache import cache_page
+
+from django_js_reverse.views import urls_js
 
 from apr.views import HomeView, DashboardView, CustomerRedirect, DayView, PricingView
 from apr.views import SupportView, generate_pdf_view, PDFView, ErrorView, ThreeDayView
@@ -33,13 +36,14 @@ urlpatterns = [
     # third party
     url(r'^select2/', include('django_select2.urls')),
     url(r'^accounts/', include('allauth.urls')),
-
-    # utils
-    url(r'^customer-redirector/$', CustomerRedirect.as_view(), name='customer_redirect'),
+    url(r'^jsreverse/$', cache_page(3600)(urls_js), name='js_reverse'),
 
     # client actions
     url(r'^confirm/(?P<slug>[\w-]+)/$', AppointmentClientConfirm.as_view(), name='confirm_appointment'),
     url(r'^cancel/(?P<slug>[\w-]+)/$', AppointmentClientCancel.as_view(), name='cancel_appointment'),
+
+    # utils
+    url(r'^customer-redirector/$', CustomerRedirect.as_view(), name='customer_redirect'),
 
     # flat pages
     url(r'^$', include('django.contrib.flatpages.urls')),

@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'randomslugfield',
     'cacheops',
     'suit_redactor',
+    'django_js_reverse',
     # custom
     'appointments',
     'users',

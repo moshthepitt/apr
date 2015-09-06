@@ -17,8 +17,10 @@
 							<div class="single-bottom-note note-item list-group-item">
 								{% if not request.user.userprofile.is_user %}
 								<span class="badge icon" onclick="deleteNote({{note.id}});"><i class="glyphicon glyphicon-trash"></i></span>
-								{% endif %}
+								<a href="#" class="editable-note" data-pk="{{note.pk}}">{{note.note}}</a>
+								{% else %}
 								{{note.note}}
+								{% endif %}								
 							</div>
 						{% else %}
 							<div class="single-bottom-note"></div>

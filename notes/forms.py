@@ -73,3 +73,27 @@ class NoteForm(forms.ModelForm):
                 )
                 new_note.save()
             return True
+
+
+class EditNoteForm(forms.ModelForm):
+    class Meta:
+        model = Note
+        fields = ['date', 'venue', 'note', 'note_type']
+
+    def __init__(self, *args, **kwargs):
+        super(EditNoteForm, self).__init__(*args, **kwargs)
+        self.fields['venue'].required = True
+        self.fields['date'].widget = forms.HiddenInput()
+        self.fields['note'].widget = forms.TextInput()
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-edit-note-form'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('date'),
+            Field('venue', id="id-select-venue"),
+            Field('note'),
+            Field('note_type'),
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-success')
+            )
+        )

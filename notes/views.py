@@ -1,12 +1,11 @@
 from dateutil import parser
 
 from django.views.generic.base import TemplateView
-from django.views.generic.list import ListView
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
-# from django.http import Http404
 
 from venues.models import Venue
-from notes.forms import NoteForm
+from notes.forms import NoteForm, EditNoteForm
 from notes.models import Note
 from customers.mixins import Customer404Mixin
 
@@ -34,6 +33,25 @@ class AddNoteSnippetView(Customer404Mixin, TemplateView):
         note_form.fields['end_date'].initial = date.strftime("%d-%m-%Y")
         context['NoteForm'] = note_form
         return context
+
+
+class EditNoteSnippetView(Customer404Mixin, TemplateView):
+
+    """
+    returns modal content when adding new appointment
+    """
+    template_name = "notes/snippets/edit-note.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(EditNoteSnippetView, self).get_context_data(**kwargs)
+        note_form = EditNoteForm(instance=self.object)
+        context['NoteForm'] = note_form
+        context['object'] = self.object
+        return context
+
+    def dispatch(self, *args, **kwargs):
+        self.object = get_object_or_404(Note, pk=self.kwargs['pk'])
+        return super(EditNoteSnippetView, self).dispatch(*args, **kwargs)
 
 
 class TopNotesSnippetView(Customer404Mixin, TemplateView):

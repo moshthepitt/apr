@@ -124,6 +124,11 @@ td.wc-day-column.empty-notes {
   cursor: pointer;
 }
 
+.editable-note {
+	text-decoration: none!important;
+	color:inherit!important;
+}
+
 .note-item:hover .badge.icon {
   display:block;
 }

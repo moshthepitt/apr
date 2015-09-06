@@ -1,0 +1,5 @@
+{% load i18n %}
+{% load crispy_forms_tags %}
+<div id="edit-note" data-pk="{{object.pk}}">	
+	{% crispy NoteForm %}
+</div>

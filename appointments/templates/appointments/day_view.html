@@ -25,7 +25,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Add Note" %}</h4>
+	        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Note" %}</h4>
 	      </div>
 	      <div class="modal-body" id="add-note-snippet-content"></div>
 	      <div class="modal-footer">
@@ -59,6 +59,29 @@ $(document).on('click', '#go-fullscreen', function(event) {
 	$("#content").toggleClass("fullscreen-mode");
 	$("#header").toggleClass("fullscreen-mode");
 });	
+
+$(document).on('click', '.editable-note', function(event) {
+	event.preventDefault();
+	var pk = $(this).data("pk");
+	var url = Urls['notes:edit_note_snippet'](pk);
+
+	$("#add-note-snippet-content").html("");
+	
+	$("#add-note-snippet-content" ).load(url, function(){
+		$('#add-note-modal').modal();
+		// select2 		
+		$("#id-select-venue").select2({
+			placeholder: "{% trans 'Select a schedule' %}",
+			width:'100%',
+		});
+		// datepicker
+		$('#end-date').datepicker({
+			'format': 'dd-mm-yyyy',
+			'autoclose': true
+		});				
+	});
+});
+	
 {% endblock %}	
 
 {% block schedule_specific_js %}
@@ -151,7 +174,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 			var url = "{% url 'notes:add_note_snippet' %}" + '?' + $.param(data);
 			$("#add-note-snippet-content" ).load(url, function(){
 				$('#add-note-modal').modal();
-				// secelt2 		
+				// select2 		
 				$("#id-select-venue").select2({
 					placeholder: "{% trans 'Select a schedule' %}",
 					width:'100%',
@@ -160,7 +183,7 @@ $(document).on('click', '#go-fullscreen', function(event) {
 				$('#end-date').datepicker({
 					'format': 'dd-mm-yyyy',
 					'autoclose': true
-				});
+				});				
 			});
 		});
 
@@ -189,6 +212,37 @@ $(document).on('click', '#go-fullscreen', function(event) {
 				},
 				error: function () {
 					$(add_note_form).find('.error-message').show()
+				}
+			});
+		});
+
+		// id-edit-note-form
+		$(document).on('submit','#id-edit-note-form',function(event){
+			event.preventDefault();
+			var edit_note_form = '#id-edit-note-form';
+			var pk = $('#edit-note').data("pk");
+			var url = Urls['notes:process_edit_note_form'](pk);
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: $(edit_note_form).serialize(),
+				dataType: 'json',
+				success: function(data) {				    	
+					if (!(data['success'])) {
+						$(edit_note_form).replaceWith(data['form_html']);
+					}
+					else {
+						loadNotes();
+						$('#add-note-modal').modal('hide');
+						$.growl.notice({ 
+							location: 'br',
+							title: "{% trans 'Updated Note' %}", 
+							message: '{% trans "Successfully updated note" %}' 
+						});
+					}
+				},
+				error: function () {
+					$(edit_note_form).find('.error-message').show()
 				}
 			});
 		});
