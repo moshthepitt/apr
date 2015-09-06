@@ -18,7 +18,7 @@ def process_add_note_form(request):
     form = NoteForm(request.POST or None)
     form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
     if form.is_valid():
-        form.create_note(request.user)
+        form.create_daterange_notes(request.user)
         return {
             'success': True,
         }

@@ -3,15 +3,27 @@ from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, ButtonHolder, Submit
+from dateutil.rrule import rrule, DAILY
 
 from notes.models import Note
 
 
 class NoteForm(forms.ModelForm):
+    end_date = forms.DateField(
+        label=_('End date'),
+        input_formats=["%d-%m-%Y"],
+        help_text=_(
+            "If specified, the note will be created for all dates from the current date through to the End Date selected")
+    )
 
     class Meta:
         model = Note
         fields = ['date', 'venue', 'note', 'note_type']
+
+    def clean_end_date(self):
+        if self.cleaned_data['end_date'] < self.cleaned_data['date']:
+            raise forms.ValidationError(_("The end date cannot be in the past"))
+        return self.cleaned_data['end_date']
 
     def __init__(self, *args, **kwargs):
         super(NoteForm, self).__init__(*args, **kwargs)
@@ -26,6 +38,7 @@ class NoteForm(forms.ModelForm):
             Field('venue', id="id-select-venue"),
             Field('note'),
             Field('note_type'),
+            Field('end_date', id="end-date"),
             ButtonHolder(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
@@ -42,3 +55,21 @@ class NoteForm(forms.ModelForm):
         )
         new_note.save()
         return new_note
+
+    def create_daterange_notes(self, user):
+        end_date = self.cleaned_data['end_date']
+        date = self.cleaned_data['date']
+        if date == end_date:
+            return self.create_note(user)
+        else:
+            for x in rrule(DAILY, dtstart=date, until=end_date):
+                new_note = Note(
+                    date=x,
+                    venue=self.cleaned_data['venue'],
+                    note=self.cleaned_data['note'],
+                    note_type=self.cleaned_data['note_type'],
+                    creator=user,
+                    customer=user.userprofile.customer
+                )
+                new_note.save()
+            return True

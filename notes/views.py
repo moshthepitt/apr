@@ -23,14 +23,15 @@ class AddNoteSnippetView(Customer404Mixin, TemplateView):
 
         input_date = self.request.GET.get('date', "")
         if input_date:
-            date = timezone.localtime(parser.parse(input_date)).date
+            date = timezone.localtime(parser.parse(input_date)).date()
         else:
-            date = timezone.now().date
+            date = timezone.now().date()
 
         note_form = NoteForm()
         note_form.fields['venue'].queryset = Venue.objects.filter(
             customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
         note_form.fields['date'].initial = date
+        note_form.fields['end_date'].initial = date.strftime("%d-%m-%Y")
         context['NoteForm'] = note_form
         return context
 

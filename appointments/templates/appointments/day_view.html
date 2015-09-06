@@ -156,6 +156,11 @@ $(document).on('click', '#go-fullscreen', function(event) {
 					placeholder: "{% trans 'Select a schedule' %}",
 					width:'100%',
 				});
+				// datepicker
+				$('#end-date').datepicker({
+					'format': 'dd-mm-yyyy',
+					'autoclose': true
+				});
 			});
 		});
 
