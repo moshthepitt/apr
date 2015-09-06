@@ -25,7 +25,7 @@ class Note(models.Model):
     venue = models.ForeignKey(Venue, verbose_name=getattr(
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     note = models.TextField(_("Note"), blank=False)
-    note_type = models.CharField(_("Type"), max_length=1, choices=TYPE_CHOICES, blank=False, default=BOTTOM)
+    note_type = models.CharField(_("Type"), max_length=1, choices=TYPE_CHOICES, blank=False, default=TOP)
 
     class Meta:
         verbose_name = _("Note")
