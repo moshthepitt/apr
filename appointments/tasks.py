@@ -17,6 +17,31 @@ logger = get_task_logger(__name__)
 
 @periodic_task(
     run_every=(crontab(minute=0, hour=18)),
+    name="task_48hrbefore_reminders",
+    ignore_result=True
+)
+def task_48hrbefore_reminders():
+    """
+    Sends a reminder to all the UN-NOTIFIED appointments
+    happening in the next 48hrs
+    currently sends at 6pm
+    """
+    t = timezone.now().date()
+    fro = datetime(year=t.year, month=t.month, day=t.day, hour=0, tzinfo=timezone.get_current_timezone())
+    fro = fro + timedelta(2)
+    to = fro + timedelta(1)
+    period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__status=Appointment.NOTIFIED).exclude(
+        appointment__status=Appointment.CANCELED).exclude(
+        appointment__status=Appointment.CONFIRMED), fro, to)
+    event_objects = period.get_occurrences()
+    event_ids = list(set([x.event.id for x in event_objects]))
+
+    send_period_reminders(event_ids, sendsms=True, mailgun_campaign_id="fi0bc")
+
+
+@periodic_task(
+    run_every=(crontab(minute=0, hour=18)),
     name="task_day_before_reminders",
     ignore_result=True
 )
@@ -27,7 +52,8 @@ def task_day_before_reminders():
     currently sends at 6pm
     """
     t = timezone.now().date()
-    fro = datetime(year=t.year, month=t.month, day=t.day + 1, hour=0, tzinfo=timezone.get_current_timezone())
+    fro = datetime(year=t.year, month=t.month, day=t.day, hour=0, tzinfo=timezone.get_current_timezone())
+    fro = fro + timedelta(1)
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
