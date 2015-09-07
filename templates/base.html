@@ -174,8 +174,7 @@
         &copy; {{site.name}} {% now "Y" %}
       </div>
     </div>
-
-    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
+    
     {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
@@ -183,6 +182,7 @@
     <script src="{% static 'unicorn/js/jquery.nicescroll.min.js' %}"></script>
     <script src="{% static 'unicorn/js/unicorn.js' %}"></script>
     <script src="{% static 'js/scripts.js' %}"></script>   
+    <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="{% static 'js/ie10-viewport-bug-workaround.js' %}"></script>
     {% block extrajs %}{% endblock %}
