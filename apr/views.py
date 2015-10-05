@@ -65,11 +65,11 @@ class PDFView(CustomerMixin, TemplateView):
         period = Day(Event.objects.exclude(appointment=None).filter(
             appointment__customer=self.customer), self.date)
         data = [{'id': x.event.appointment_set.first().pk,
-                 'title': "{}".format(x.event.appointment_set.first().client.display_name(title=x.event.title)),
+                 'title': "{}".format(x.event.appointment_set.first().display_name),
                  'userId': [x.event.appointment_set.first().venue.pk],
                  'start': x.start.isoformat(),
                  'end': x.end.isoformat(),
-                 'clientId': x.event.appointment_set.first().client.pk,
+                 'clientId': x.event.appointment_set.first().clientId,
                  'status': x.event.appointment_set.first().status,
                  'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                  'body': x.event.description

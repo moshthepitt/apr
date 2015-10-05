@@ -1,5 +1,3 @@
-from schedule.models import Event
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -8,6 +6,7 @@ from django.utils.timezone import localtime
 from django.utils.text import slugify
 
 from randomslugfield import RandomSlugField
+from schedule.models import Event
 
 from users.models import Client
 from doctors.models import Doctor
@@ -65,7 +64,7 @@ class Appointment(models.Model):
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     client = models.ForeignKey(
-        Client, verbose_name=getattr(labels, 'CLIENT', _("Client")), on_delete=models.PROTECT)
+        Client, verbose_name=getattr(labels, 'CLIENT', _("Client")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     doctor = models.ForeignKey(Doctor, verbose_name=getattr(
         labels, 'DOCTOR', _("Doctor")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     venue = models.ForeignKey(Venue, verbose_name=getattr(
@@ -76,7 +75,10 @@ class Appointment(models.Model):
     tag = models.ForeignKey(Tag, verbose_name=_("Tag"), null=True, default=None, blank=True)
 
     def __unicode__(self):
-        return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)
+        if self.client:
+            return _("{client} - {venue} - {event}").format(client=self.client, venue=self.venue, event=self.event)
+        else:
+            return _("{venue} - {event}").format(venue=self.venue, event=self.event)
 
     def meta(self):
         return self._meta
@@ -94,12 +96,55 @@ class Appointment(models.Model):
             return self.tag.id
         return None
 
+    def _display_name(self):
+        if self.client:
+            return self.client.display_name(title=self.event.title)
+        return self.event.title
+
+    @property
+    def display_name(self):
+        return self._display_name()
+
+    def _venue_display_name(self):
+        if self.client:
+            if self.venue:
+                return self.client.display_name(venue=self.venue, title=self.event.title)
+            else:
+                return self._display_name()
+        return self.event.title
+
+    @property
+    def venue_display_name(self):
+        return self._display_name()
+
+    def _print_title(self):
+        if self.client:
+            return "{} - {} - {}".format(self.client, self.client.client_id, self.event.title)
+        return self.event.title
+
+    @property
+    def print_title(self):
+        return self._print_title
+
+    def _clientId(self):
+        if self.client:
+            return self.client.pk
+        return None
+
+    @property
+    def clientId(self):
+        return self._clientId()
+
     def get_form_data(self):
         """
         returns a dictionary that can be used to populate initial data from appointments.AppointmentForm
         """
+        if self.client:
+            client = self.client.id
+        else:
+            client = None
         return dict(
-            client=self.client.id,
+            client=client,
             title=self.event.title,
             start_date=localtime(self.event.start).strftime('%d-%m-%Y'),
             start_time=localtime(self.event.start).strftime('%-H:%M%p'),

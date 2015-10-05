@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from appointments.ajax import venue_event_feed, printable_event_feed, calendar_event_feed
 from appointments.ajax import process_add_client_form, process_select_client_form, process_add_event_form
 from appointments.ajax import process_edit_client_form, edit_event, add_event, process_edit_event_form, delete_appointment
-from appointments.ajax import edit_appointment_status
+from appointments.ajax import edit_appointment_status, process_generic_event_form, process_edit_generic_event_form
 from appointments.views import AddEventView, AppointmentView, AppointmentDelete, AddAppointmentSnippetView
 from appointments.views import AppointmentEdit, AppointmentDatatableView, AppointmentSnippetView
 from appointments.views import TagAdd, TagUpdate, TagDatatableView, TagDelete
@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^edit-client-form/(?P<pk>\d+)/$', login_required(process_edit_client_form), name='process_edit_client_form'),
     url(r'^select-client-form/$', login_required(process_select_client_form), name='process_select_client_form'),
     url(r'^add-event-form/$', login_required(process_add_event_form), name='process_add_event_form'),
+    url(r'^generic-event-form/$', login_required(process_generic_event_form), name='process_generic_event_form'),
+    url(r'^edit-generic-event-form/$', login_required(process_edit_generic_event_form), name='process_edit_generic_event_form'),
     # regular
     url(r'^add/', login_required(AddEventView.as_view()), name='add'),
     # url(r'^appointments/$', login_required(AppointmentListView.as_view()), name='appointments'),

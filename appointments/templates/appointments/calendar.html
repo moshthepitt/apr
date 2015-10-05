@@ -268,6 +268,62 @@
  			});
  		});
 
+ 		// generic event form
+ 		$(document).on('submit','#id-generic-event-info-form',function(event){
+ 			event.preventDefault();
+ 			var generic_event_form = '#id-generic-event-info-form';
+ 			$.ajax({
+ 				url: "{% url 'appointments:process_generic_event_form' %}",
+ 				type: "POST",
+ 				data: $(generic_event_form).serialize(),
+ 				dataType: 'json',
+ 				success: function(data) {				    	
+ 					if (!(data['success'])) {
+ 						$(generic_event_form).replaceWith(data['form_html']);
+ 					}
+ 					else {
+ 						$('#add-appointment-modal').modal('hide');
+ 						$.growl.notice({ 
+ 							location: 'br',
+ 							title: "{% trans 'Added Event' %}", 
+ 							message: "{% trans 'Successfully Added Event' %}", 
+ 						});	
+ 					}
+ 				},
+ 				error: function () {
+ 					$(generic_event_form).find('.error-message').show()
+ 				}
+ 			});
+ 		});
+
+ 		// id-edit-generic-event-info-form
+ 		$(document).on('submit','#id-edit-generic-event-info-form',function(event){
+ 			event.preventDefault();
+ 			var generic_event_form = '#id-edit-generic-event-info-form';
+ 			$.ajax({
+ 				url: "{% url 'appointments:process_edit_generic_event_form' %}",
+ 				type: "POST",
+ 				data: $(generic_event_form).serialize(),
+ 				dataType: 'json',
+ 				success: function(data) {				    	
+ 					if (!(data['success'])) {
+ 						$(generic_event_form).replaceWith(data['form_html']);
+ 					}
+ 					else {
+ 						$('#edit-appointment-modal').modal('hide');
+ 						$.growl.notice({ 
+ 							location: 'br',
+ 							title: "{% trans 'Added Event' %}", 
+ 							message: "{% trans 'Successfully Added Event' %}", 
+ 						});	
+ 					}
+ 				},
+ 				error: function () {
+ 					$(generic_event_form).find('.error-message').show()
+ 				}
+ 			});
+ 		});
+
  		// add-appointment-form
  		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
  			event.preventDefault();
@@ -407,7 +463,11 @@
  						$("#id-select-client").select2({
  							placeholder: "{% trans 'Select a client' %}",
  							width:'100%',
- 						}); 						
+ 						}); 	
+ 						// generic event info
+ 						$('#generic-start').val(calEvent.start.toISOString());
+ 						$('#generic-end').val(calEvent.end.toISOString());
+ 						$('#generic-venue-id').val(calEvent.userId);
  					});
  				},
  				eventDrop: function(calEvent, $event) {
@@ -501,6 +561,18 @@
 			   $("#appointment-info-motherload, #delete-appointment-confirmation").toggle();
 			});
 
+			$('body').on("click touchstart", ".generic-event-toggler", function(e){
+			   if ($("#add-generic-event").is(':visible')) {
+			      $("#add-generic-event").hide();
+			      $("#select-client").show();
+			      $("#add-client").hide();
+			   } else {
+			   	  $("#add-generic-event").show();
+			   	  $("#select-client").hide();
+			   	  $("#add-client").hide();
+			   }
+			});
+
 			$('.modal').on('shown.bs.modal', function() {
 				// Make sure the modal and backdrop are siblings (changes the DOM)
 				$(this).before($('.modal-backdrop'));
@@ -512,8 +584,18 @@
 			  	$('#calendar').weekCalendar('refresh');
 			  	$("#select-client").show();
 			  	$("#add-client").hide();
-			  	document.getElementById("id-add-client-form").reset();
-			  	document.getElementById("id-select-client-form").reset();
+		  	  	if ($('#id-add-client-form').length) {
+		  		  	document.getElementById("id-add-client-form").reset();
+		  		}
+		  		if ($('#id-select-client-form').length) {
+		  		  	document.getElementById("id-select-client-form").reset();
+		  		}
+		  		if ($('#id-generic-event-info-form').length) {
+		  		  	document.getElementById("id-generic-event-info-form").reset();
+		  		}
+		  		if ($('#id-edit-generic-event-info-form').length) {
+		  		  	document.getElementById("id-edit-generic-event-info-form").reset();
+		  		}			
 			})
 
 			$('#edit-appointment-modal').on('hide.bs.modal', function (e) {
@@ -530,8 +612,18 @@
 
 		$(document).ajaxStop(function() {
 			$('#add-appointment-modal').on('hide.bs.modal', function (e) {
-			  	document.getElementById("id-add-client-form").reset();
-			  	document.getElementById("id-select-client-form").reset();
+			  	if ($('#id-add-client-form').length) {
+				  	document.getElementById("id-add-client-form").reset();
+				}
+				if ($('#id-select-client-form').length) {
+				  	document.getElementById("id-select-client-form").reset();
+				}
+				if ($('#id-generic-event-info-form').length) {
+				  	document.getElementById("id-generic-event-info-form").reset();
+				}
+				if ($('#id-edit-generic-event-info-form').length) {
+				  	document.getElementById("id-edit-generic-event-info-form").reset();
+				}
 			})
 
 			$("#id_phone").intlTelInput({

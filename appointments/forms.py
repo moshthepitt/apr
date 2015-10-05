@@ -263,11 +263,12 @@ class SimpleAppointmentForm(forms.Form):
         try:
             appointment = Appointment.objects.get(pk=int(self.cleaned_data['id']))
             # appointment
-            try:
-                client = Client.objects.get(pk=self.cleaned_data['client'])
-                appointment.client = client
-            except Client.DoesNotExist:
-                pass
+            if self.cleaned_data.get('client'):
+                try:
+                    client = Client.objects.get(pk=self.cleaned_data['client'])
+                    appointment.client = client
+                except Client.DoesNotExist:
+                    pass
             if 'doctor' in self.cleaned_data and self.cleaned_data['doctor']:
                 appointment.doctor = self.cleaned_data['doctor']
             if 'venue' in self.cleaned_data and self.cleaned_data['venue']:
@@ -357,6 +358,198 @@ class EventInfoForm(forms.ModelForm):
                 css_class="form-group"
             )
         )
+
+
+class GenericEventForm(forms.ModelForm):
+
+    """
+    Form used to deal with events that are not appointments
+    """
+    start_datetime = forms.CharField(
+        label=_("Start date"),
+        required=True,
+        widget=forms.HiddenInput
+    )
+    end_datetime = forms.CharField(
+        label=_("End date"),
+        required=False,
+        widget=forms.HiddenInput
+    )
+    venue_id = forms.IntegerField(
+        label=getattr(labels, 'VENUE', _("Venue")),
+        required=False,
+        widget=forms.HiddenInput
+    )
+    appointment_id = forms.IntegerField(
+        label=_("Appointment"),
+        required=False,
+        widget=forms.HiddenInput
+    )
+
+    class Meta:
+        model = Event
+        fields = ['title', 'description']
+
+    def create_event(self, user):
+        start = parser.parse(self.cleaned_data['start_datetime'])
+        end = parser.parse(self.cleaned_data['end_datetime'])
+        new_event = Event(
+            start=start,
+            end=end,
+            title=self.cleaned_data['title'],
+            description=self.cleaned_data['description'],
+            creator=user
+        )
+        new_event.save()
+        return new_event
+
+    def create_generic_event(self, user):
+        event = self.create_event(user)
+        new_appointment = Appointment(
+            client=None,
+            venue=Venue.objects.get(pk=self.cleaned_data['venue_id']),
+            event=event,
+            creator=user,
+            customer=user.userprofile.customer
+        )
+        new_appointment.save()
+        return new_appointment
+
+    def save_edit(self):
+        try:
+            appointment = Appointment.objects.get(pk=int(self.cleaned_data['appointment_id']))
+            if 'venue' in self.cleaned_data and self.cleaned_data['venue']:
+                appointment.venue = self.cleaned_data['venue']
+            appointment.save()
+            # event
+            if 'title' in self.cleaned_data and self.cleaned_data['title']:
+                appointment.event.title = self.cleaned_data['title']
+            if 'description' in self.cleaned_data and self.cleaned_data['description']:
+                appointment.event.description = self.cleaned_data['description']
+            else:
+                appointment.event.description = ""
+            appointment.event.start = parser.parse(self.cleaned_data['start_datetime'])
+            appointment.event.end = parser.parse(self.cleaned_data['end_datetime'])
+            appointment.event.save()
+            return True
+        except Appointment.DoesNotExist:
+            return False
+
+    def __init__(self, *args, **kwargs):
+        super(GenericEventForm, self).__init__(*args, **kwargs)
+        self.fields['title'].required = True
+        self.fields['description'].required = False
+        self.helper = FormHelper()
+        self.helper.form_id = 'id-generic-event-info-form'
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-10'
+        self.helper.form_method = 'post'
+        self.helper.layout = Layout(
+            Field('title', css_class="input-sm"),
+            Field('description', css_class="input-sm"),
+            Field(
+                'start_datetime', css_class="input-sm",
+                id="generic-start"
+            ),
+            Field(
+                'end_datetime', css_class="input-sm",
+                id="generic-end"
+            ),
+            Field(
+                'venue_id', css_class="input-sm",
+                id="generic-venue-id"
+            ),
+            Div(
+                ButtonHolder(
+                    Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+                    css_class="col-lg-offset-2 col-lg-10"
+                ),
+                css_class="form-group"
+            )
+        )
+
+
+def edit_generic_event_form_helper():
+    helper = FormHelper()
+    helper.form_id = 'id-edit-generic-event-info-form'
+    helper.form_class = 'form-horizontal'
+    helper.label_class = 'col-lg-2'
+    helper.field_class = 'col-lg-10'
+    helper.form_method = 'post'
+    helper.layout = Layout(
+        Field('title', css_class="input-sm"),
+        Field('description', css_class="input-sm"),
+        Field(
+            'start_datetime', css_class="input-sm",
+            id="generic-start"
+        ),
+        Field(
+            'end_datetime', css_class="input-sm",
+            id="generic-end"
+        ),
+        Field(
+            'venue_id', css_class="input-sm",
+            id="generic-venue-id"
+        ),
+        Field(
+            'appointment_id', css_class="input-sm",
+            id="generic-appointment-id"
+        ),
+        Div(
+            ButtonHolder(
+                Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+                css_class="col-lg-offset-2 col-lg-10"
+            ),
+            css_class="form-group"
+        )
+    )
+    return helper
+
+
+class SimpleGenericEventForm(forms.Form):
+
+    """
+    Form used to deal with events that are not appointments
+    """
+    start_datetime = forms.CharField(
+        label=_("Start date"),
+        required=True,
+        widget=forms.HiddenInput
+    )
+    end_datetime = forms.CharField(
+        label=_("End date"),
+        required=False,
+        widget=forms.HiddenInput
+    )
+    venue = forms.IntegerField(
+        label=getattr(labels, 'VENUE', _("Venue")),
+        required=False,
+        widget=forms.HiddenInput
+    )
+    id = forms.IntegerField(
+        label=_("Appointment"),
+        required=True,
+        widget=forms.HiddenInput
+    )
+
+    def save_edit(self):
+        try:
+            appointment = Appointment.objects.get(pk=int(self.cleaned_data['id']))
+            if 'venue' in self.cleaned_data and self.cleaned_data['venue']:
+                appointment.venue = Venue.objects.get(pk=self.cleaned_data['venue'])
+            appointment.save()
+            # event
+            if 'title' in self.cleaned_data and self.cleaned_data['title']:
+                appointment.event.title = self.cleaned_data['title']
+            appointment.event.start = parser.parse(self.cleaned_data['start_datetime'])
+            appointment.event.end = parser.parse(self.cleaned_data['end_datetime'])
+            if 'description' in self.cleaned_data and self.cleaned_data['description']:
+                appointment.event.description = self.cleaned_data['description']
+            appointment.event.save()
+            return True
+        except Appointment.DoesNotExist:
+            return False
 
 
 class IDForm(forms.Form):

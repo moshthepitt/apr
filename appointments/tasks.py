@@ -31,6 +31,7 @@ def task_48hrbefore_reminders():
     fro = fro + timedelta(2)
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
@@ -56,6 +57,7 @@ def task_day_before_reminders():
     fro = fro + timedelta(1)
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
@@ -80,6 +82,7 @@ def task_morning_reminders():
                    tzinfo=timezone.get_current_timezone())
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__client=None).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
     event_objects = period.get_occurrences()
@@ -111,6 +114,7 @@ def task_hour_to_reminder():
     to = t + timedelta(hours=1)
 
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)
@@ -136,6 +140,7 @@ def task_immediate_reminder():
     to = t + timedelta(minutes=45)
 
     period = Period(Event.objects.exclude(appointment=None).exclude(
+        appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
         appointment__status=Appointment.CANCELED).exclude(
         appointment__status=Appointment.CONFIRMED), fro, to)

@@ -76,7 +76,7 @@
                 "title": "{% filter escapejs %}{{item.title|default_if_none:""}}{% endfilter %}", 
                 "userId": {{item.userId}}, 
                 "id": {{item.id}}, 
-                "clientId": {{item.clientId}}
+                "clientId": {% if item.clientId %}{{item.clientId}}{% else %}""{% endif %}
               },
             {% endfor %}
           ]
