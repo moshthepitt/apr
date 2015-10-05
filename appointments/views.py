@@ -13,7 +13,7 @@ from datatableview.views import DatatableView
 
 from users.forms import SelectClientForm, AddClientForm, edit_client_form_modal_helper as edit_client_helper
 from users.forms import add_client_form_modal_helper as add_client_helper
-from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm
+from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, GenericEventForm
 from appointments.forms import hidden_appointment_form_helper, TagForm
 from appointments.models import Appointment, Tag
 from appointments.tasks import task_send_cancel_email
@@ -183,6 +183,7 @@ class AddAppointmentSnippetView(Customer404Mixin, TemplateView):
         context['SelectClientForm'] = client_form
         context['AddClientForm'] = AddClientForm()
         context['add_client_helper'] = add_client_helper
+        context['GenericEventForm'] = GenericEventForm()
         appointment_form = SimpleAppointmentForm()
         context['AppointmentForm'] = appointment_form
         # set initial data based on GET parameters to facilitate new advert creation

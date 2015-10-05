@@ -14,7 +14,7 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm, add_client_form_modal_helper, edit_client_form_modal_helper
-from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm, IDForm
+from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm, IDForm, GenericEventForm
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
@@ -98,6 +98,19 @@ def process_add_event_form(request):
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
 
+
+@csrf_exempt
+@json_view
+def process_generic_event_form(request):
+    form = GenericEventForm(request.POST or None)
+    if form.is_valid():
+        form.create_generic_event(request.user)
+        return {
+            'success': True,
+        }
+    form_html = render_crispy_form(form)
+    return {'success': False, 'form_html': form_html}
+
 # NEW STYLE
 
 
@@ -111,11 +124,11 @@ def calendar_event_feed(request):
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().client.display_name(title=x.event.title)),
+                     'title': "{}".format(x.event.appointment_set.first().display_name),
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().client.pk,
+                     'clientId': x.event.appointment_set.first().clientId,
                      'status': x.event.appointment_set.first().status,
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
@@ -138,11 +151,11 @@ def venue_event_feed(request, pk):
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().client.display_name(venue=venue, title=x.event.title)),
+                     'title': "{}".format(x.event.appointment_set.first().venue_display_name),
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().client.pk,
+                     'clientId': x.event.appointment_set.first().clientId,
                      'status': x.event.appointment_set.first().status,
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
@@ -164,11 +177,11 @@ def printable_event_feed(request):
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
             data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{} - {} - {}".format(x.event.appointment_set.first().client, x.event.appointment_set.first().client.client_id, x.title),
+                     'title': x.event.appointment_set.first().print_title,
                      'userId': [x.event.appointment_set.first().venue.pk],
                      'start': x.start.isoformat(),
                      'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().client.pk,
+                     'clientId': x.event.appointment_set.first().clientId,
                      'status': x.event.appointment_set.first().status,
                      'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
                      'body': x.event.description
