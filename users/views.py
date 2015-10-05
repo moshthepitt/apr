@@ -161,6 +161,7 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
             'client_id',
             'email',
             'phone',
+            (_("Last Appointment"), 'last_appointment', 'get_last_appointment'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -172,6 +173,9 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
             '<a href="{}">Appointments</a>', reverse(
                 'users:client_appointments', args=[instance.pk])
         )
+
+    def get_last_appointment(self, instance, *args, **kwargs):
+        return instance.last_appointment.event.start
 
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
@@ -198,6 +202,7 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
             'client_id',
             'email',
             'phone',
+            (_("Last Appointment"), 'last_appointment', 'get_last_appointment'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -209,6 +214,9 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
             '<a href="{}">Appointments</a>', reverse(
                 'users:client_appointments', args=[instance.pk])
         )
+
+    def get_last_appointment(self, instance, *args, **kwargs):
+        return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
 
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
