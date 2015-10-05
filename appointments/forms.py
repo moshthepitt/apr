@@ -424,10 +424,12 @@ class GenericEventForm(forms.ModelForm):
             # event
             if 'title' in self.cleaned_data and self.cleaned_data['title']:
                 appointment.event.title = self.cleaned_data['title']
-            appointment.event.start = parser.parse(self.cleaned_data['start_datetime'])
-            appointment.event.end = parser.parse(self.cleaned_data['end_datetime'])
             if 'description' in self.cleaned_data and self.cleaned_data['description']:
                 appointment.event.description = self.cleaned_data['description']
+            else:
+                appointment.event.description = ""
+            appointment.event.start = parser.parse(self.cleaned_data['start_datetime'])
+            appointment.event.end = parser.parse(self.cleaned_data['end_datetime'])
             appointment.event.save()
             return True
         except Appointment.DoesNotExist:
@@ -522,7 +524,7 @@ class SimpleGenericEventForm(forms.Form):
     )
     venue = forms.IntegerField(
         label=getattr(labels, 'VENUE', _("Venue")),
-        required=True,
+        required=False,
         widget=forms.HiddenInput
     )
     id = forms.IntegerField(
