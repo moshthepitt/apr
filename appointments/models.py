@@ -1,5 +1,3 @@
-from schedule.models import Event
-
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
@@ -8,6 +6,7 @@ from django.utils.timezone import localtime
 from django.utils.text import slugify
 
 from randomslugfield import RandomSlugField
+from schedule.models import Event
 
 from users.models import Client
 from doctors.models import Doctor
@@ -65,7 +64,7 @@ class Appointment(models.Model):
     creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
     customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
     client = models.ForeignKey(
-        Client, verbose_name=getattr(labels, 'CLIENT', _("Client")), on_delete=models.PROTECT)
+        Client, verbose_name=getattr(labels, 'CLIENT', _("Client")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     doctor = models.ForeignKey(Doctor, verbose_name=getattr(
         labels, 'DOCTOR', _("Doctor")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     venue = models.ForeignKey(Venue, verbose_name=getattr(
