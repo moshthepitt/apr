@@ -14,7 +14,8 @@ from schedule.models import Event
 from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm, add_client_form_modal_helper, edit_client_form_modal_helper
-from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm, IDForm, GenericEventForm
+from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm
+from appointments.forms import IDForm, GenericEventForm, SimpleGenericEventForm
 from appointments.models import Appointment
 from users.models import Client
 from venues.models import Venue
@@ -111,6 +112,19 @@ def process_generic_event_form(request):
     form_html = render_crispy_form(form)
     return {'success': False, 'form_html': form_html}
 
+
+@csrf_exempt
+@json_view
+def process_edit_generic_event_form(request):
+    form = GenericEventForm(request.POST or None)
+    if form.is_valid():
+        form.save_edit()
+        return {
+            'success': True,
+        }
+    form_html = render_crispy_form(form)
+    return {'success': False, 'form_html': form_html}
+
 # NEW STYLE
 
 
@@ -200,10 +214,15 @@ def edit_event(request, pk):
     if request.user.userprofile.customer != appointment.customer:
         return False
     if request.is_ajax() and request.method == 'POST':
-        form = SimpleAppointmentForm(request.POST)
-        form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
-        if form.is_valid():
-            success = form.save_edit()
+        if request.POST.get('client'):
+            form = SimpleAppointmentForm(request.POST)
+            form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
+            if form.is_valid():
+                success = form.save_edit()
+        else:
+            form = SimpleGenericEventForm(request.POST or None)
+            if form.is_valid():
+                success = form.save_edit()
     return HttpResponse(json.dumps(success), content_type="application/json")
 
 

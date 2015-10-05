@@ -14,7 +14,7 @@ from datatableview.views import DatatableView
 from users.forms import SelectClientForm, AddClientForm, edit_client_form_modal_helper as edit_client_helper
 from users.forms import add_client_form_modal_helper as add_client_helper
 from appointments.forms import AppointmentForm, EventInfoForm, SimpleAppointmentForm, GenericEventForm
-from appointments.forms import hidden_appointment_form_helper, TagForm
+from appointments.forms import hidden_appointment_form_helper, TagForm, edit_generic_event_form_helper
 from appointments.models import Appointment, Tag
 from appointments.tasks import task_send_cancel_email
 from users.models import Client
@@ -157,6 +157,14 @@ class AppointmentSnippetView(Customer404Mixin, DetailView):
             else:
                 del event_info_form.fields['tag']
         context['event_info_form'] = event_info_form
+        # generic event
+        generic_event_form = GenericEventForm(instance=self.get_object().event)
+        generic_event_form.fields['start_datetime'].initial = self.get_object().event.start
+        generic_event_form.fields['end_datetime'].initial = self.get_object().event.end
+        generic_event_form.fields['venue_id'].initial = self.get_object().venue.id
+        generic_event_form.fields['appointment_id'].initial = self.get_object().id
+        context['generic_event_form'] = generic_event_form
+        context['edit_generic_event_form_helper'] = edit_generic_event_form_helper
         context['object'] = self.object
         return context
 
@@ -222,7 +230,7 @@ class AppointmentDatatableView(CustomerMixin, DatatableView):
         )
 
     def get_queryset(self):
-        queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer)
+        queryset = Appointment.objects.filter(customer=self.request.user.userprofile.customer).exclude(client=None)
         return queryset
 
 
