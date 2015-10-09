@@ -29,7 +29,7 @@ class Client(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     client_id = models.CharField(
-        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True, help_text=_("Optional unique client ID"))
+        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True, unique=True, help_text=_("Optional unique client ID"))
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     birth_date = models.DateField(_("Date of Birth"), blank=True, default=None, null=True, help_text=_(
