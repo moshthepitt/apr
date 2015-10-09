@@ -33,8 +33,10 @@ def clean_clients():
             clients = Client.objects.filter(client_id=val['client_id'])
             if clients.count() > 1:
                 main_client = clients.first()
-                the_rest = clients[1:]
-                appointments = Appointment.objects.filter(client__id=the_rest)
-                appointments.update(client=main_client)
-                the_rest.delete()
+                duplicate_clients = clients[1:]
+                appointments = Appointment.objects.filter(client__id=duplicate_clients)
+                if appointments:
+                    appointments.update(client=main_client)
+                for duplicate_client in duplicate_clients:
+                    duplicate_client.delete()
 
