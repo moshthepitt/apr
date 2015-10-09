@@ -175,7 +175,9 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
         )
 
     def get_last_appointment(self, instance, *args, **kwargs):
-        return instance.last_appointment.event.start
+        if instance.last_appointment:
+            return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
+        return ""
 
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
@@ -216,7 +218,9 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
         )
 
     def get_last_appointment(self, instance, *args, **kwargs):
-        return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
+        if instance.last_appointment:
+            return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
+        return ""
 
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
