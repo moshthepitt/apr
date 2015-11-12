@@ -5,7 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Submit, HTML, Div
+from crispy_forms.layout import Layout, Fieldset, Submit, HTML, Div
+from crispy_forms.bootstrap import Field, FormActions
 from allauth.utils import generate_unique_username, email_address_exists
 
 from users.models import Client, UserProfile
@@ -38,7 +39,7 @@ class SelectClientForm(forms.Form):
                 getattr(labels, 'SELECT_CLIENT', _('Select client')),
                 Field('client', id="id-select-client")
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Submit'), css_class='btn-primary')
             )
         )
@@ -84,7 +85,7 @@ class AddClientForm(forms.ModelForm):
                 Field('last_name', css_class="input-sm"),
                 Field('client_id', css_class="input-sm"),
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
                 css_class="form-group"
@@ -135,7 +136,7 @@ class FullClientForm(forms.ModelForm):
                 Field('birth_date', css_class="input-sm", id="id_birth_date"),
                 Field('client_id', css_class="input-sm"),
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
                 css_class="form-group"
@@ -157,7 +158,7 @@ def edit_client_helper():
             Field('birth_date', id="id_birth_date"),
             'client_id',
         ),
-        ButtonHolder(
+        FormActions(
             Submit('submit', _('Save'), css_class='btn-success'),
             HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
             css_class="form-group"
@@ -181,7 +182,7 @@ def add_client_form_modal_helper():
         Field('last_name', css_class="input-sm"),
         Field('client_id', css_class="input-sm"),
         Div(
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-sm btn-success'),
                 css_class="col-lg-offset-3 col-lg-9"
             ),
@@ -206,7 +207,7 @@ def edit_client_form_modal_helper():
         Field('last_name', css_class="input-sm"),
         Field('client_id', css_class="input-sm"),
         Div(
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-sm btn-success'),
                 css_class="col-lg-offset-3 col-lg-9"
             ),
@@ -261,7 +262,7 @@ class AddUserProfileForm(forms.ModelForm):
             Field('email'),
             Field('password'),
             Field('role'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
             )
@@ -281,7 +282,7 @@ class EditUserPasswordForm(forms.ModelForm):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Field('password'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
             )
@@ -326,7 +327,7 @@ class EditUserProfileForm(forms.ModelForm):
             Field('last_name'),
             Field('email'),
             Field('role'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
             )

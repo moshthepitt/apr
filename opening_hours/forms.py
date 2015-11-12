@@ -3,7 +3,8 @@ from django import forms
 from django.forms.models import inlineformset_factory
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field
+from crispy_forms.layout import Layout
+from crispy_forms.bootstrap import Field
 
 from venues.models import Venue
 from opening_hours.models import OpeningHour

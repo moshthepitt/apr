@@ -2,7 +2,8 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Field, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Submit
+from crispy_forms.bootstrap import Field, FormActions
 from dateutil.rrule import rrule, DAILY
 
 from notes.models import Note
@@ -39,7 +40,7 @@ class NoteForm(forms.ModelForm):
             Field('note'),
             Field('note_type'),
             Field('end_date', id="end-date"),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -93,7 +94,7 @@ class EditNoteForm(forms.ModelForm):
             Field('venue', id="id-select-venue"),
             Field('note'),
             Field('note_type'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )

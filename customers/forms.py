@@ -5,7 +5,8 @@ from django.utils import timezone
 from django.core.urlresolvers import reverse
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
+from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.bootstrap import Field, FormActions
 
 from customers.models import Customer
 
@@ -73,7 +74,7 @@ class NewCustomerForm(forms.ModelForm):
                 'phone',
                 'subscription',
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Get Access'), css_class='btn-success')
             )
         )
@@ -100,7 +101,7 @@ class CustomerForm(forms.ModelForm):
             Field('name'),
             Field('email'),
             Field('phone'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -132,7 +133,7 @@ class CustomerScriptForm(forms.ModelForm):
             Field('reminder_sms'),
             Field('show_confirm_link'),
             Field('show_cancel_link'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -177,7 +178,7 @@ class CustomerSettingsForm(forms.ModelForm):
             Field('use_tags'),
             Field('use_four_day'),
             Field('use_no_background_print'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -221,7 +222,7 @@ class CustomerBirthdayGreetingsForm(forms.ModelForm):
             Field('birthday_greeting_sms'),
             Field('birthday_greeting_send_email'),
             Field('birthday_greeting_send_sms'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -269,7 +270,7 @@ class CustomerRebookingForm(forms.ModelForm):
             Field('rebooking_sms'),
             Field('rebooking_send_email'),
             Field('rebooking_send_sms'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -332,7 +333,7 @@ class MPESAForm(forms.Form):
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Field('receipt'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Submit'), css_class='btn-success')
             )
         )
@@ -346,7 +347,7 @@ def MPESAFormHelper():
     helper.form_method = 'post'
     helper.layout = Layout(
         Field('receipt'),
-        ButtonHolder(
+        FormActions(
             Submit('submit', _('Submit'), css_class='btn-success')
         )
     )

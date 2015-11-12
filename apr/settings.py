@@ -97,7 +97,6 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'templates'),
         ],
-        'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 # default
@@ -110,9 +109,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
 
                 # custom
-                "allauth.account.context_processors.account",
-                "allauth.socialaccount.context_processors.socialaccount",
-
                 "customers.context_processors.current_customer_processor",
                 'core.context_processors.site_processor',
                 'core.context_processors.debug_processor',
@@ -120,11 +116,19 @@ TEMPLATES = [
                 "venues.context_processors.venue_processor",
                 "assistants.context_processors.assistant_processor",
             ],
+            'loaders': [
+                ('django.template.loaders.cached.Loader', [
+                    'django.template.loaders.filesystem.Loader',
+                    'django.template.loaders.app_directories.Loader',
+                    'django.template.loaders.eggs.Loader',
+                ]),
+            ],
             # 'loaders': [
             #     'django.template.loaders.filesystem.Loader',
             #     'django.template.loaders.app_directories.Loader',
             #     'django.template.loaders.eggs.Loader',
             # ],
+            'debug': False,
         },
     },
 ]

@@ -3,7 +3,8 @@ from django import forms
 from django.utils.translation import ugettext as _
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, ButtonHolder, Submit, Field
+from crispy_forms.layout import Layout, Submit
+from crispy_forms.bootstrap import Field, FormActions
 
 from venues.models import Venue
 
@@ -38,7 +39,7 @@ class VenueForm(forms.ModelForm):
             Field('allow_overlap'),
             Field('send_sms'),
             Field('send_email'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -82,7 +83,7 @@ class VenueScriptForm(forms.ModelForm):
             Field('reminder_sms'),
             Field('show_confirm_link'),
             Field('show_cancel_link'),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )

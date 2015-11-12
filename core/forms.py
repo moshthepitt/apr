@@ -3,7 +3,8 @@ from django.utils.translation import ugettext as _
 from core.emails import send_feedback_email
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit
+from crispy_forms.layout import Layout, Fieldset, Submit
+from crispy_forms.bootstrap import FormActions
 
 
 class SupportForm(forms.Form):
@@ -34,7 +35,7 @@ class SupportForm(forms.Form):
                 'message',
                 'honeypot'
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Send'), css_class='btn-primary')
             )
         )

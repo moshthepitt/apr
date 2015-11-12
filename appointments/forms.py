@@ -6,7 +6,8 @@ from django.forms import ValidationError
 from django.utils.encoding import smart_unicode
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, Field, ButtonHolder, Div, Submit
+from crispy_forms.layout import Layout, Fieldset, Div, Submit
+from crispy_forms.bootstrap import Field, FormActions
 from dateutil import parser
 from schedule.models import Event
 
@@ -120,7 +121,7 @@ class AppointmentForm(forms.Form):
                     css_class='form-group'
                 ),
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )
         )
@@ -302,7 +303,7 @@ class SimpleAppointmentForm(forms.Form):
                 'venue',
                 'description'
             ),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-primary')
             )
         )
@@ -351,7 +352,7 @@ class EventInfoForm(forms.ModelForm):
             Field('description', css_class="input-sm"),
             Field('tag', id="id-tag", css_class="input-sm"),
             Div(
-                ButtonHolder(
+                FormActions(
                     Submit('submit', _('Save'), css_class='btn-sm btn-success'),
                     css_class="col-lg-offset-2 col-lg-10"
                 ),
@@ -461,7 +462,7 @@ class GenericEventForm(forms.ModelForm):
                 id="generic-venue-id"
             ),
             Div(
-                ButtonHolder(
+                FormActions(
                     Submit('submit', _('Save'), css_class='btn-sm btn-success'),
                     css_class="col-lg-offset-2 col-lg-10"
                 ),
@@ -497,7 +498,7 @@ def edit_generic_event_form_helper():
             id="generic-appointment-id"
         ),
         Div(
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-sm btn-success'),
                 css_class="col-lg-offset-2 col-lg-10"
             ),
@@ -597,7 +598,7 @@ class TagForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('name'),
             Field('color', id="id-color"),
-            ButtonHolder(
+            FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
                 css_class="form-group"
             )
