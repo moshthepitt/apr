@@ -164,6 +164,7 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
             (_("Appointment Date"), 'last_appointment', 'get_last_appointment'),
             (_("Shedule"), 'last_appointment_venue', 'get_last_appointment_venue'),
             (_("Tag"), 'last_appointment_tag', 'get_last_appointment_tag'),
+            (_("Description"), 'last_appointment_description', 'get_last_appointment_description'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -189,6 +190,11 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
     def get_last_appointment_venue(self, instance, *args, **kwargs):
         if instance.last_appointment and instance.last_appointment.venue:
             return instance.last_appointment.venue.name
+        return ""
+
+    def get_last_appointment_description(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.event.description:
+            return instance.last_appointment.event.description
         return ""
 
     def get_queryset(self, **kwargs):
@@ -219,6 +225,7 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
             (_("Appointment Date"), 'last_appointment', 'get_last_appointment'),
             (_("Shedule"), 'last_appointment_venue', 'get_last_appointment_venue'),
             (_("Tag"), 'last_appointment_tag', 'get_last_appointment_tag'),
+            (_("Description"), 'last_appointment_description', 'get_last_appointment_description'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -244,6 +251,11 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
     def get_last_appointment_venue(self, instance, *args, **kwargs):
         if instance.last_appointment and instance.last_appointment.venue:
             return instance.last_appointment.venue.name
+        return ""
+
+    def get_last_appointment_description(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.event.description:
+            return instance.last_appointment.event.description
         return ""
 
     def get_queryset(self, **kwargs):
