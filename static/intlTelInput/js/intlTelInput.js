@@ -1,13 +1,15 @@
 /*
-International Telephone Input v5.8.7
+International Telephone Input v6.4.3
 https://github.com/Bluefieldscom/intl-tel-input.git
 */
-// wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPlugin.js
+// wrap in UMD - see https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
 (function(factory) {
     if (typeof define === "function" && define.amd) {
         define([ "jquery" ], function($) {
             factory($, window, document);
         });
+    } else if (typeof module === "object" && module.exports) {
+        module.exports = factory(require("jquery"), window, document);
     } else {
         factory(jQuery, window, document);
     }
@@ -20,14 +22,18 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         allowExtensions: false,
         // automatically format the number according to the selected country
         autoFormat: true,
-        // add or remove input placeholder with an example number for the selected country
-        autoPlaceholder: true,
         // if there is just a dial code in the input: remove it on blur, and re-add it on focus
         autoHideDialCode: true,
+        // add or remove input placeholder with an example number for the selected country
+        autoPlaceholder: true,
         // default country
         defaultCountry: "",
-        // token for ipinfo - required for https or over 1000 daily page views support
-        ipinfoToken: "",
+        // append menu to a specific element
+        dropdownContainer: false,
+        // don't display these countries
+        excludeCountries: [],
+        // geoIp lookup function
+        geoIpLookup: null,
         // don't insert international dial codes
         nationalMode: true,
         // number type to use for placeholders
@@ -50,6 +56,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         NINE: 57,
         SPACE: 32,
         BSPACE: 8,
+        TAB: 9,
         DEL: 46,
         CTRL: 17,
         CMD1: 91,
@@ -89,7 +96,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             // Note: again, jasmine had a spazz when I put these in the Plugin function
             this.autoCountryDeferred = new $.Deferred();
             this.utilsScriptDeferred = new $.Deferred();
-            // process all the data: onlyCountries, preferredCountries etc
+            // process all the data: onlyCountries, excludeCountries, preferredCountries etc
             this._processCountryData();
             // generate the markup
             this._generateMarkup();
@@ -105,7 +112,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         /********************
    *  PRIVATE METHODS
    ********************/
-        // prepare all of the country data, including onlyCountries and preferredCountries options
+        // prepare all of the country data, including onlyCountries, excludeCountries and preferredCountries options
         _processCountryData: function() {
             // set the instances country data objects
             this._setInstanceCountryData();
@@ -120,28 +127,40 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             var index = priority || 0;
             this.countryCodes[dialCode][index] = iso2;
         },
-        // process onlyCountries array if present, and generate the countryCodes map
-        _setInstanceCountryData: function() {
+        // process countries
+        processCountries: function(countryArray, processFunc) {
             var i;
+            // standardise case
+            for (i = 0; i < countryArray.length; i++) {
+                countryArray[i] = countryArray[i].toLowerCase();
+            }
+            // build instance country array
+            this.countries = [];
+            for (i = 0; i < allCountries.length; i++) {
+                if (processFunc($.inArray(allCountries[i].iso2, countryArray))) {
+                    this.countries.push(allCountries[i]);
+                }
+            }
+        },
+        // process onlyCountries or excludeCountries array if present, and generate the countryCodes map
+        _setInstanceCountryData: function() {
             // process onlyCountries option
             if (this.options.onlyCountries.length) {
-                // standardise case
-                for (i = 0; i < this.options.onlyCountries.length; i++) {
-                    this.options.onlyCountries[i] = this.options.onlyCountries[i].toLowerCase();
-                }
-                // build instance country array
-                this.countries = [];
-                for (i = 0; i < allCountries.length; i++) {
-                    if ($.inArray(allCountries[i].iso2, this.options.onlyCountries) != -1) {
-                        this.countries.push(allCountries[i]);
-                    }
-                }
+                this.processCountries(this.options.onlyCountries, function(inArray) {
+                    // if country is in array
+                    return inArray != -1;
+                });
+            } else if (this.options.excludeCountries.length) {
+                this.processCountries(this.options.excludeCountries, function(inArray) {
+                    // if country is not in array
+                    return inArray == -1;
+                });
             } else {
                 this.countries = allCountries;
             }
             // generate countryCodes map
             this.countryCodes = {};
-            for (i = 0; i < this.countries.length; i++) {
+            for (var i = 0; i < this.countries.length; i++) {
                 var c = this.countries[i];
                 this._addCountryCode(c.iso2, c.dialCode, c.priority);
                 // area codes
@@ -174,13 +193,15 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             this.telInput.wrap($("<div>", {
                 "class": "intl-tel-input"
             }));
-            var flagsContainer = $("<div>", {
-                "class": "flag-dropdown"
-            }).insertAfter(this.telInput);
+            this.flagsContainer = $("<div>", {
+                "class": "flag-container"
+            }).insertBefore(this.telInput);
             // currently selected flag (displayed to left of input)
             var selectedFlag = $("<div>", {
+                // make element focusable and tab naviagable
+                tabindex: "0",
                 "class": "selected-flag"
-            }).appendTo(flagsContainer);
+            }).appendTo(this.flagsContainer);
             this.selectedFlagInner = $("<div>", {
                 "class": "iti-flag"
             }).appendTo(selectedFlag);
@@ -192,11 +213,13 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             // mobile is just a native select element
             // desktop is a proper list containing: preferred countries, then divider, then all countries
             if (this.isMobile) {
-                this.countryList = $("<select>").appendTo(flagsContainer);
+                this.countryList = $("<select>", {
+                    "class": "iti-mobile-select"
+                }).appendTo(this.flagsContainer);
             } else {
                 this.countryList = $("<ul>", {
-                    "class": "country-list v-hide"
-                }).appendTo(flagsContainer);
+                    "class": "country-list hide"
+                });
                 if (this.preferredCountries.length && !this.isMobile) {
                     this._appendListItems(this.preferredCountries, "preferred");
                     $("<li>", {
@@ -206,11 +229,16 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             }
             this._appendListItems(this.countries, "");
             if (!this.isMobile) {
-                // now we can grab the dropdown height, and hide it properly
-                this.dropdownHeight = this.countryList.outerHeight();
-                this.countryList.removeClass("v-hide").addClass("hide");
                 // this is useful in lots of places
                 this.countryListItems = this.countryList.children(".country");
+                // create dropdownContainer markup
+                if (this.options.dropdownContainer) {
+                    this.dropdown = $("<div>", {
+                        "class": "intl-tel-input iti-container"
+                    }).append(this.countryList);
+                } else {
+                    this.countryList.appendTo(this.flagsContainer);
+                }
             }
         },
         // add a country <li> to the countryList <ul> container
@@ -301,6 +329,21 @@ https://github.com/Bluefieldscom/intl-tel-input.git
                     }
                 });
             }
+            // open dropdown list if currently focused
+            this.flagsContainer.on("keydown" + that.ns, function(e) {
+                var isDropdownHidden = that.countryList.hasClass("hide");
+                if (isDropdownHidden && (e.which == keys.UP || e.which == keys.DOWN || e.which == keys.SPACE || e.which == keys.ENTER)) {
+                    // prevent form from being submitted if "ENTER" was pressed
+                    e.preventDefault();
+                    // prevent event from being handled again by document
+                    e.stopPropagation();
+                    that._showDropdown();
+                }
+                // allow navigation from dropdown to input on TAB
+                if (e.which == keys.TAB) {
+                    that._closeDropdown();
+                }
+            });
         },
         _initRequests: function() {
             var that = this;
@@ -327,7 +370,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         _loadAutoCountry: function() {
             var that = this;
             // check for cookie
-            var cookieAutoCountry = $.cookie ? $.cookie("itiAutoCountry") : "";
+            var cookieAutoCountry = window.Cookies ? Cookies.get("itiAutoCountry") : "";
             if (cookieAutoCountry) {
                 $.fn[pluginName].autoCountry = cookieAutoCountry;
             }
@@ -340,22 +383,22 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             } else if (!$.fn[pluginName].startedLoadingAutoCountry) {
                 // don't do this twice!
                 $.fn[pluginName].startedLoadingAutoCountry = true;
-                var ipinfoURL = "//ipinfo.io";
-                if (this.options.ipinfoToken) {
-                    ipinfoURL += "?token=" + this.options.ipinfoToken;
-                }
-                // dont bother with the success function arg - instead use always() as should still set a defaultCountry even if the lookup fails
-                $.get(ipinfoURL, function() {}, "jsonp").always(function(resp) {
-                    $.fn[pluginName].autoCountry = resp && resp.country ? resp.country.toLowerCase() : "";
-                    if ($.cookie) {
-                        $.cookie("itiAutoCountry", $.fn[pluginName].autoCountry, {
-                            path: "/"
+                if (typeof this.options.geoIpLookup === "function") {
+                    this.options.geoIpLookup(function(countryCode) {
+                        $.fn[pluginName].autoCountry = countryCode.toLowerCase();
+                        if (window.Cookies) {
+                            Cookies.set("itiAutoCountry", $.fn[pluginName].autoCountry, {
+                                path: "/"
+                            });
+                        }
+                        // tell all instances the auto country is ready
+                        // TODO: this should just be the current instances
+                        // UPDATE: use setTimeout in case their geoIpLookup function calls this callback straight away (e.g. if they have already done the geo ip lookup somewhere else). Using setTimeout means that the current thread of execution will finish before executing this, which allows the plugin to finish initialising.
+                        setTimeout(function() {
+                            $(".intl-tel-input input").intlTelInput("autoCountryLoaded");
                         });
-                    }
-                    // tell all instances the auto country is ready
-                    // TODO: this should just be the current instances
-                    $(".intl-tel-input input").intlTelInput("autoCountryLoaded");
-                });
+                    });
+                }
             }
         },
         _initKeyListeners: function() {
@@ -602,8 +645,6 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             if (activeListItem.length) {
                 this._highlightListItem(activeListItem);
             }
-            // show it
-            this.countryList.removeClass("hide");
             if (activeListItem.length) {
                 this._scrollTo(activeListItem);
             }
@@ -614,11 +655,28 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         },
         // decide where to position dropdown (depends on position within viewport, and scroll)
         _setDropdownPosition: function() {
-            var inputTop = this.telInput.offset().top, windowTop = $(window).scrollTop(), // dropdownFitsBelow = (dropdownBottom < windowBottom)
+            var showDropdownContainer = this.options.dropdownContainer && !this.isMobile;
+            if (showDropdownContainer) this.dropdown.appendTo(this.options.dropdownContainer);
+            // show the menu and grab the dropdown height
+            this.dropdownHeight = this.countryList.removeClass("hide").outerHeight();
+            var that = this, pos = this.telInput.offset(), inputTop = pos.top, windowTop = $(window).scrollTop(), // dropdownFitsBelow = (dropdownBottom < windowBottom)
             dropdownFitsBelow = inputTop + this.telInput.outerHeight() + this.dropdownHeight < windowTop + $(window).height(), dropdownFitsAbove = inputTop - this.dropdownHeight > windowTop;
-            // dropdownHeight - 1 for border
-            var cssTop = !dropdownFitsBelow && dropdownFitsAbove ? "-" + (this.dropdownHeight - 1) + "px" : "";
-            this.countryList.css("top", cssTop);
+            // by default, the dropdown will be below the input. If we want to position it above the input, we add the dropup class.
+            this.countryList.toggleClass("dropup", !dropdownFitsBelow && dropdownFitsAbove);
+            // if dropdownContainer is enabled, calculate postion
+            if (showDropdownContainer) {
+                // by default the dropdown will be directly over the input because it's not in the flow. If we want to position it below, we need to add some extra top value.
+                var extraTop = !dropdownFitsBelow && dropdownFitsAbove ? 0 : this.telInput.innerHeight();
+                // calculate placement
+                this.dropdown.css({
+                    top: inputTop + extraTop,
+                    left: pos.left
+                });
+                // close menu on window scroll
+                $(window).on("scroll" + this.ns, function() {
+                    that._closeDropdown();
+                });
+            }
         },
         // we only bind dropdown listeners when the dropdown is open
         _bindDropdownListeners: function() {
@@ -830,6 +888,9 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         _updatePlaceholder: function() {
             if (window.intlTelInputUtils && !this.hadInitialPlaceholder && this.options.autoPlaceholder && this.selectedCountryData) {
                 var iso2 = this.selectedCountryData.iso2, numberType = intlTelInputUtils.numberType[this.options.numberType || "FIXED_LINE"], placeholder = iso2 ? intlTelInputUtils.getExampleNumber(iso2, this.options.nationalMode, numberType) : "";
+                if (typeof this.options.customPlaceholder === "function") {
+                    placeholder = this.options.customPlaceholder(placeholder, this.selectedCountryData);
+                }
                 this.telInput.attr("placeholder", placeholder);
             }
         },
@@ -863,6 +924,11 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             $("html").off(this.ns);
             // unbind hover and click listeners
             this.countryList.off(this.ns);
+            // remove menu from container
+            if (this.options.dropdownContainer && !this.isMobile) {
+                $(window).off("scroll" + this.ns);
+                this.dropdown.detach();
+            }
         },
         // check if an element is visible within it's container, else scroll until it is
         _scrollTo: function(element, middle) {
@@ -937,7 +1003,7 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         /********************
    *  PUBLIC METHODS
    ********************/
-        // this is called when the ipinfo call returns
+        // this is called when the geoip call returns
         autoCountryLoaded: function() {
             if (this.options.defaultCountry == "auto") {
                 this.options.defaultCountry = $.fn[pluginName].autoCountry;
@@ -1008,22 +1074,21 @@ https://github.com/Bluefieldscom/intl-tel-input.git
         loadUtils: function(path) {
             var that = this;
             var utilsScript = path || this.options.utilsScript;
-            if (!$.fn[pluginName].loadedUtilsScript && utilsScript) {
-                // don't do this twice! (dont just check if the global intlTelInputUtils exists as if init plugin multiple times in quick succession, it may not have finished loading yet)
-                $.fn[pluginName].loadedUtilsScript = true;
-                // dont use $.getScript as it prevents caching
-                $.ajax({
-                    url: utilsScript,
-                    success: function() {
-                        // tell all instances the utils are ready
-                        $(".intl-tel-input input").intlTelInput("utilsLoaded");
-                    },
-                    complete: function() {
-                        that.utilsScriptDeferred.resolve();
-                    },
-                    dataType: "script",
-                    cache: true
-                });
+            if (utilsScript) {
+                if (!$.fn[pluginName].loadedUtilsScript) {
+                    // don't do this twice! (dont just check if the global intlTelInputUtils exists as if init plugin multiple times in quick succession, it may not have finished loading yet)
+                    $.fn[pluginName].loadedUtilsScript = true;
+                    // dont use $.getScript as it prevents caching
+                    $.ajax({
+                        url: utilsScript,
+                        complete: function() {
+                            // tell all instances that the utils request is complete
+                            $(".intl-tel-input input").intlTelInput("utilsRequestComplete");
+                        },
+                        dataType: "script",
+                        cache: true
+                    });
+                }
             } else {
                 this.utilsScriptDeferred.resolve();
             }
@@ -1047,13 +1112,17 @@ https://github.com/Bluefieldscom/intl-tel-input.git
             this._updateFlagFromNumber(number);
             this._updateVal(number, format, addSuffix, preventConversion, isAllowedKey);
         },
-        // this is called when the utils are ready
-        utilsLoaded: function() {
-            // if autoFormat is enabled and there's an initial value in the input, then format it
-            if (this.options.autoFormat && this.telInput.val()) {
-                this._updateVal(this.telInput.val());
+        // this is called when the utils request completes
+        utilsRequestComplete: function() {
+            // if the request was successful
+            if (window.intlTelInputUtils) {
+                // if autoFormat is enabled and there's an initial value in the input, then format it
+                if (this.options.autoFormat && this.telInput.val()) {
+                    this._updateVal(this.telInput.val());
+                }
+                this._updatePlaceholder();
             }
-            this._updatePlaceholder();
+            this.utilsScriptDeferred.resolve();
         }
     };
     // adapted to allow public functions
@@ -1108,35 +1177,33 @@ https://github.com/Bluefieldscom/intl-tel-input.git
     $.fn[pluginName].getCountryData = function() {
         return allCountries;
     };
+    $.fn[pluginName].version = "6.4.3";
     // Tell JSHint to ignore this warning: "character may get silently deleted by one or more browsers"
     // jshint -W100
     // Array of country objects for the flag dropdown.
     // Each contains a name, country code (ISO 3166-1 alpha-2) and dial code.
     // Originally from https://github.com/mledoze/countries
-    // then modified using the following JavaScript (NOW OUT OF DATE):
-    /*
-var result = [];
-_.each(countries, function(c) {
-  // ignore countries without a dial code
-  if (c.callingCode[0].length) {
-    result.push({
-      // var locals contains country names with localised versions in brackets
-      n: _.findWhere(locals, {
-        countryCode: c.cca2
-      }).name,
-      i: c.cca2.toLowerCase(),
-      d: c.callingCode[0]
-    });
-  }
-});
-JSON.stringify(result);
-*/
     // then with a couple of manual re-arrangements to be alphabetical
     // then changed Kazakhstan from +76 to +7
     // and Vatican City from +379 to +39 (see issue 50)
     // and Caribean Netherlands from +5997 to +599
     // and Curacao from +5999 to +599
-    // Removed: Åland Islands, Christmas Island, Cocos Islands, Guernsey, Isle of Man, Jersey, Kosovo, Mayotte, Pitcairn Islands, South Georgia, Svalbard, Western Sahara
+    // Removed:  Kosovo, Pitcairn Islands, South Georgia
+    // UPDATE Sept 12th 2015
+    // List of regions that have iso2 country codes, which I have chosen to omit:
+    // (based on this information: https://en.wikipedia.org/wiki/List_of_country_calling_codes)
+    // AQ - Antarctica - all different country codes depending on which "base"
+    // BV - Bouvet Island - no calling code
+    // GS - South Georgia and the South Sandwich Islands - "inhospitable collection of islands" - same flag and calling code as Falkland Islands
+    // HM - Heard Island and McDonald Islands - no calling code
+    // PN - Pitcairn - tiny population (56), same calling code as New Zealand
+    // TF - French Southern Territories - no calling code
+    // UM - United States Minor Outlying Islands - no calling code
+    // UPDATE the criteria of supported countries or territories (see issue 297)
+    // Have an iso2 code: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    // Have a country calling code: https://en.wikipedia.org/wiki/List_of_country_calling_codes
+    // Have a flag
+    // Must be supported by libphonenumber: https://github.com/googlei18n/libphonenumber
     // Update: converted objects to arrays to save bytes!
     // Update: added "priority" for countries with the same dialCode as others
     // Update: added array of area codes for countries with the same dialCode as others
@@ -1148,7 +1215,7 @@ JSON.stringify(result);
     //    Order (if >1 country with same dial code),
     //    Area codes (if >1 country with same dial code)
     // ]
-    var allCountries = [ [ "Afghanistan (‫افغانستان‬‎)", "af", "93" ], [ "Albania (Shqipëri)", "al", "355" ], [ "Algeria (‫الجزائر‬‎)", "dz", "213" ], [ "American Samoa", "as", "1684" ], [ "Andorra", "ad", "376" ], [ "Angola", "ao", "244" ], [ "Anguilla", "ai", "1264" ], [ "Antigua and Barbuda", "ag", "1268" ], [ "Argentina", "ar", "54" ], [ "Armenia (Հայաստան)", "am", "374" ], [ "Aruba", "aw", "297" ], [ "Australia", "au", "61" ], [ "Austria (Österreich)", "at", "43" ], [ "Azerbaijan (Azərbaycan)", "az", "994" ], [ "Bahamas", "bs", "1242" ], [ "Bahrain (‫البحرين‬‎)", "bh", "973" ], [ "Bangladesh (বাংলাদেশ)", "bd", "880" ], [ "Barbados", "bb", "1246" ], [ "Belarus (Беларусь)", "by", "375" ], [ "Belgium (België)", "be", "32" ], [ "Belize", "bz", "501" ], [ "Benin (Bénin)", "bj", "229" ], [ "Bermuda", "bm", "1441" ], [ "Bhutan (འབྲུག)", "bt", "975" ], [ "Bolivia", "bo", "591" ], [ "Bosnia and Herzegovina (Босна и Херцеговина)", "ba", "387" ], [ "Botswana", "bw", "267" ], [ "Brazil (Brasil)", "br", "55" ], [ "British Indian Ocean Territory", "io", "246" ], [ "British Virgin Islands", "vg", "1284" ], [ "Brunei", "bn", "673" ], [ "Bulgaria (България)", "bg", "359" ], [ "Burkina Faso", "bf", "226" ], [ "Burundi (Uburundi)", "bi", "257" ], [ "Cambodia (កម្ពុជា)", "kh", "855" ], [ "Cameroon (Cameroun)", "cm", "237" ], [ "Canada", "ca", "1", 1, [ "204", "226", "236", "249", "250", "289", "306", "343", "365", "387", "403", "416", "418", "431", "437", "438", "450", "506", "514", "519", "548", "579", "581", "587", "604", "613", "639", "647", "672", "705", "709", "742", "778", "780", "782", "807", "819", "825", "867", "873", "902", "905" ] ], [ "Cape Verde (Kabu Verdi)", "cv", "238" ], [ "Caribbean Netherlands", "bq", "599", 1 ], [ "Cayman Islands", "ky", "1345" ], [ "Central African Republic (République centrafricaine)", "cf", "236" ], [ "Chad (Tchad)", "td", "235" ], [ "Chile", "cl", "56" ], [ "China (中国)", "cn", "86" ], [ "Colombia", "co", "57" ], [ "Comoros (‫جزر القمر‬‎)", "km", "269" ], [ "Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)", "cd", "243" ], [ "Congo (Republic) (Congo-Brazzaville)", "cg", "242" ], [ "Cook Islands", "ck", "682" ], [ "Costa Rica", "cr", "506" ], [ "Côte d’Ivoire", "ci", "225" ], [ "Croatia (Hrvatska)", "hr", "385" ], [ "Cuba", "cu", "53" ], [ "Curaçao", "cw", "599", 0 ], [ "Cyprus (Κύπρος)", "cy", "357" ], [ "Czech Republic (Česká republika)", "cz", "420" ], [ "Denmark (Danmark)", "dk", "45" ], [ "Djibouti", "dj", "253" ], [ "Dominica", "dm", "1767" ], [ "Dominican Republic (República Dominicana)", "do", "1", 2, [ "809", "829", "849" ] ], [ "Ecuador", "ec", "593" ], [ "Egypt (‫مصر‬‎)", "eg", "20" ], [ "El Salvador", "sv", "503" ], [ "Equatorial Guinea (Guinea Ecuatorial)", "gq", "240" ], [ "Eritrea", "er", "291" ], [ "Estonia (Eesti)", "ee", "372" ], [ "Ethiopia", "et", "251" ], [ "Falkland Islands (Islas Malvinas)", "fk", "500" ], [ "Faroe Islands (Føroyar)", "fo", "298" ], [ "Fiji", "fj", "679" ], [ "Finland (Suomi)", "fi", "358" ], [ "France", "fr", "33" ], [ "French Guiana (Guyane française)", "gf", "594" ], [ "French Polynesia (Polynésie française)", "pf", "689" ], [ "Gabon", "ga", "241" ], [ "Gambia", "gm", "220" ], [ "Georgia (საქართველო)", "ge", "995" ], [ "Germany (Deutschland)", "de", "49" ], [ "Ghana (Gaana)", "gh", "233" ], [ "Gibraltar", "gi", "350" ], [ "Greece (Ελλάδα)", "gr", "30" ], [ "Greenland (Kalaallit Nunaat)", "gl", "299" ], [ "Grenada", "gd", "1473" ], [ "Guadeloupe", "gp", "590", 0 ], [ "Guam", "gu", "1671" ], [ "Guatemala", "gt", "502" ], [ "Guinea (Guinée)", "gn", "224" ], [ "Guinea-Bissau (Guiné Bissau)", "gw", "245" ], [ "Guyana", "gy", "592" ], [ "Haiti", "ht", "509" ], [ "Honduras", "hn", "504" ], [ "Hong Kong (香港)", "hk", "852" ], [ "Hungary (Magyarország)", "hu", "36" ], [ "Iceland (Ísland)", "is", "354" ], [ "India (भारत)", "in", "91" ], [ "Indonesia", "id", "62" ], [ "Iran (‫ایران‬‎)", "ir", "98" ], [ "Iraq (‫العراق‬‎)", "iq", "964" ], [ "Ireland", "ie", "353" ], [ "Israel (‫ישראל‬‎)", "il", "972" ], [ "Italy (Italia)", "it", "39", 0 ], [ "Jamaica", "jm", "1876" ], [ "Japan (日本)", "jp", "81" ], [ "Jordan (‫الأردن‬‎)", "jo", "962" ], [ "Kazakhstan (Казахстан)", "kz", "7", 1 ], [ "Kenya", "ke", "254" ], [ "Kiribati", "ki", "686" ], [ "Kuwait (‫الكويت‬‎)", "kw", "965" ], [ "Kyrgyzstan (Кыргызстан)", "kg", "996" ], [ "Laos (ລາວ)", "la", "856" ], [ "Latvia (Latvija)", "lv", "371" ], [ "Lebanon (‫لبنان‬‎)", "lb", "961" ], [ "Lesotho", "ls", "266" ], [ "Liberia", "lr", "231" ], [ "Libya (‫ليبيا‬‎)", "ly", "218" ], [ "Liechtenstein", "li", "423" ], [ "Lithuania (Lietuva)", "lt", "370" ], [ "Luxembourg", "lu", "352" ], [ "Macau (澳門)", "mo", "853" ], [ "Macedonia (FYROM) (Македонија)", "mk", "389" ], [ "Madagascar (Madagasikara)", "mg", "261" ], [ "Malawi", "mw", "265" ], [ "Malaysia", "my", "60" ], [ "Maldives", "mv", "960" ], [ "Mali", "ml", "223" ], [ "Malta", "mt", "356" ], [ "Marshall Islands", "mh", "692" ], [ "Martinique", "mq", "596" ], [ "Mauritania (‫موريتانيا‬‎)", "mr", "222" ], [ "Mauritius (Moris)", "mu", "230" ], [ "Mexico (México)", "mx", "52" ], [ "Micronesia", "fm", "691" ], [ "Moldova (Republica Moldova)", "md", "373" ], [ "Monaco", "mc", "377" ], [ "Mongolia (Монгол)", "mn", "976" ], [ "Montenegro (Crna Gora)", "me", "382" ], [ "Montserrat", "ms", "1664" ], [ "Morocco (‫المغرب‬‎)", "ma", "212" ], [ "Mozambique (Moçambique)", "mz", "258" ], [ "Myanmar (Burma) (မြန်မာ)", "mm", "95" ], [ "Namibia (Namibië)", "na", "264" ], [ "Nauru", "nr", "674" ], [ "Nepal (नेपाल)", "np", "977" ], [ "Netherlands (Nederland)", "nl", "31" ], [ "New Caledonia (Nouvelle-Calédonie)", "nc", "687" ], [ "New Zealand", "nz", "64" ], [ "Nicaragua", "ni", "505" ], [ "Niger (Nijar)", "ne", "227" ], [ "Nigeria", "ng", "234" ], [ "Niue", "nu", "683" ], [ "Norfolk Island", "nf", "672" ], [ "North Korea (조선 민주주의 인민 공화국)", "kp", "850" ], [ "Northern Mariana Islands", "mp", "1670" ], [ "Norway (Norge)", "no", "47" ], [ "Oman (‫عُمان‬‎)", "om", "968" ], [ "Pakistan (‫پاکستان‬‎)", "pk", "92" ], [ "Palau", "pw", "680" ], [ "Palestine (‫فلسطين‬‎)", "ps", "970" ], [ "Panama (Panamá)", "pa", "507" ], [ "Papua New Guinea", "pg", "675" ], [ "Paraguay", "py", "595" ], [ "Peru (Perú)", "pe", "51" ], [ "Philippines", "ph", "63" ], [ "Poland (Polska)", "pl", "48" ], [ "Portugal", "pt", "351" ], [ "Puerto Rico", "pr", "1", 3, [ "787", "939" ] ], [ "Qatar (‫قطر‬‎)", "qa", "974" ], [ "Réunion (La Réunion)", "re", "262" ], [ "Romania (România)", "ro", "40" ], [ "Russia (Россия)", "ru", "7", 0 ], [ "Rwanda", "rw", "250" ], [ "Saint Barthélemy (Saint-Barthélemy)", "bl", "590", 1 ], [ "Saint Helena", "sh", "290" ], [ "Saint Kitts and Nevis", "kn", "1869" ], [ "Saint Lucia", "lc", "1758" ], [ "Saint Martin (Saint-Martin (partie française))", "mf", "590", 2 ], [ "Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)", "pm", "508" ], [ "Saint Vincent and the Grenadines", "vc", "1784" ], [ "Samoa", "ws", "685" ], [ "San Marino", "sm", "378" ], [ "São Tomé and Príncipe (São Tomé e Príncipe)", "st", "239" ], [ "Saudi Arabia (‫المملكة العربية السعودية‬‎)", "sa", "966" ], [ "Senegal (Sénégal)", "sn", "221" ], [ "Serbia (Србија)", "rs", "381" ], [ "Seychelles", "sc", "248" ], [ "Sierra Leone", "sl", "232" ], [ "Singapore", "sg", "65" ], [ "Sint Maarten", "sx", "1721" ], [ "Slovakia (Slovensko)", "sk", "421" ], [ "Slovenia (Slovenija)", "si", "386" ], [ "Solomon Islands", "sb", "677" ], [ "Somalia (Soomaaliya)", "so", "252" ], [ "South Africa", "za", "27" ], [ "South Korea (대한민국)", "kr", "82" ], [ "South Sudan (‫جنوب السودان‬‎)", "ss", "211" ], [ "Spain (España)", "es", "34" ], [ "Sri Lanka (ශ්‍රී ලංකාව)", "lk", "94" ], [ "Sudan (‫السودان‬‎)", "sd", "249" ], [ "Suriname", "sr", "597" ], [ "Swaziland", "sz", "268" ], [ "Sweden (Sverige)", "se", "46" ], [ "Switzerland (Schweiz)", "ch", "41" ], [ "Syria (‫سوريا‬‎)", "sy", "963" ], [ "Taiwan (台灣)", "tw", "886" ], [ "Tajikistan", "tj", "992" ], [ "Tanzania", "tz", "255" ], [ "Thailand (ไทย)", "th", "66" ], [ "Timor-Leste", "tl", "670" ], [ "Togo", "tg", "228" ], [ "Tokelau", "tk", "690" ], [ "Tonga", "to", "676" ], [ "Trinidad and Tobago", "tt", "1868" ], [ "Tunisia (‫تونس‬‎)", "tn", "216" ], [ "Turkey (Türkiye)", "tr", "90" ], [ "Turkmenistan", "tm", "993" ], [ "Turks and Caicos Islands", "tc", "1649" ], [ "Tuvalu", "tv", "688" ], [ "U.S. Virgin Islands", "vi", "1340" ], [ "Uganda", "ug", "256" ], [ "Ukraine (Україна)", "ua", "380" ], [ "United Arab Emirates (‫الإمارات العربية المتحدة‬‎)", "ae", "971" ], [ "United Kingdom", "gb", "44" ], [ "United States", "us", "1", 0 ], [ "Uruguay", "uy", "598" ], [ "Uzbekistan (Oʻzbekiston)", "uz", "998" ], [ "Vanuatu", "vu", "678" ], [ "Vatican City (Città del Vaticano)", "va", "39", 1 ], [ "Venezuela", "ve", "58" ], [ "Vietnam (Việt Nam)", "vn", "84" ], [ "Wallis and Futuna", "wf", "681" ], [ "Yemen (‫اليمن‬‎)", "ye", "967" ], [ "Zambia", "zm", "260" ], [ "Zimbabwe", "zw", "263" ] ];
+    var allCountries = [ [ "Afghanistan (‫افغانستان‬‎)", "af", "93" ], [ "Albania (Shqipëri)", "al", "355" ], [ "Algeria (‫الجزائر‬‎)", "dz", "213" ], [ "American Samoa", "as", "1684" ], [ "Andorra", "ad", "376" ], [ "Angola", "ao", "244" ], [ "Anguilla", "ai", "1264" ], [ "Antigua and Barbuda", "ag", "1268" ], [ "Argentina", "ar", "54" ], [ "Armenia (Հայաստան)", "am", "374" ], [ "Aruba", "aw", "297" ], [ "Australia", "au", "61", 0 ], [ "Austria (Österreich)", "at", "43" ], [ "Azerbaijan (Azərbaycan)", "az", "994" ], [ "Bahamas", "bs", "1242" ], [ "Bahrain (‫البحرين‬‎)", "bh", "973" ], [ "Bangladesh (বাংলাদেশ)", "bd", "880" ], [ "Barbados", "bb", "1246" ], [ "Belarus (Беларусь)", "by", "375" ], [ "Belgium (België)", "be", "32" ], [ "Belize", "bz", "501" ], [ "Benin (Bénin)", "bj", "229" ], [ "Bermuda", "bm", "1441" ], [ "Bhutan (འབྲུག)", "bt", "975" ], [ "Bolivia", "bo", "591" ], [ "Bosnia and Herzegovina (Босна и Херцеговина)", "ba", "387" ], [ "Botswana", "bw", "267" ], [ "Brazil (Brasil)", "br", "55" ], [ "British Indian Ocean Territory", "io", "246" ], [ "British Virgin Islands", "vg", "1284" ], [ "Brunei", "bn", "673" ], [ "Bulgaria (България)", "bg", "359" ], [ "Burkina Faso", "bf", "226" ], [ "Burundi (Uburundi)", "bi", "257" ], [ "Cambodia (កម្ពុជា)", "kh", "855" ], [ "Cameroon (Cameroun)", "cm", "237" ], [ "Canada", "ca", "1", 1, [ "204", "226", "236", "249", "250", "289", "306", "343", "365", "387", "403", "416", "418", "431", "437", "438", "450", "506", "514", "519", "548", "579", "581", "587", "604", "613", "639", "647", "672", "705", "709", "742", "778", "780", "782", "807", "819", "825", "867", "873", "902", "905" ] ], [ "Cape Verde (Kabu Verdi)", "cv", "238" ], [ "Caribbean Netherlands", "bq", "599", 1 ], [ "Cayman Islands", "ky", "1345" ], [ "Central African Republic (République centrafricaine)", "cf", "236" ], [ "Chad (Tchad)", "td", "235" ], [ "Chile", "cl", "56" ], [ "China (中国)", "cn", "86" ], [ "Christmas Island", "cx", "61", 2 ], [ "Cocos (Keeling) Islands", "cc", "61", 1 ], [ "Colombia", "co", "57" ], [ "Comoros (‫جزر القمر‬‎)", "km", "269" ], [ "Congo (DRC) (Jamhuri ya Kidemokrasia ya Kongo)", "cd", "243" ], [ "Congo (Republic) (Congo-Brazzaville)", "cg", "242" ], [ "Cook Islands", "ck", "682" ], [ "Costa Rica", "cr", "506" ], [ "Côte d’Ivoire", "ci", "225" ], [ "Croatia (Hrvatska)", "hr", "385" ], [ "Cuba", "cu", "53" ], [ "Curaçao", "cw", "599", 0 ], [ "Cyprus (Κύπρος)", "cy", "357" ], [ "Czech Republic (Česká republika)", "cz", "420" ], [ "Denmark (Danmark)", "dk", "45" ], [ "Djibouti", "dj", "253" ], [ "Dominica", "dm", "1767" ], [ "Dominican Republic (República Dominicana)", "do", "1", 2, [ "809", "829", "849" ] ], [ "Ecuador", "ec", "593" ], [ "Egypt (‫مصر‬‎)", "eg", "20" ], [ "El Salvador", "sv", "503" ], [ "Equatorial Guinea (Guinea Ecuatorial)", "gq", "240" ], [ "Eritrea", "er", "291" ], [ "Estonia (Eesti)", "ee", "372" ], [ "Ethiopia", "et", "251" ], [ "Falkland Islands (Islas Malvinas)", "fk", "500" ], [ "Faroe Islands (Føroyar)", "fo", "298" ], [ "Fiji", "fj", "679" ], [ "Finland (Suomi)", "fi", "358", 0 ], [ "France", "fr", "33" ], [ "French Guiana (Guyane française)", "gf", "594" ], [ "French Polynesia (Polynésie française)", "pf", "689" ], [ "Gabon", "ga", "241" ], [ "Gambia", "gm", "220" ], [ "Georgia (საქართველო)", "ge", "995" ], [ "Germany (Deutschland)", "de", "49" ], [ "Ghana (Gaana)", "gh", "233" ], [ "Gibraltar", "gi", "350" ], [ "Greece (Ελλάδα)", "gr", "30" ], [ "Greenland (Kalaallit Nunaat)", "gl", "299" ], [ "Grenada", "gd", "1473" ], [ "Guadeloupe", "gp", "590", 0 ], [ "Guam", "gu", "1671" ], [ "Guatemala", "gt", "502" ], [ "Guernsey", "gg", "44", 1 ], [ "Guinea (Guinée)", "gn", "224" ], [ "Guinea-Bissau (Guiné Bissau)", "gw", "245" ], [ "Guyana", "gy", "592" ], [ "Haiti", "ht", "509" ], [ "Honduras", "hn", "504" ], [ "Hong Kong (香港)", "hk", "852" ], [ "Hungary (Magyarország)", "hu", "36" ], [ "Iceland (Ísland)", "is", "354" ], [ "India (भारत)", "in", "91" ], [ "Indonesia", "id", "62" ], [ "Iran (‫ایران‬‎)", "ir", "98" ], [ "Iraq (‫العراق‬‎)", "iq", "964" ], [ "Ireland", "ie", "353" ], [ "Isle of Man", "im", "44", 2 ], [ "Israel (‫ישראל‬‎)", "il", "972" ], [ "Italy (Italia)", "it", "39", 0 ], [ "Jamaica", "jm", "1876" ], [ "Japan (日本)", "jp", "81" ], [ "Jersey", "je", "44", 3 ], [ "Jordan (‫الأردن‬‎)", "jo", "962" ], [ "Kazakhstan (Казахстан)", "kz", "7", 1 ], [ "Kenya", "ke", "254" ], [ "Kiribati", "ki", "686" ], [ "Kuwait (‫الكويت‬‎)", "kw", "965" ], [ "Kyrgyzstan (Кыргызстан)", "kg", "996" ], [ "Laos (ລາວ)", "la", "856" ], [ "Latvia (Latvija)", "lv", "371" ], [ "Lebanon (‫لبنان‬‎)", "lb", "961" ], [ "Lesotho", "ls", "266" ], [ "Liberia", "lr", "231" ], [ "Libya (‫ليبيا‬‎)", "ly", "218" ], [ "Liechtenstein", "li", "423" ], [ "Lithuania (Lietuva)", "lt", "370" ], [ "Luxembourg", "lu", "352" ], [ "Macau (澳門)", "mo", "853" ], [ "Macedonia (FYROM) (Македонија)", "mk", "389" ], [ "Madagascar (Madagasikara)", "mg", "261" ], [ "Malawi", "mw", "265" ], [ "Malaysia", "my", "60" ], [ "Maldives", "mv", "960" ], [ "Mali", "ml", "223" ], [ "Malta", "mt", "356" ], [ "Marshall Islands", "mh", "692" ], [ "Martinique", "mq", "596" ], [ "Mauritania (‫موريتانيا‬‎)", "mr", "222" ], [ "Mauritius (Moris)", "mu", "230" ], [ "Mayotte", "yt", "262", 1 ], [ "Mexico (México)", "mx", "52" ], [ "Micronesia", "fm", "691" ], [ "Moldova (Republica Moldova)", "md", "373" ], [ "Monaco", "mc", "377" ], [ "Mongolia (Монгол)", "mn", "976" ], [ "Montenegro (Crna Gora)", "me", "382" ], [ "Montserrat", "ms", "1664" ], [ "Morocco (‫المغرب‬‎)", "ma", "212", 0 ], [ "Mozambique (Moçambique)", "mz", "258" ], [ "Myanmar (Burma) (မြန်မာ)", "mm", "95" ], [ "Namibia (Namibië)", "na", "264" ], [ "Nauru", "nr", "674" ], [ "Nepal (नेपाल)", "np", "977" ], [ "Netherlands (Nederland)", "nl", "31" ], [ "New Caledonia (Nouvelle-Calédonie)", "nc", "687" ], [ "New Zealand", "nz", "64" ], [ "Nicaragua", "ni", "505" ], [ "Niger (Nijar)", "ne", "227" ], [ "Nigeria", "ng", "234" ], [ "Niue", "nu", "683" ], [ "Norfolk Island", "nf", "672" ], [ "North Korea (조선 민주주의 인민 공화국)", "kp", "850" ], [ "Northern Mariana Islands", "mp", "1670" ], [ "Norway (Norge)", "no", "47", 0 ], [ "Oman (‫عُمان‬‎)", "om", "968" ], [ "Pakistan (‫پاکستان‬‎)", "pk", "92" ], [ "Palau", "pw", "680" ], [ "Palestine (‫فلسطين‬‎)", "ps", "970" ], [ "Panama (Panamá)", "pa", "507" ], [ "Papua New Guinea", "pg", "675" ], [ "Paraguay", "py", "595" ], [ "Peru (Perú)", "pe", "51" ], [ "Philippines", "ph", "63" ], [ "Poland (Polska)", "pl", "48" ], [ "Portugal", "pt", "351" ], [ "Puerto Rico", "pr", "1", 3, [ "787", "939" ] ], [ "Qatar (‫قطر‬‎)", "qa", "974" ], [ "Réunion (La Réunion)", "re", "262", 0 ], [ "Romania (România)", "ro", "40" ], [ "Russia (Россия)", "ru", "7", 0 ], [ "Rwanda", "rw", "250" ], [ "Saint Barthélemy (Saint-Barthélemy)", "bl", "590", 1 ], [ "Saint Helena", "sh", "290" ], [ "Saint Kitts and Nevis", "kn", "1869" ], [ "Saint Lucia", "lc", "1758" ], [ "Saint Martin (Saint-Martin (partie française))", "mf", "590", 2 ], [ "Saint Pierre and Miquelon (Saint-Pierre-et-Miquelon)", "pm", "508" ], [ "Saint Vincent and the Grenadines", "vc", "1784" ], [ "Samoa", "ws", "685" ], [ "San Marino", "sm", "378" ], [ "São Tomé and Príncipe (São Tomé e Príncipe)", "st", "239" ], [ "Saudi Arabia (‫المملكة العربية السعودية‬‎)", "sa", "966" ], [ "Senegal (Sénégal)", "sn", "221" ], [ "Serbia (Србија)", "rs", "381" ], [ "Seychelles", "sc", "248" ], [ "Sierra Leone", "sl", "232" ], [ "Singapore", "sg", "65" ], [ "Sint Maarten", "sx", "1721" ], [ "Slovakia (Slovensko)", "sk", "421" ], [ "Slovenia (Slovenija)", "si", "386" ], [ "Solomon Islands", "sb", "677" ], [ "Somalia (Soomaaliya)", "so", "252" ], [ "South Africa", "za", "27" ], [ "South Korea (대한민국)", "kr", "82" ], [ "South Sudan (‫جنوب السودان‬‎)", "ss", "211" ], [ "Spain (España)", "es", "34" ], [ "Sri Lanka (ශ්‍රී ලංකාව)", "lk", "94" ], [ "Sudan (‫السودان‬‎)", "sd", "249" ], [ "Suriname", "sr", "597" ], [ "Svalbard and Jan Mayen", "sj", "47", 1 ], [ "Swaziland", "sz", "268" ], [ "Sweden (Sverige)", "se", "46" ], [ "Switzerland (Schweiz)", "ch", "41" ], [ "Syria (‫سوريا‬‎)", "sy", "963" ], [ "Taiwan (台灣)", "tw", "886" ], [ "Tajikistan", "tj", "992" ], [ "Tanzania", "tz", "255" ], [ "Thailand (ไทย)", "th", "66" ], [ "Timor-Leste", "tl", "670" ], [ "Togo", "tg", "228" ], [ "Tokelau", "tk", "690" ], [ "Tonga", "to", "676" ], [ "Trinidad and Tobago", "tt", "1868" ], [ "Tunisia (‫تونس‬‎)", "tn", "216" ], [ "Turkey (Türkiye)", "tr", "90" ], [ "Turkmenistan", "tm", "993" ], [ "Turks and Caicos Islands", "tc", "1649" ], [ "Tuvalu", "tv", "688" ], [ "U.S. Virgin Islands", "vi", "1340" ], [ "Uganda", "ug", "256" ], [ "Ukraine (Україна)", "ua", "380" ], [ "United Arab Emirates (‫الإمارات العربية المتحدة‬‎)", "ae", "971" ], [ "United Kingdom", "gb", "44", 0 ], [ "United States", "us", "1", 0 ], [ "Uruguay", "uy", "598" ], [ "Uzbekistan (Oʻzbekiston)", "uz", "998" ], [ "Vanuatu", "vu", "678" ], [ "Vatican City (Città del Vaticano)", "va", "39", 1 ], [ "Venezuela", "ve", "58" ], [ "Vietnam (Việt Nam)", "vn", "84" ], [ "Wallis and Futuna", "wf", "681" ], [ "Western Sahara (‫الصحراء الغربية‬‎)", "eh", "212", 1 ], [ "Yemen (‫اليمن‬‎)", "ye", "967" ], [ "Zambia", "zm", "260" ], [ "Zimbabwe", "zw", "263" ], [ "Åland Islands", "ax", "358", 1 ] ];
     // loop over all of the countries above
     for (var i = 0; i < allCountries.length; i++) {
         var c = allCountries[i];
