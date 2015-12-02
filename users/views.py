@@ -161,7 +161,9 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
             'client_id',
             'email',
             'phone',
-            (_("Last Appointment"), 'last_appointment', 'get_last_appointment'),
+            (_("Appointment Date"), 'last_appointment', 'get_last_appointment'),
+            (_("Shedule"), 'last_appointment_venue', 'get_last_appointment_venue'),
+            (_("Tag"), 'last_appointment_tag', 'get_last_appointment_tag'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -177,6 +179,16 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
     def get_last_appointment(self, instance, *args, **kwargs):
         if instance.last_appointment:
             return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
+        return ""
+
+    def get_last_appointment_tag(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.tag:
+            return instance.last_appointment.tag.name
+        return ""
+
+    def get_last_appointment_venue(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.venue:
+            return instance.last_appointment.venue.name
         return ""
 
     def get_queryset(self, **kwargs):
@@ -204,7 +216,9 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
             'client_id',
             'email',
             'phone',
-            (_("Last Appointment"), 'last_appointment', 'get_last_appointment'),
+            (_("Appointment Date"), 'last_appointment', 'get_last_appointment'),
+            (_("Shedule"), 'last_appointment_venue', 'get_last_appointment_venue'),
+            (_("Tag"), 'last_appointment_tag', 'get_last_appointment_tag'),
             (_("Actions"), 'id', 'get_actions'),
         ],
         'search_fields': ['first_name', 'last_name', 'email', 'client_id', 'phone'],
@@ -220,6 +234,16 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
     def get_last_appointment(self, instance, *args, **kwargs):
         if instance.last_appointment:
             return timezone.localtime(instance.last_appointment.event.start).strftime("%d %b %Y %-I:%M%p")
+        return ""
+
+    def get_last_appointment_tag(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.tag:
+            return instance.last_appointment.tag.name
+        return ""
+
+    def get_last_appointment_venue(self, instance, *args, **kwargs):
+        if instance.last_appointment and instance.last_appointment.venue:
+            return instance.last_appointment.venue.name
         return ""
 
     def get_queryset(self, **kwargs):
