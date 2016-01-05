@@ -13,6 +13,7 @@ from jsonview.decorators import json_view
 from schedule.models import Event
 from schedule.periods import Period
 
+from core.decorators import apr_cache
 from users.forms import AddClientForm, SelectClientForm, add_client_form_modal_helper, edit_client_form_modal_helper
 from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm
 from appointments.forms import IDForm, GenericEventForm, SimpleGenericEventForm
@@ -128,6 +129,7 @@ def process_edit_generic_event_form(request):
 # NEW STYLE
 
 
+@apr_cache(60 * 5)
 def calendar_event_feed(request):
     if request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
@@ -154,6 +156,7 @@ def calendar_event_feed(request):
     raise Http404
 
 
+@apr_cache(60 * 5)
 def venue_event_feed(request, pk):
     venue = get_object_or_404(Venue, pk=pk)
     if request.is_ajax() and request.method == 'GET':
@@ -181,6 +184,7 @@ def venue_event_feed(request, pk):
     raise Http404
 
 
+@apr_cache(60 * 5)
 def printable_event_feed(request):
     if request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
