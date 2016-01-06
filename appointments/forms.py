@@ -256,7 +256,7 @@ class SimpleAppointmentForm(forms.Form):
                 customer=user.userprofile.customer
             )
             appointment.save()
-            return True
+            return appointment
         except Client.DoesNotExist:
             return False
 

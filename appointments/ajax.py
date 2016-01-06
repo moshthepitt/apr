@@ -228,13 +228,28 @@ def edit_event(request, pk):
 
 @login_required
 def add_event(request):
-    success = False
+    data = {
+        "success": False,
+        "appointment": {}
+    }
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
         form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
         if form.is_valid():
-            success = form.add_new(request.user)
-    return HttpResponse(json.dumps(success), content_type="application/json")
+            appointment = form.add_new(request.user)
+            data['success'] = True
+            data['appointment'] = {
+                'id': appointment.pk,
+                'title': appointment.print_title,
+                'userId': [appointment.venue.pk],
+                'start': appointment.event.start.isoformat(),
+                'end': appointment.event.end.isoformat(),
+                'clientId': appointment.clientId,
+                'status': appointment.status,
+                'tag': getattr(appointment.tag, 'html_name', ""),
+                'body': appointment.event.description
+            }
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
 @login_required

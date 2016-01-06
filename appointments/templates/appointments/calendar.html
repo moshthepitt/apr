@@ -328,15 +328,17 @@
  		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
  			event.preventDefault();
  			var appointment_form = '#id-hidden-add-appointment-form';
+ 			var this_calEvent = $('#id-generic-event-info-form').data('this_event');
  			$.ajax({
  				url: "{% url 'appointments:add_event' %}",
  				type: "POST",
  				data: $(appointment_form).serialize(),
  				dataType: 'json',
  				success: function(data) {				    	
- 					if (data) {
- 						console.log(data);
- 						console.log(999999999999999)
+ 					if (data.success) {
+ 						this_calEvent.id = data.appointment.id;
+ 						this_calEvent.title = data.appointment.title;
+ 						$("#calendar").weekCalendar("updateEvent", this_calEvent);
  						$('#add-appointment-modal').modal('hide');
  						$.growl.notice({ 
  							location: 'br',
@@ -462,7 +464,7 @@
  					var url = "{% url 'appointments:appointment_client_snippet' %}" + '?' + $.param(data);
  					$("#add-appointment-snippet-content" ).load(url, function(){
  						$('#add-appointment-modal').modal();
- 						// secelt2 		
+ 						// select2 		
  						$("#id-select-client").select2({
  							placeholder: "{% trans 'Select a client' %}",
  							width:'100%',
@@ -471,6 +473,7 @@
  						$('#generic-start').val(calEvent.start.toISOString());
  						$('#generic-end').val(calEvent.end.toISOString());
  						$('#generic-venue-id').val(calEvent.userId);
+ 						$('#id-generic-event-info-form').data("this_event", calEvent);
  					});
  				},
  				eventDrop: function(calEvent, $event) {

@@ -124,7 +124,7 @@ class Appointment(models.Model):
 
     @property
     def print_title(self):
-        return self._print_title
+        return self._print_title()
 
     def _clientId(self):
         if self.client:
