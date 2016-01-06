@@ -371,6 +371,7 @@
  				success: function(data) {				    	
  					if (data) {
  						$('#edit-appointment-modal').modal('hide');
+ 						$("#calendar").weekCalendar("removeEvent", appointment_id);
  						$.growl.notice({ 
  							location: 'br',
  							message: '{% trans "Successfully deleted appointment" %}' 
