@@ -40,17 +40,23 @@
 $(document).on('click', '#go-prev', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("prev");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
 	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
 });
 $(document).on('click', '#go-today', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("today");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
 	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
 });
 $(document).on('click', '#go-next', function(event) {
 	event.preventDefault();
 	$("#calendar").weekCalendar("next");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
 	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
 }); 
 $(document).on('click', '#go-fullscreen', function(event) {
 	event.preventDefault();
@@ -165,7 +171,9 @@ $(document).on('click', '.editable-note', function(event) {
 		$(document).ready(function() {
 			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
 			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
+			{% if CUSTOMER.customersubscription.subscription.can_print %}
 			$('#go-print').attr("href", getPrintURL());
+			{% endif %}
 		});
 
 		$(document).on('click', '#go-add-note', function(event) {
