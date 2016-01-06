@@ -129,7 +129,6 @@ def process_edit_generic_event_form(request):
 # NEW STYLE
 
 
-@apr_cache(60 * 5)
 def calendar_event_feed(request):
     if request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
@@ -156,7 +155,6 @@ def calendar_event_feed(request):
     raise Http404
 
 
-@apr_cache(60 * 5)
 def venue_event_feed(request, pk):
     venue = get_object_or_404(Venue, pk=pk)
     if request.is_ajax() and request.method == 'GET':
@@ -184,7 +182,6 @@ def venue_event_feed(request, pk):
     raise Http404
 
 
-@apr_cache(60 * 5)
 def printable_event_feed(request):
     if request.method == 'GET':
         if 'start' in request.GET and 'end' in request.GET:
