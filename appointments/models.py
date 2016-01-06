@@ -119,7 +119,10 @@ class Appointment(models.Model):
 
     def _print_title(self):
         if self.client:
-            return "{} - {} - {}".format(self.client, self.client.client_id, self.event.title)
+            if self.client.client_id:
+                return "{} - {} - {}".format(self.client, self.client.client_id, self.event.title)
+            else:
+                return "{} - {}".format(self.client, self.event.title)
         return self.event.title
 
     @property

@@ -134,6 +134,7 @@
  		$(document).on('click', '.status-changer', function(event) {
  			event.preventDefault();
  			var status = $(this).data("status");
+ 			var this_calEvent = $('#edit-appointment-modal').data("this_calEvent");
  			var appointment_id = $('#appointment-info-box').data("appointment-id");
  			var csrftoken = $.cookie('csrftoken');
  			var url = '{% url "appointments:edit_appointment_status" 0 %}'.replace (0, appointment_id);
@@ -144,6 +145,8 @@
  			    },
  			    function(data) {
  			        if(data) {
+ 			        	this_calEvent.status = status;
+ 			        	$("#calendar").weekCalendar("updateEvent", this_calEvent);
  			        	$('#edit-appointment-modal').modal('hide');
  			        	$.growl.notice({ 
  			        		location: 'br',
@@ -328,7 +331,7 @@
  		$(document).on('submit','#id-hidden-add-appointment-form',function(event){
  			event.preventDefault();
  			var appointment_form = '#id-hidden-add-appointment-form';
- 			var this_calEvent = $('#id-generic-event-info-form').data('this_event');
+ 			var this_calEvent = $('#id-generic-event-info-form').data('this_calEvent'); 			
  			$.ajax({
  				url: "{% url 'appointments:add_event' %}",
  				type: "POST",
@@ -473,7 +476,7 @@
  						$('#generic-start').val(calEvent.start.toISOString());
  						$('#generic-end').val(calEvent.end.toISOString());
  						$('#generic-venue-id').val(calEvent.userId);
- 						$('#id-generic-event-info-form').data("this_event", calEvent);
+ 						$('#id-generic-event-info-form').data("this_calEvent", calEvent);
  					});
  				},
  				eventDrop: function(calEvent, $event) {
@@ -494,6 +497,7 @@
  					var url = '{% url "appointments:appointment_snippet" 0 %}'.replace (0, calEvent.id);
  					$("#view-appointment-content").load(url, function() {
  						$('#edit-appointment-modal').modal();
+ 						$('#edit-appointment-modal').data("this_calEvent", calEvent);
  						// intlTelInput
  						$("#id_phone").intlTelInput({
  							autoFormat: true,

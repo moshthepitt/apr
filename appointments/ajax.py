@@ -240,7 +240,7 @@ def add_event(request):
             data['success'] = True
             data['appointment'] = {
                 'id': appointment.pk,
-                'title': appointment.print_title,
+                'title': appointment.display_name,
                 'userId': [appointment.venue.pk],
                 'start': appointment.event.start.isoformat(),
                 'end': appointment.event.end.isoformat(),
