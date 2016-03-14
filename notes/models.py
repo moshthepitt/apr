@@ -26,6 +26,7 @@ class Note(models.Model):
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     note = models.TextField(_("Note"), blank=False)
     note_type = models.CharField(_("Type"), max_length=1, choices=TYPE_CHOICES, blank=False, default=TOP)
+    featured = models.BooleanField(_("Featured"), default=False)
 
     class Meta:
         verbose_name = _("Note")
