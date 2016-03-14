@@ -133,6 +133,10 @@ td.wc-day-column.empty-notes {
   display:block;
 }
 
-.featured-note {
-	color:#ff0000;
+.single-top-note.list-group-item.featured-note {
+	background-color: #d9edf7;
+    width: 95%;
+    border: 1px solid whitesmoke;
+    padding:10px;
+    margin-bottom: -10px;
 }
