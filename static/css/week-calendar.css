@@ -132,3 +132,7 @@ td.wc-day-column.empty-notes {
 .note-item:hover .badge.icon {
   display:block;
 }
+
+.featured-note {
+	color:#ff0000;
+}

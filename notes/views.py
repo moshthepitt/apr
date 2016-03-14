@@ -66,7 +66,25 @@ class TopNotesSnippetView(Customer404Mixin, TemplateView):
             date = timezone.localtime(parser.parse(input_date)).date
         else:
             date = timezone.now().date
-        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).filter(
+        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).exclude(featured=True).filter(
+            date=date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
+        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        return context
+
+
+class TopFeaturedNotesSnippetView(Customer404Mixin, TemplateView):
+    template_name = "notes/snippets/top-featured-notes.html"
+    model = Note
+    paginate_by = 15
+
+    def get_context_data(self, **kwargs):
+        context = super(TopFeaturedNotesSnippetView, self).get_context_data(**kwargs)
+        input_date = self.request.GET.get('date', "")
+        if input_date:
+            date = timezone.localtime(parser.parse(input_date)).date
+        else:
+            date = timezone.now().date
+        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).exclude(featured=False).filter(
             date=date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
         context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
         return context

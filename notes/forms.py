@@ -19,7 +19,7 @@ class NoteForm(forms.ModelForm):
 
     class Meta:
         model = Note
-        fields = ['date', 'venue', 'note', 'note_type']
+        fields = ['date', 'venue', 'note', 'note_type', 'featured']
 
     def clean_end_date(self):
         if self.cleaned_data['end_date'] < self.cleaned_data['date']:
@@ -39,6 +39,7 @@ class NoteForm(forms.ModelForm):
             Field('venue', id="id-select-venue"),
             Field('note'),
             Field('note_type'),
+            Field('featured'),
             Field('end_date', id="end-date"),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
@@ -51,6 +52,7 @@ class NoteForm(forms.ModelForm):
             venue=self.cleaned_data['venue'],
             note=self.cleaned_data['note'],
             note_type=self.cleaned_data['note_type'],
+            featured=self.cleaned_data['featured'],
             creator=user,
             customer=user.userprofile.customer
         )
@@ -69,6 +71,7 @@ class NoteForm(forms.ModelForm):
                     venue=self.cleaned_data['venue'],
                     note=self.cleaned_data['note'],
                     note_type=self.cleaned_data['note_type'],
+                    featured=self.cleaned_data['featured'],
                     creator=user,
                     customer=user.userprofile.customer
                 )
@@ -79,7 +82,7 @@ class NoteForm(forms.ModelForm):
 class EditNoteForm(forms.ModelForm):
     class Meta:
         model = Note
-        fields = ['date', 'venue', 'note', 'note_type']
+        fields = ['date', 'venue', 'note', 'note_type', 'featured']
 
     def __init__(self, *args, **kwargs):
         super(EditNoteForm, self).__init__(*args, **kwargs)
@@ -94,6 +97,7 @@ class EditNoteForm(forms.ModelForm):
             Field('venue', id="id-select-venue"),
             Field('note'),
             Field('note_type'),
+            Field('featured'),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success')
             )

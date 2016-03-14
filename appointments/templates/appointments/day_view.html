@@ -134,10 +134,17 @@ $(document).on('click', '.editable-note', function(event) {
 		function loadNotes() {
 			var data = {};
 			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toISOString();
+			var top_featured_notes_url = "{% url 'notes:top_featured_notes_snippet' %}" + '?' + $.param(data);
 			var top_notes_url = "{% url 'notes:top_notes_snippet' %}" + '?' + $.param(data);
 			var bottom_notes_url = "{% url 'notes:bottom_notes_snippet' %}" + '?' + $.param(data);
-			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});
-			$("#tr-venue-headers" ).load(top_notes_url, function(){});			
+			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});			
+
+			$.get(top_featured_notes_url, function(data){ 
+				$(".tr-featured-notes").remove();
+				$("#tr-venue-headers" ).before(data);
+			});
+
+			$("#tr-venue-headers" ).load(top_notes_url, function(){});
 		}
 
 		function deleteNote(id) {

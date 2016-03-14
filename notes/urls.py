@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from notes.ajax import process_add_note_form, delete_note, process_edit_note_form
 from notes.views import AddNoteSnippetView, TopNotesSnippetView, BottomNotesSnippetView
-from notes.views import EditNoteSnippetView
+from notes.views import EditNoteSnippetView, TopFeaturedNotesSnippetView
 
 
 urlpatterns = [
@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^snippet/$', login_required(AddNoteSnippetView.as_view()), name='add_note_snippet'),
     url(r'^edit-note-snippet/(?P<pk>\d+)/$', login_required(EditNoteSnippetView.as_view()), name='edit_note_snippet'),
     url(r'^top-notes-snippet/$', login_required(TopNotesSnippetView.as_view()), name='top_notes_snippet'),
+    url(r'^top-featured-notes-snippet/$', login_required(TopFeaturedNotesSnippetView.as_view()), name='top_featured_notes_snippet'),
     url(r'^bottom-notes-snippet/$', login_required(BottomNotesSnippetView.as_view()), name='bottom_notes_snippet'),
 
 ]
