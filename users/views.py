@@ -2,6 +2,7 @@ from django.views.generic import FormView, DeleteView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import UpdateView
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.cache import cache
 from django.utils.translation import ugettext as _
 from django.utils.html import format_html
 from django.utils import timezone
@@ -198,6 +199,9 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
         return ""
 
     def get_queryset(self, **kwargs):
+        cache_data = cache.get("cancelled_clients_{}".format(self.request.user.userprofile.customer.id))
+        if cache_data:
+            return cache_data
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
         keep = []
         for client in queryset:
@@ -208,6 +212,7 @@ class CanceledClientAppointments(CustomerMixin, DatatableView):
             queryset = queryset.filter(id__in=keep).distinct()
         else:
             queryset = Client.objects.none()
+        cache.set("cancelled_clients_{}".format(self.request.user.userprofile.customer.id), queryset, 60 * 60 * 1)
         return queryset
 
 
@@ -259,6 +264,9 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
         return ""
 
     def get_queryset(self, **kwargs):
+        cache_data = cache.get("pending_clients_{}".format(self.request.user.userprofile.customer.id))
+        if cache_data:
+            return cache_data
         queryset = Client.objects.filter(customer=self.request.user.userprofile.customer)
         keep = []
         for client in queryset:
@@ -272,6 +280,7 @@ class PendingClientAppointments(CustomerMixin, DatatableView):
             queryset = queryset.filter(id__in=keep).distinct()
         else:
             queryset = Client.objects.none()
+        cache.set("pending_clients_{}".format(self.request.user.userprofile.customer.id), queryset, 60 * 60 * 1)
         return queryset
 
 
