@@ -2609,7 +2609,7 @@ form .form-group:last-child {
   border-right: 0;
   border-left: 0;
 }
-.dataTables_length {
+/*.dataTables_length {
   color: #878787;
   margin: 7px 5px 0;
   position: absolute;
@@ -2618,7 +2618,7 @@ form .form-group:last-child {
 }
 .dataTables_length div {
   vertical-align: middle;
-}
+}*/
 div.dataTables_wrapper .ui-widget-header {
   border-right: medium none;
   border-top: 1px solid #D5D5D5;
@@ -2635,13 +2635,13 @@ div.dataTables_wrapper .ui-widget-header {
   margin: 0;
   border-bottom: 0 !important;
 }
-.dataTables_filter {
+/*.dataTables_filter {
   color: #878787;
   font-size: 11px;
   margin: -1px 8px 2px 10px;
   text-align: left;
   float: left;
-}
+}*/
 @media (max-width: 979px) {
   .dataTables_filter {
     position: relative;

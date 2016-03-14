@@ -5,9 +5,8 @@
 
 {% block title %} {% trans "Clients whose last appointment was canceled" %} | {{site.name}}{% endblock %}
 
-{% block extracss %}
-	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/jquery.dataTables.min.css' %}" />
-	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/dataTables.bootstrap.css' %}" />
+{% block extrahead %}
+	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/t/bs/jszip-2.5.0,dt-1.10.11,b-1.1.2,b-html5-1.1.2,r-2.0.2/datatables.min.css"/>
 {% endblock %}
 
 {% block main_content %}
@@ -26,8 +25,30 @@
 	</div>	
 {% endblock %}
 
+{% block extraheadjs %}
+	<script type="text/javascript" src="https://cdn.datatables.net/t/bs/jszip-2.5.0,dt-1.10.11,b-1.1.2,b-html5-1.1.2,r-2.0.2/datatables.min.js"></script>
+{% endblock %}
+
 {% block extrajs %}
-	<script src="{% static 'datatables/js/jquery.dataTables.min.js' %}"></script>
-	<script src="{% static 'datatables/js/dataTables.bootstrap.js' %}"></script>
 	<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/datatableview.min.js"></script>
+	<script type="text/javascript" charset="utf8">
+		datatableview.auto_initialize = false;
+		$(function(){
+		    var common_options = {
+		      stateSave: true,
+		      processing: true,
+		      pageLength: 25,
+		      lengthMenu: [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "All"]],
+		      dom: "<'row data-top'<'col-sm-12 text-right'B>>R" +
+		           "<'row'<'col-sm-6'l><'col-sm-6'f>>R" +
+		           "<'row'<'col-sm-12 table-responsive'tr>>" +
+		           "<'row'<'col-sm-5'i><'col-sm-7'p>>",
+		      buttons: [
+		        { extend: 'excelHtml5', exportOptions: {columns: ':visible'} },
+		        { extend: 'csvHtml5', exportOptions: {columns: ':visible'} },
+		      ],
+		    };
+		    datatableview.initialize($('.datatable'), common_options);
+		});
+	</script>
 {% endblock %}

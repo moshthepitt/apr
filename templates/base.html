@@ -178,6 +178,9 @@
     <script src="{% url 'js_reverse' %}" type="text/javascript"></script>
     {% compress js %}
     <script src="{% static 'js/jquery.min.js' %}"></script>
+    {% endcompress %}
+    {% block extraheadjs %}{% endblock %}
+    {% compress js %}
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'unicorn/js/jquery-ui.custom.js' %}"></script>
     <script src="{% static 'unicorn/js/jquery.nicescroll.min.js' %}"></script>
