@@ -15,9 +15,12 @@ def event_delete(sender, instance, **kwargs):
     """
     When an appointment is deleted, we proceed to delete the Event Object that it references
     """
-    if instance.event:
-        this_event = instance.event
-        this_event.delete()
+    try:
+        if instance.event:
+            this_event = instance.event
+            this_event.delete()
+    except Event.DoesNotExist:
+        pass
 
 
 @receiver(pre_save, sender=Event)
