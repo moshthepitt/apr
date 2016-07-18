@@ -87,6 +87,8 @@ class PDFView(CustomerMixin, TemplateView):
         context['this_customer'] = self.customer
         context['top_notes'] = Note.objects.filter(customer=self.customer).exclude(featured=True).filter(
             date=self.date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
+        context['top_featured_notes'] = Note.objects.filter(customer=self.customer).exclude(featured=False).filter(
+            date=self.date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
         context['bottom_notes'] = Note.objects.filter(customer=self.customer).filter(
             date=self.date).filter(note_type=Note.BOTTOM).order_by('venue', '-date', 'id')
         context['todays_date'] = self.date

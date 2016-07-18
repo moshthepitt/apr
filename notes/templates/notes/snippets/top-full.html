@@ -1,4 +1,16 @@
-<tr class="venue-headers note-region" id="tr-featured-notes"></tr>
+
+{% for featured_note in top_featured_notes %}
+	<tr class="venue-headers note-region tr-featured-notes">
+		<td class="wc-time-column-header"></td>
+		<td colspan="{{venues.count}}" class="wc-day-column-first wc-day-column-last wc-user-header printable-top ui-state-active wc-today">
+			<div class="single-top-note note-item list-group-item featured-note">
+				{{featured_note.note}}
+			</div>
+		</td>
+	</tr>
+{% endfor %}
+
+
 <tr class="venue-headers note-region" id="tr-venue-headers">
 	<td class="wc-time-column-header"></td>
 	{% for venue in venues %}
