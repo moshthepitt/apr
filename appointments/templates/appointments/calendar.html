@@ -401,8 +401,8 @@
 
  		$(document).ready(function() {
  			$('#calendar').weekCalendar({
- 				timeslotsPerHour: 4,
- 				timeslotHeight: 20,
+ 				timeslotHeight: {{CUSTOMER.time_slot_height}},
+ 				timeslotsPerHour: {{CUSTOMER.time_slots_per_hour}},
  				defaultEventLength: 4,
  				displayFreeBusys: true,
  				defaultFreeBusy: {free: true},

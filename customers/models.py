@@ -122,6 +122,8 @@ class Customer(models.Model):
     use_tags = models.BooleanField(_("Use Tags"), default=False, help_text=_("Tags are used to classify appointments"))
     use_four_day = models.BooleanField(_("Activate Three-day View"), default=False)
     use_no_background_print = models.BooleanField(_("No background color on print"), default=False)
+    time_slot_height = models.IntegerField(_("Time Slot Height"), default=25, help_text=_('The height of each timeslot in pixels. Calendar event text is scaled relative to the timeslot height.'))
+    time_slots_per_hour = models.IntegerField(_("Time Slots Per Hour"), default=4, help_text=_("The number of timeslots that will be available within an hour."))
 
     class Meta:
         verbose_name = _("Customer")

@@ -31,7 +31,8 @@ $(document).on('click', '#go-fullscreen', function(event) {
 {% endblock %}	
 
 {% block schedule_specific_js %}
-	timeslotHeight: 25,
+	timeslotHeight: {{CUSTOMER.time_slot_height}},
+	timeslotsPerHour: {{CUSTOMER.time_slots_per_hour}},
 	startOnFirstDayOfWeek: false,
 	daysToShow: {{days_to_show}},
 	data: "{% url 'appointments:calendar_event_feed' %}",

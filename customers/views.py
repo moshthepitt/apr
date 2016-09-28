@@ -176,6 +176,8 @@ class EditCustomerSettings(CustomerMixin, FormView):
         initial['use_tags'] = self.customer.use_tags
         initial['use_four_day'] = self.customer.use_four_day
         initial['use_no_background_print'] = self.customer.use_no_background_print
+        initial['time_slot_height'] = self.customer.time_slot_height
+        initial['time_slots_per_hour'] = self.customer.time_slots_per_hour
         return initial
 
     def form_valid(self, form):

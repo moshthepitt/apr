@@ -162,6 +162,8 @@ class CustomerSettingsForm(forms.ModelForm):
             'use_tags',
             'use_four_day',
             'use_no_background_print',
+            'time_slot_height',
+            'time_slots_per_hour',
         ]
 
     def __init__(self, *args, **kwargs):
@@ -172,6 +174,8 @@ class CustomerSettingsForm(forms.ModelForm):
         self.helper.layout = Layout(
             Field('shown_days'),
             Field('client_display'),
+            Field('time_slot_height'),
+            Field('time_slots_per_hour'),
             Field('allow_overlap'),
             Field('send_sms'),
             Field('send_email'),
@@ -192,6 +196,8 @@ class CustomerSettingsForm(forms.ModelForm):
         customer.use_tags = self.cleaned_data['use_tags']
         customer.use_four_day = self.cleaned_data['use_four_day']
         customer.use_no_background_print = self.cleaned_data['use_no_background_print']
+        customer.time_slot_height = self.cleaned_data['time_slot_height']
+        customer.time_slots_per_hour = self.cleaned_data['time_slots_per_hour']
         customer.save()
 
 
