@@ -78,12 +78,12 @@
 
 .wc-cal-event.showed .wc-title,
 .wc-cal-event.showed {
-	background-color: #27ae60;
+	background-color: #800080;
 }
 
 .wc-cal-event.showed .wc-time {
-	background-color: #209150;
-	border-color: #209150;
+	background-color: #8B008B;
+	border-color: #800080;
 }
 
 .dayview .wc-header .ui-state-active {
