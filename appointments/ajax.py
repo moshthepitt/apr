@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+# from django.shortcuts import render
 
 from crispy_forms.utils import render_crispy_form
 from jsonview.decorators import json_view
@@ -149,6 +150,8 @@ def calendar_event_feed(request):
                      }
                     for x in period.get_occurrences()
                     if x.event.appointment_set.first()]
+        # print(data)
+        # return render(request, 'appointments/test.html', {'data': data})
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404

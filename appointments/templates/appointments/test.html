@@ -1,0 +1,16 @@
+{% extends "front-base.html" %}
+
+{% block title %}TEST{% endblock %}
+
+{% block all_content %}
+	<div id="main-page">
+	    <div class="row content-section">
+	      <div class="container">
+	        <div class="col-md-9">
+	        	{% for item in data %}
+	        		{{item}}
+	        	{% endfor %}
+	      	</div>
+	    </div>
+    </div>
+{% endblock %}

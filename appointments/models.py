@@ -12,6 +12,7 @@ from users.models import Client
 from doctors.models import Doctor
 from venues.models import Venue
 from customers.models import Customer
+from .managers import AppointmentManager
 
 from core import labels
 
@@ -21,7 +22,8 @@ class Tag(models.Model):
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     name = models.CharField(_("Name"), max_length=255)
     color = models.CharField(_("Color"), max_length=50, blank=True)
-    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, null=True)
+    customer = models.ForeignKey(
+        Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, null=True)
 
     @property
     def html_name(self):
@@ -70,9 +72,13 @@ class Appointment(models.Model):
     venue = models.ForeignKey(Venue, verbose_name=getattr(
         labels, 'VENUE', _("Venue")), blank=True, null=True, default=None, on_delete=models.PROTECT)
     event = models.ForeignKey(Event, verbose_name=_("Event"), on_delete=models.PROTECT)
-    status = models.CharField(_("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
-    no_reminders = models.BooleanField(_("No Reminders"), default=False, help_text=_("Do not send reminders for this appointment"))
+    status = models.CharField(
+        _("Status"), max_length=15, choices=STATUS_CHOICES, blank=False, default=SCHEDULED)
+    no_reminders = models.BooleanField(
+        _("No Reminders"), default=False, help_text=_("Do not send reminders for this appointment"))
     tag = models.ForeignKey(Tag, verbose_name=_("Tag"), null=True, default=None, blank=True)
+
+    objects = AppointmentManager()
 
     def __unicode__(self):
         if self.client:
