@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 from django.utils.timezone import localtime
 from django.utils.text import slugify
+from django.core.cache import cache
 
 from randomslugfield import RandomSlugField
 from schedule.models import Event
@@ -165,6 +166,40 @@ class Appointment(models.Model):
             tag=self.get_tag_id(),
             status=self.status
         )
+
+    def serialize(self, feed='cal'):
+        cache_name = "appointmentSerialize_{}_{}".format(self.id, feed)
+        data = cache.get(cache_name)
+        if not data:
+            data = {
+                'id': self.pk,
+                'title': "{}".format(self.display_name),
+                'userId': [self.venue.pk],
+                'start': self.event.start.isoformat(),
+                'end': self.event.end.isoformat(),
+                'clientId': self.clientId,
+                'status': self.status,
+                'tag': getattr(self.tag, 'html_name', ""),
+                'body': self.event.description
+            }
+            if feed == 'venue':
+                data['title'] = "{}".format(self.venue_display_name)
+            if feed == 'print':
+                data['title'] = "{}".format(self.print_title)
+            cache.set(cache_name, data, 60 * 60 * 24 * 14)
+        return data
+
+    def clear_caches(self):
+        cache.delete_many([
+            "appointmentSerialize_{}_cal".format(self.id),
+            "appointmentSerialize_{}_venue".format(self.id),
+            "appointmentSerialize_{}_print".format(self.id),
+        ])
+
+    def set_caches(self):
+        self.serialize(feed='cal')
+        self.serialize(feed='venue')
+        self.serialize(feed='print')
 
     class Meta:
         ordering = ['-event__start']

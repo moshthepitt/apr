@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
-# from django.shortcuts import render
 
 from crispy_forms.utils import render_crispy_form
 from jsonview.decorators import json_view
@@ -138,20 +137,10 @@ def calendar_event_feed(request):
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
-            data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().display_name),
-                     'userId': [x.event.appointment_set.first().venue.pk],
-                     'start': x.start.isoformat(),
-                     'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().clientId,
-                     'status': x.event.appointment_set.first().status,
-                     'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
-                     'body': x.event.description
-                     }
+            data = [x.event.appointment_set.first().serialize()
                     for x in period.get_occurrences()
-                    if x.event.appointment_set.first()]
-        # print(data)
-        # return render(request, 'appointments/test.html', {'data': data})
+                    if x.event.appointment_set.first()
+                    ]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -167,16 +156,7 @@ def venue_event_feed(request, pk):
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
-            data = [{'id': x.event.appointment_set.first().pk,
-                     'title': "{}".format(x.event.appointment_set.first().venue_display_name),
-                     'userId': [x.event.appointment_set.first().venue.pk],
-                     'start': x.start.isoformat(),
-                     'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().clientId,
-                     'status': x.event.appointment_set.first().status,
-                     'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
-                     'body': x.event.description
-                     }
+            data = [x.event.appointment_set.first().serialize(feed='venue')
                     for x in period.get_occurrences()
                     if x.event.appointment_set.first()]
         return HttpResponse(json.dumps(data), content_type="application/json")
@@ -193,16 +173,7 @@ def printable_event_feed(request):
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
             period = Period(Event.objects.exclude(appointment=None).filter(
                 appointment__customer=request.user.userprofile.customer), fro, to)
-            data = [{'id': x.event.appointment_set.first().pk,
-                     'title': x.event.appointment_set.first().print_title,
-                     'userId': [x.event.appointment_set.first().venue.pk],
-                     'start': x.start.isoformat(),
-                     'end': x.end.isoformat(),
-                     'clientId': x.event.appointment_set.first().clientId,
-                     'status': x.event.appointment_set.first().status,
-                     'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
-                     'body': x.event.description
-                     }
+            data = [x.event.appointment_set.first().serialize(feed='print')
                     for x in period.get_occurrences()
                     if x.event.appointment_set.first()]
         return HttpResponse(json.dumps(data), content_type="application/json")

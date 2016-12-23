@@ -1,13 +1,12 @@
 from datetime import timedelta
 
-from django.utils.translation import ugettext_lazy as _
-from django.db.models.signals import post_delete, pre_save
+from django.db.models.signals import post_delete, pre_save, post_save
 from django.dispatch import receiver
-from django.core.exceptions import ValidationError
 
 from schedule.models import Event
 
 from appointments.models import Appointment
+from appointments.tasks import task_refresh_caches
 
 
 @receiver(post_delete, sender=Appointment)
@@ -45,3 +44,15 @@ def event_changed(sender, instance, **kwargs):
                     if appointment:
                         appointment.no_reminders = False
                         appointment.save()
+
+
+@receiver(post_save, sender=Appointment)
+def appointment_saved(sender, instance, created, **kwargs):
+    task_refresh_caches.delay(instance.id)
+
+
+@receiver(post_save, sender=Event)
+def event_saved(sender, instance, created, **kwargs):
+    appointment = instance.appointment_set.first()
+    if appointment:
+        task_refresh_caches.delay(appointment.id)

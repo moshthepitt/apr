@@ -91,8 +91,8 @@
 
         $('#calendar').weekCalendar({
           date: this_date,
-          timeslotsPerHour: 2,
-          timeslotHeight: 25,
+          timeslotsPerHour: 4,
+          timeslotHeight: 15,
           defaultEventLength: 4,
           displayFreeBusys: true,
           defaultFreeBusy: {free: true},
@@ -132,8 +132,7 @@
             allowCalEventOverlap: true,
             overlapEventsSeparate: true,
           {% endif %}
-          showAsSeparateUser: true,   
-          timeslotHeight: 25,          
+          showAsSeparateUser: true,             
           getUserId: function(user, index, calendar) {
               return user.id;
           },

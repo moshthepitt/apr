@@ -155,5 +155,23 @@ def task_immediate_reminder():
     ignore_result=True
 )
 def task_send_cancel_email(appointment_id):
-    appointment = Appointment.objects.get(pk=appointment_id)
-    send_cancel_email(appointment)
+    try:
+        appointment = Appointment.objects.get(pk=appointment_id)
+    except Appointment.DoesNotExist:
+        pass
+    else:
+        send_cancel_email(appointment)
+
+
+@task(
+    name="task_refresh_caches",
+    ignore_result=True
+)
+def task_refresh_caches(appointment_id):
+    try:
+        appointment = Appointment.objects.get(pk=appointment_id)
+    except Appointment.DoesNotExist:
+        pass
+    else:
+        appointment.clear_caches()
+        appointment.set_caches()
