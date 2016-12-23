@@ -7,11 +7,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import get_object_or_404
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.db import models
 
 from crispy_forms.utils import render_crispy_form
 from jsonview.decorators import json_view
 from schedule.models import Event
-from schedule.periods import Period
 
 from users.forms import AddClientForm, SelectClientForm, add_client_form_modal_helper, edit_client_form_modal_helper
 from appointments.forms import AppointmentForm, SimpleAppointmentForm, EventInfoForm
@@ -25,7 +25,8 @@ from venues.models import Venue
 @json_view
 def process_select_client_form(request):
     form = SelectClientForm(request.POST or None)
-    form.fields['client'].queryset = Client.objects.filter(customer=request.user.userprofile.customer)
+    form.fields['client'].queryset = Client.objects.filter(
+        customer=request.user.userprofile.customer)
     if form.is_valid():
         return {
             'success': True,
@@ -135,12 +136,21 @@ def calendar_event_feed(request):
                 datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
             to = timezone.make_aware(
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
-            period = Period(Event.objects.exclude(appointment=None).filter(
-                appointment__customer=request.user.userprofile.customer), fro, to)
-            data = [x.event.appointment_set.first().serialize()
-                    for x in period.get_occurrences()
-                    if x.event.appointment_set.first()
-                    ]
+            appointments = Appointment.objects.filter(customer=request.user.userprofile.customer).filter(
+                models.Q(
+                    event__start__gte=fro,
+                    event__start__lte=to,
+                ) |
+                models.Q(
+                    event__end__gte=fro,
+                    event__end__lte=to,
+                ) |
+                models.Q(
+                    event__start__lt=fro,
+                    event__end__gt=to
+                )
+            )
+            data = [x.serialize() for x in appointments]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -154,11 +164,21 @@ def venue_event_feed(request, pk):
                 datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
             to = timezone.make_aware(
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
-            period = Period(Event.objects.exclude(appointment=None).filter(
-                appointment__customer=request.user.userprofile.customer).filter(appointment__venue=venue), fro, to)
-            data = [x.event.appointment_set.first().serialize(feed='venue')
-                    for x in period.get_occurrences()
-                    if x.event.appointment_set.first()]
+            appointments = Appointment.objects.filter(customer=request.user.userprofile.customer).filter(venue=venue).filter(
+                models.Q(
+                    event__start__gte=fro,
+                    event__start__lte=to,
+                ) |
+                models.Q(
+                    event__end__gte=fro,
+                    event__end__lte=to,
+                ) |
+                models.Q(
+                    event__start__lt=fro,
+                    event__end__gt=to
+                )
+            )
+            data = [x.serialize(feed='venue') for x in appointments]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -171,11 +191,21 @@ def printable_event_feed(request):
                 datetime.fromtimestamp(float(request.GET['start'])), timezone.get_current_timezone())
             to = timezone.make_aware(
                 datetime.fromtimestamp(float(request.GET['end'])), timezone.get_current_timezone())
-            period = Period(Event.objects.exclude(appointment=None).filter(
-                appointment__customer=request.user.userprofile.customer), fro, to)
-            data = [x.event.appointment_set.first().serialize(feed='print')
-                    for x in period.get_occurrences()
-                    if x.event.appointment_set.first()]
+            appointments = Appointment.objects.filter(customer=request.user.userprofile.customer).filter(
+                models.Q(
+                    event__start__gte=fro,
+                    event__start__lte=to,
+                ) |
+                models.Q(
+                    event__end__gte=fro,
+                    event__end__lte=to,
+                ) |
+                models.Q(
+                    event__start__lt=fro,
+                    event__end__gt=to
+                )
+            )
+            data = [x.serialize(feed='print') for x in appointments]
         return HttpResponse(json.dumps(data), content_type="application/json")
     # if all fails
     raise Http404
@@ -190,7 +220,8 @@ def edit_event(request, pk):
     if request.is_ajax() and request.method == 'POST':
         if request.POST.get('client'):
             form = SimpleAppointmentForm(request.POST)
-            form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
+            form.fields['venue'].queryset = Venue.objects.filter(
+                customer=request.user.userprofile.customer)
             if form.is_valid():
                 success = form.save_edit()
         else:
@@ -208,7 +239,8 @@ def add_event(request):
     }
     if request.is_ajax() and request.method == 'POST':
         form = SimpleAppointmentForm(request.POST)
-        form.fields['venue'].queryset = Venue.objects.filter(customer=request.user.userprofile.customer)
+        form.fields['venue'].queryset = Venue.objects.filter(
+            customer=request.user.userprofile.customer)
         if form.is_valid():
             appointment = form.add_new(request.user)
             data['success'] = True
