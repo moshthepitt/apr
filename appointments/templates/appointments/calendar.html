@@ -486,11 +486,7 @@
  					editEvent(calEvent);
  				},
  				eventBody: function(calEvent, $event) {
- 					var data = calEvent.title;
- 					if (calEvent.body) {
- 						data = data + "<br/>" + calEvent.body;	
- 					} 					
- 					return data;
+ 					return calEvent.calendarBody;
  				},
  				eventClick: function(calEvent, $event) {
  					{% if not request.user.userprofile.is_user %}
