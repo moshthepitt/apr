@@ -168,8 +168,8 @@ class Appointment(models.Model):
         )
 
     def serialize(self, feed='cal'):
-        cache_name = "appointmentSerialize_{}_{}".format(self.id, feed)
-        data = cache.get(cache_name)
+        # cache_name = "appointmentSerialize_{}_{}".format(self.id, feed)
+        data = None  # cache.get(cache_name)
         if not data:
             data = {
                 'id': self.pk,
@@ -186,7 +186,7 @@ class Appointment(models.Model):
                 data['title'] = "{}".format(self.venue_display_name)
             if feed == 'print':
                 data['title'] = "{}".format(self.print_title)
-            cache.set(cache_name, data, 60 * 60 * 24 * 14)
+            # cache.set(cache_name, data, 60 * 60 * 24 * 14)
         return data
 
     def clear_caches(self):

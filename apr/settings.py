@@ -191,6 +191,14 @@ CACHEOPS = {
     '*.*': ('all', 60 * 10),
 }
 
+# Suit
+
+SUIT_CONFIG = {
+    'ADMIN_NAME': 'AppointWare',
+    'SEARCH_URL': '',
+
+}
+
 try:
    from local_settings import *
 except ImportError, e:
