@@ -9,6 +9,6 @@ class AppointmentManager(models.Manager):
             'client',
             'doctor',
             'venue',
-            'event',
+            # 'event',
             'tag'
         )

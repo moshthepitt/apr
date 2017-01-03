@@ -168,25 +168,29 @@ class Appointment(models.Model):
         )
 
     def serialize(self, feed='cal'):
-        # cache_name = "appointmentSerialize_{}_{}".format(self.id, feed)
-        # data = cache.get(cache_name)
-        # if not data:
-        data = {
-            'id': self.pk,
-            'title': "{}".format(self.display_name),
-            'userId': [self.venue.pk],
-            'start': self.event.start.isoformat(),
-            'end': self.event.end.isoformat(),
-            'clientId': self.clientId,
-            'status': self.status,
-            'tag': getattr(self.tag, 'html_name', ""),
-            'body': self.event.description
-        }
-        if feed == 'venue':
-            data['title'] = "{}".format(self.venue_display_name)
-        if feed == 'print':
-            data['title'] = "{}".format(self.print_title)
-        # cache.set(cache_name, data, 60 * 60 * 24 * 14)
+        cache_name = "appointmentSerialize_{}_{}".format(self.id, feed)
+        data = cache.get(cache_name)
+        if not data:
+            data = {
+                'id': self.pk,
+                'title': "{}".format(self.display_name),
+                'userId': [self.venue.pk],
+                'start': self.event.start.isoformat(),
+                'end': self.event.end.isoformat(),
+                'clientId': self.clientId,
+                'status': self.status,
+                'tag': getattr(self.tag, 'html_name', ""),
+                'body': self.event.description
+            }
+            if feed == 'venue':
+                data['title'] = "{}".format(self.venue_display_name)
+            if feed == 'print':
+                data['title'] = "{}".format(self.print_title)
+            if data['body']:
+                data['calendarBody'] = "{}<br/>{}".format(data['title'], data['body'])
+            else:
+                data['calendarBody'] = "{}".format(data['title'])
+            cache.set(cache_name, data, 60 * 60 * 24 * 14)
         return data
 
     def clear_caches(self):
