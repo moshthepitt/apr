@@ -53,7 +53,19 @@
         {% if request.user.is_authenticated %}
           {% block top_sidebar %}{% endblock %}
           <li><a href="{% url 'dashboard' %}"><i class="fa fa-calendar"></i> <span>{% trans "Calendar" %}</span></a></li>
+          {% if not active_views %}
           <li><a href="{% url 'day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Day View" %}</span></a></li>
+          {% else %}
+            <li class="submenu">
+              <a href="#"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Day View" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
+              <ul>
+                <li><a href="{% url 'day' %}">{% trans "Main Day View" %}</a></li>
+                {% for cal_view in active_views %}
+                  <li><a href="{% url 'venues:views_calendar' cal_view.pk %}">{{cal_view.name}}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
+          {% endif %}
           {% if CUSTOMER.use_four_day %}
           <li><a href="{% url 'four_day' %}"><i class="fa fa-calendar-check-o"></i> <span>{% trans "Three Day View" %}</span></a></li>
           {% endif %}
