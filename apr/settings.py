@@ -46,6 +46,8 @@ INSTALLED_APPS = (
     'cacheops',
     'suit_redactor',
     'django_js_reverse',
+    'django_extensions',
+    'django_tables2',
     # custom
     'appointments',
     'users',

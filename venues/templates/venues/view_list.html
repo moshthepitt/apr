@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load staticfiles %}
+{% load cache %}
+
+{% block title %} {% trans "Views" %} | {{site.name}}{% endblock %}
+
+{% block extracss %}
+	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/jquery.dataTables.min.css' %}" />
+	<link type="text/css" rel="stylesheet" href="{% static 'datatables/css/dataTables.bootstrap.css' %}" />
+{% endblock %}
+
+{% block main_content %}
+	{# {% cache 1200 vulist CUSTOMER.pk request.user.pk %} #}
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %} {% trans "Views" %} {% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    {{ datatable }}
+	  </div>
+	</div>	
+	{# {% endcach e %} #}
+{% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'datatables/js/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'datatables/js/dataTables.bootstrap.js' %}"></script>
+	<script type="text/javascript" charset="utf8" src="{{ STATIC_URL }}js/datatableview.min.js"></script>
+{% endblock %}

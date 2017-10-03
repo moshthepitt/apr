@@ -62,7 +62,6 @@
           <li class="submenu">
             <a href="#"><i class="fa fa-th-list"></i> <span>{% trans "Appointments" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
             <ul>
-              <!--li><a href="{% url 'appointments:add' %}">{% trans "Add Appointment" %}</a></li-->
               <li><a href="{% url 'appointments:appointments' %}">{% trans "Appointments" %}</a></li>
             </ul>
           </li>
@@ -73,6 +72,15 @@
           {% endif %}
 
           {% if request.user.is_authenticated %}
+          <li class="submenu">
+            <a href="#"><i class="fa fa-bookmark-o"></i> <span>{% trans "Views" %} </span> <i class="arrow fa fa-chevron-right"></i></a>
+            <ul>
+              {% if not request.user.userprofile.is_user %}
+              <li><a href="{% url 'venues:views_add' %}">{% trans "Add View" %}</a></li>
+              {% endif %}
+              <li><a href="{% url 'venues:views_list' %}">{% trans "Views" %}</a></li>
+            </ul>
+          </li> 
           <li class="submenu">
             <a href="#"><i class="fa fa-user"></i> <span>{% trans "Clients" %}</span> <i class="arrow fa fa-chevron-right"></i></a>
             <ul>

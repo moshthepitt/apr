@@ -12,11 +12,15 @@ from datatableview.views import DatatableView
 
 from customers.mixins import CustomerMixin
 from core import labels
+from core.generic_views import CoreListView, CoreCreateView
+from core.generic_views import CoreUpdateView, CoreDeleteView
 from opening_hours.forms import OpeningHourFormSetHelper, OpeningHourFormSet
 from appointments.models import Tag
 
-from venues.models import Venue
+from venues.models import Venue, View
 from venues.forms import VenueForm, NoSubmitVenueFormHelper, VenueScriptForm
+from venues.forms import ViewForm
+from venues.tables import ViewTable
 
 
 class VenueAdd(CustomerMixin, FormView):
@@ -28,7 +32,8 @@ class VenueAdd(CustomerMixin, FormView):
     def form_valid(self, form):
         form.create_venue(self.request.user)
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
+            self.request,
+            messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueAdd, self).form_valid(form)
 
 
@@ -37,8 +42,10 @@ class VenueView(CustomerMixin, DetailView):
     template_name = "venues/venue_view.html"
 
     def dispatch(self, *args, **kwargs):
-        # if this appointment does not belong to the current customer then raise 404
-        if self.request.user.userprofile.customer != self.get_object().customer:
+        # if this appointment does not belong to the current customer then
+        # raise 404
+        if self.request.user.userprofile.customer !=\
+                self.get_object().customer:
             raise Http404
 
         return super(VenueView, self).dispatch(*args, **kwargs)
@@ -53,7 +60,8 @@ class VenueUpdate(CustomerMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super(VenueUpdate, self).get_context_data(**kwargs)
         if self.request.POST:
-            context['formset'] = OpeningHourFormSet(self.request.POST, instance=self.get_object())
+            context['formset'] = OpeningHourFormSet(self.request.POST,
+                                                    instance=self.get_object())
         else:
             context['formset'] = OpeningHourFormSet(instance=self.get_object())
         context['venue_helper'] = NoSubmitVenueFormHelper()
@@ -69,12 +77,15 @@ class VenueUpdate(CustomerMixin, UpdateView):
             return self.form_invalid(form=self.get_form())
 
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
+            self.request,
+            messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueUpdate, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        # if this appointment does not belong to the current customer then raise 404
-        if self.request.user.userprofile.customer != self.get_object().customer:
+        # if this appointment does not belong to the current customer then
+        # raise 404
+        if self.request.user.userprofile.customer !=\
+                self.get_object().customer:
             raise Http404
         return super(VenueUpdate, self).dispatch(*args, **kwargs)
 
@@ -87,11 +98,13 @@ class VenueScriptUpdate(CustomerMixin, UpdateView):
 
     def form_valid(self, form):
         messages.add_message(
-            self.request, messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
+            self.request,
+            messages.SUCCESS, _('Successfully saved {}'.format(labels.VENUE)))
         return super(VenueScriptUpdate, self).form_valid(form)
 
     def dispatch(self, *args, **kwargs):
-        # if this appointment does not belong to the current customer then raise 404
+        # if this appointment does not belong to the current customer then
+        # raise 404
         if self.request.user.userprofile.customer != self.get_object().customer:
             raise Http404
         return super(VenueScriptUpdate, self).dispatch(*args, **kwargs)
@@ -169,7 +182,63 @@ class VenueCalendarView(CustomerMixin, DetailView):
         return context
 
     def dispatch(self, *args, **kwargs):
-        # if this appointment does not belong to the current customer then raise 404
-        if self.request.user.userprofile.customer != self.get_object().customer:
+        # if this appointment does not belong to the current customer then
+        # raise 404
+        if self.request.user.userprofile.customer !=\
+                self.get_object().customer:
             raise Http404
         return super(VenueCalendarView, self).dispatch(*args, **kwargs)
+
+
+class ViewListview(CoreListView):
+    model = View
+    table_class = ViewTable
+    search_fields = ['name']
+
+    def get_context_data(self, **kwargs):
+        context = super(ViewListview, self).get_context_data(**kwargs)
+        context['create_view_url'] = reverse_lazy('venues:views_add')
+        context['list_view_url'] = reverse_lazy('venues:views_list')
+        return context
+
+
+class ViewDatatableView(CustomerMixin, DatatableView):
+    model = View
+    datatable_options = {
+        'structure_template': "datatableview/bootstrap_structure.html",
+        'columns': [
+            'name',
+            (_("Actions"), 'id', 'get_actions'),
+        ],
+        'search_fields': ['name'],
+        'unsortable_columns': ['id'],
+    }
+
+    def get_actions(self, instance, *args, **kwargs):
+        return format_html(
+            '<a href="{}">Edit</a> | <a href="{}">Delete</a>',
+            instance.get_edit_url(),
+            instance.get_delete_url()
+        )
+
+    def get_queryset(self, **kwargs):
+        queryset = View.objects.filter(
+            customer=self.request.user.userprofile.customer)
+        return queryset
+
+
+class AddView(CoreCreateView):
+    model = View
+    form_class = ViewForm
+    template_name = "venues/view_add.html"
+
+
+class EditView(CoreUpdateView):
+    model = View
+    form_class = ViewForm
+    template_name = "venues/view_edit.html"
+
+
+class DeleteView(CoreDeleteView):
+    model = View
+    success_url = reverse_lazy('venues:views_list')

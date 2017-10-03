@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load i18n django_tables2 crispy_forms_tags %}
+
+{% block title %} {{verbose_name_plural}} {% endblock %}
+
+{% block main_content %}
+	<div class="panel panel-default">
+		<div class="panel-heading text-right">
+			<span class="pull-left"><strong>{{verbose_name_plural}}</strong></span>
+			<div class="">
+			{% crispy form %}
+			<a href="{{create_view_url}}" class="btn btn-primary btn-sm btn-100">{% trans 'Add New' %}</a>
+			</div>
+		</div>
+	  <div class="panel-body">
+	    {% render_table table %}
+	    {% if request.GET.q %}
+	    	<a href="{{list_view_url}}" class="btn btn-default btn-sm btn-100">{% trans 'Clear Search' %}</a>
+	    {% endif %}
+	    <div class="clearfix"></div>	
+	  </div>
+	</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+{% load cache %}
+{% load staticfiles %}
+
+{% block title %}{% trans "Add View" %} | {{site.name}}{% endblock %}
+
+{% block extracss %}
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2.min.css' %}" />
+	<link rel="stylesheet" type="text/css" href="{% static 'select2/css/select2-bootstrap.css' %}" />
+{% endblock %}
+
+{% block main_content %}
+	{# {% cache 3600 vuadd CUSTOMER.pk %} #}
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">
+	    {% block calendar_title %}{% trans "Add View" %}{% endblock %}
+	    </h3>
+	  </div>
+	  <div class="panel-body">
+	    <div class="row" id="create-view no-padding">
+	    	<div class="col-md-6 no-padding">{% crispy form %}</div>
+	    	<div class="clearfix"></div>
+	    </div>
+	  </div>
+	</div>	
+	{# {% endcache %} #}
+{% endblock %}
+
+{% block extrajs %}
+	<script src="{% static 'select2/js/select2.full.min.js' %}"></script>
+	<script>
+		$(document).ready(function() {			
+
+		    // secelt2 		
+		    		
+		    $("#id_venues").select2({
+		    	placeholder: "{% trans 'Select View' %}",
+		    	width:'100%',
+		    	allowClear: true,
+		    });
+	  	});	
+	</script>
+{% endblock %}

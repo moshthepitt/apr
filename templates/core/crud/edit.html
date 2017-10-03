@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block extrahead %}
+	{{form.media.css}}
+{% endblock %}
+
+{% block title %} {{object}} | {% trans "Edit" %} {{verbose_name}} {% endblock %}
+
+{% block main_content %} 
+	<div class="row content-section page">
+		<div class="col-md-12 no-padding">
+			<div class="content-box-header">
+				<div class="panel-title">{% trans "Edit:" %} {{object}}</div>
+			</div>
+			<div class="content-box-large box-with-header">
+				{% crispy form %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block footerjs %}
+	{{form.media.js}}
+{% endblock %}
+
+

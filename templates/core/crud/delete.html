@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n crispy_forms_tags %}
+
+{% block title %} {{object}} | {% trans "Delete" %} {{verbose_name}} {% endblock %}
+
+{% block main_content %} 
+	<div class="row content-section page">
+		<div class="col-md-12 no-padding">
+			<div class="content-box-header">
+				<div class="panel-title">{% trans "Delete" %} {{verbose_name}}: {{object}}</div>
+			</div>
+			<div class="content-box-large box-with-header">
+				<form action="" method="post">{% csrf_token %}
+				    <p>{% trans 'Are you sure you want to delete' %} "{{ object }}"?</p>
+				    <input type="submit" class="btn btn-danger btn-250" value="{% trans 'Confirm' %}" />
+				    <a class='btn btn-default btn-250' href='{{object.get_list_url}}'>{% trans "Cancel" %}</a>
+				</form>
+			</div>
+		</div>
+	</div>
+{% endblock %}

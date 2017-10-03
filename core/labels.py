@@ -1,5 +1,6 @@
 """
-"Labels" allow us the flexibility of have different names for everything defined here
+"Labels" allow us the flexibility of have different names for everything
+defined here
  e.g. in one set up a "Doctor" may be known as a "Lawyer"
 """
 
@@ -24,6 +25,8 @@ ASSISTANT_PLURAL = _("Assistants")
 
 VENUE = _("Schedule")
 VENUE_PLURAL = _("Schedules")
+VIEW = _("View")
+VIEW_PLURAL = _("Views")
 
 DESCRIPTION = _("Notes")
 
