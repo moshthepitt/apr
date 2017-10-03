@@ -18,7 +18,7 @@ from schedule.periods import Day
 from dateutil import parser
 
 from appointments.models import Tag
-from venues.models import Venue
+from venues.models import Venue, View
 from subscriptions.models import Subscription
 from core.forms import SupportForm
 from customers.models import Customer
@@ -65,13 +65,15 @@ class PDFView(CustomerMixin, TemplateView):
         period = Day(Event.objects.exclude(appointment=None).filter(
             appointment__customer=self.customer), self.date)
         data = [{'id': x.event.appointment_set.first().pk,
-                 'title': "{}".format(x.event.appointment_set.first().display_name),
+                 'title': "{}".format(
+                        x.event.appointment_set.first().display_name),
                  'userId': [x.event.appointment_set.first().venue.pk],
                  'start': x.start.isoformat(),
                  'end': x.end.isoformat(),
                  'clientId': x.event.appointment_set.first().clientId,
                  'status': x.event.appointment_set.first().status,
-                 'tag': getattr(x.event.appointment_set.first().tag, 'html_name', ""),
+                 'tag': getattr(x.event.appointment_set.first().tag,
+                                'html_name', ""),
                  'body': x.event.description
                  }
                 for x in period.get_occurrences()]
@@ -79,24 +81,37 @@ class PDFView(CustomerMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(PDFView, self).get_context_data(**kwargs)
-        context['venues'] = Venue.objects.filter(
-            customer=self.customer).exclude(main_calendar=False)
+        if not self.this_view:
+            context['venues'] = Venue.objects.filter(
+                customer=self.customer).exclude(main_calendar=False)
+        else:
+            context['venues'] = self.this_view.venues.all()
         context['tags'] = Tag.objects.filter(
             customer=self.customer)
         context['data'] = self.get_data()
         context['this_customer'] = self.customer
-        context['top_notes'] = Note.objects.filter(customer=self.customer).exclude(featured=True).filter(
-            date=self.date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
-        context['top_featured_notes'] = Note.objects.filter(customer=self.customer).exclude(featured=False).filter(
-            date=self.date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
-        context['bottom_notes'] = Note.objects.filter(customer=self.customer).filter(
-            date=self.date).filter(note_type=Note.BOTTOM).order_by('venue', '-date', 'id')
+        context['top_notes'] = Note.objects.filter(
+            customer=self.customer).exclude(featured=True).filter(
+            date=self.date).filter(note_type=Note.TOP).order_by(
+            'venue', '-date', 'id')
+        context['top_featured_notes'] = Note.objects.filter(
+            customer=self.customer).exclude(featured=False).filter(
+            date=self.date).filter(note_type=Note.TOP).order_by(
+            'venue', '-date', 'id')
+        context['bottom_notes'] = Note.objects.filter(
+            customer=self.customer).filter(
+            date=self.date).filter(note_type=Note.BOTTOM).order_by(
+            'venue', '-date', 'id')
         context['todays_date'] = self.date
         return context
 
     def dispatch(self, *args, **kwargs):
         customer_id = self.request.GET.get('cid')
         date = self.request.GET.get('date')
+        self.this_view = None
+        if self.request.GET.get('view_id'):
+            self.this_view = View.objects.get(
+                pk=self.request.GET.get('view_id'))
         if customer_id and date:
             try:
                 self.customer = get_object_or_404(Customer, pk=customer_id)
@@ -115,9 +130,12 @@ def generate_pdf_view(request):
     data = {
         'date': request.GET.get('date'),
         'cid': request.user.userprofile.customer.pk,
+        'view_id': request.GET.get('view_id'),
     }
-    url = request.build_absolute_uri(reverse('secret_pdf')) + "?" + urlencode(data)
-    filename = slugify("{} {}".format(request.user.userprofile.customer.name, data['date'])) + ".pdf"
+    url = request.build_absolute_uri(
+        reverse('secret_pdf')) + "?" + urlencode(data)
+    filename = slugify("{} {}".format(
+        request.user.userprofile.customer.name, data['date'])) + ".pdf"
 
     options = {
         'dpi': 300,
@@ -132,7 +150,8 @@ def generate_pdf_view(request):
     response = HttpResponse(content_type="application/pdf")
     response["Cache-Control"] = "max-age=0"
     response["Accept-Ranges"] = "none"
-    response["Content-Disposition"] = "attachment; filename={}".format(filename)
+    response["Content-Disposition"] =\
+        "attachment; filename={}".format(filename)
 
     # send the generated PDF
     response.write(pdf)
@@ -163,7 +182,8 @@ class CustomerRedirect(RedirectView):
     pattern_name = 'home'
 
     def get_redirect_url(self, *args, **kwargs):
-        if self.request.user.is_authenticated and self.request.user.userprofile.customer:
+        if self.request.user.is_authenticated and\
+                self.request.user.userprofile.customer:
             return reverse_lazy('dashboard')
         return super(CustomerRedirect, self).get_redirect_url(*args, **kwargs)
 

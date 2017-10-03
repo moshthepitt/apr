@@ -3,8 +3,8 @@
 {% load i18n %}
 {% load cache %}
 
-{% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
-{% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block title %} {{object.name|upper}} {% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block calendar_title %} {{object.name|upper}} {% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
 
 {% block calendar_class %}dayview{% endblock %}
 
@@ -172,6 +172,7 @@ $(document).on('click', '.editable-note', function(event) {
 			var data = {}
 			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toDateString();
 			data['cid'] = {{CUSTOMER.id}};
+			data['view_id'] = {{object.id}};
 			var pdf_url = "{% url 'pdf' %}" + '?' + $.param(data);
 			return pdf_url;
 		}
