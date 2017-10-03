@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from venues.views import VenueDatatableView, VenueAdd, VenueUpdate, VenueDelete
 from venues.views import VenueView, VenueCalendarView, VenueScriptUpdate
 from venues.views import AddView, EditView, DeleteView, ViewDatatableView
+from venues.views import DayViewCalendar
 
 urlpatterns = [
     url(r'^$', login_required(VenueDatatableView.as_view()), name='list'),
@@ -25,4 +26,6 @@ urlpatterns = [
         name='views_delete'),
     url(r'^views/$', login_required(ViewDatatableView.as_view()),
         name='views_list'),
+    url(r'^views-calendar/(?P<pk>\d+)/$',
+        login_required(DayViewCalendar.as_view()), name='views_calendar'),
 ]

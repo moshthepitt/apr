@@ -242,3 +242,17 @@ class EditView(CoreUpdateView):
 class DeleteView(CoreDeleteView):
     model = View
     success_url = reverse_lazy('venues:views_list')
+
+
+class DayViewCalendar(CustomerMixin, DetailView):
+    """
+    Day
+    """
+    model = View
+    template_name = 'venues/venue_calendar_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DayViewCalendar, self).get_context_data(**kwargs)
+        context['tags'] = Tag.objects.filter(
+            customer=self.request.user.userprofile.customer)
+        return context

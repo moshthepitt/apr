@@ -4,7 +4,7 @@ from django.views.generic.base import TemplateView
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
-from venues.models import Venue
+from venues.models import Venue, View
 from notes.forms import NoteForm, EditNoteForm
 from notes.models import Note
 from customers.mixins import Customer404Mixin
@@ -27,12 +27,23 @@ class AddNoteSnippetView(Customer404Mixin, TemplateView):
             date = timezone.now().date()
 
         note_form = NoteForm()
-        note_form.fields['venue'].queryset = Venue.objects.filter(
-            customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        if not self.this_view:
+            note_form.fields['venue'].queryset = Venue.objects.filter(
+                customer=self.request.user.userprofile.customer).exclude(
+                main_calendar=False)
+        else:
+            note_form.fields['venue'].queryset = self.this_view.venues.all()
         note_form.fields['date'].initial = date
         note_form.fields['end_date'].initial = date.strftime("%d-%m-%Y")
         context['NoteForm'] = note_form
         return context
+
+    def dispatch(self, *args, **kwargs):
+        self.this_view = None
+        if self.request.GET.get('view_id'):
+            self.this_view = View.objects.get(
+                pk=self.request.GET.get('view_id'))
+        return super(AddNoteSnippetView, self).dispatch(*args, **kwargs)
 
 
 class EditNoteSnippetView(Customer404Mixin, TemplateView):
@@ -66,10 +77,25 @@ class TopNotesSnippetView(Customer404Mixin, TemplateView):
             date = timezone.localtime(parser.parse(input_date)).date
         else:
             date = timezone.now().date
-        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).exclude(featured=True).filter(
-            date=date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
-        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        context['notes'] = Note.objects.filter(
+            customer=self.request.user.userprofile.customer).exclude(
+            featured=True).filter(
+            date=date).filter(note_type=Note.TOP).order_by(
+            'venue', '-date', 'id')
+        if not self.this_view:
+            context['venues'] = Venue.objects.filter(
+                customer=self.request.user.userprofile.customer).exclude(
+                main_calendar=False)
+        else:
+            context['venues'] = self.this_view.venues.all()
         return context
+
+    def dispatch(self, *args, **kwargs):
+        self.this_view = None
+        if self.request.GET.get('view_id'):
+            self.this_view = View.objects.get(
+                pk=self.request.GET.get('view_id'))
+        return super(TopNotesSnippetView, self).dispatch(*args, **kwargs)
 
 
 class TopFeaturedNotesSnippetView(Customer404Mixin, TemplateView):
@@ -78,16 +104,33 @@ class TopFeaturedNotesSnippetView(Customer404Mixin, TemplateView):
     paginate_by = 15
 
     def get_context_data(self, **kwargs):
-        context = super(TopFeaturedNotesSnippetView, self).get_context_data(**kwargs)
+        context = super(TopFeaturedNotesSnippetView, self).get_context_data(
+            **kwargs)
         input_date = self.request.GET.get('date', "")
         if input_date:
             date = timezone.localtime(parser.parse(input_date)).date
         else:
             date = timezone.now().date
-        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).exclude(featured=False).filter(
-            date=date).filter(note_type=Note.TOP).order_by('venue', '-date', 'id')
-        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        context['notes'] = Note.objects.filter(
+            customer=self.request.user.userprofile.customer).exclude(
+            featured=False).filter(
+            date=date).filter(note_type=Note.TOP).order_by(
+            'venue', '-date', 'id')
+        if not self.this_view:
+            context['venues'] = Venue.objects.filter(
+                customer=self.request.user.userprofile.customer).exclude(
+                main_calendar=False)
+        else:
+            context['venues'] = self.this_view.venues.all()
         return context
+
+    def dispatch(self, *args, **kwargs):
+        self.this_view = None
+        if self.request.GET.get('view_id'):
+            self.this_view = View.objects.get(
+                pk=self.request.GET.get('view_id'))
+        return super(TopFeaturedNotesSnippetView, self).dispatch(
+            *args, **kwargs)
 
 
 class BottomNotesSnippetView(Customer404Mixin, TemplateView):
@@ -96,13 +139,28 @@ class BottomNotesSnippetView(Customer404Mixin, TemplateView):
     paginate_by = 15
 
     def get_context_data(self, **kwargs):
-        context = super(BottomNotesSnippetView, self).get_context_data(**kwargs)
+        context = super(BottomNotesSnippetView, self).get_context_data(
+            **kwargs)
         input_date = self.request.GET.get('date', "")
         if input_date:
             date = timezone.localtime(parser.parse(input_date)).date
         else:
             date = timezone.now().date
-        context['notes'] = Note.objects.filter(customer=self.request.user.userprofile.customer).filter(
-            date=date).filter(note_type=Note.BOTTOM).order_by('venue', '-date', 'id')
-        context['venues'] = Venue.objects.filter(customer=self.request.user.userprofile.customer).exclude(main_calendar=False)
+        context['notes'] = Note.objects.filter(
+            customer=self.request.user.userprofile.customer).filter(
+            date=date).filter(note_type=Note.BOTTOM).order_by(
+            'venue', '-date', 'id')
+        if not self.this_view:
+            context['venues'] = Venue.objects.filter(
+                customer=self.request.user.userprofile.customer).exclude(
+                main_calendar=False)
+        else:
+            context['venues'] = self.this_view.venues.all()
         return context
+
+    def dispatch(self, *args, **kwargs):
+        self.this_view = None
+        if self.request.GET.get('view_id'):
+            self.this_view = View.objects.get(
+                pk=self.request.GET.get('view_id'))
+        return super(BottomNotesSnippetView, self).dispatch(*args, **kwargs)

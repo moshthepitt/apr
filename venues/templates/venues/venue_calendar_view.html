@@ -1,0 +1,272 @@
+{% extends "appointments/calendar.html" %}
+{% load staticfiles %}
+{% load i18n %}
+{% load cache %}
+
+{% block title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+{% block calendar_title %}{% trans "Day View" %} {{CUSTOMER.name|default_if_none:"AppointWare"}}{% endblock %}
+
+{% block calendar_class %}dayview{% endblock %}
+
+
+{% block calendar_custom_buttons %}
+	{% if not request.user.userprofile.is_user %}
+	<button class="btn btn-sm btn-default" id="go-add-note"><i class="fa fa-plus-square"></i> {% trans "Add Note" %}</button>
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
+	<a href="#" class="btn btn-sm btn-default" id="go-print" target="_blank"><i class="fa fa-print"></i> {% trans "Print" %}</a>
+	{% endif %}
+	{% endif %}
+{% endblock %}
+
+{% block custom_calendar_modals %}
+	<!-- Add Note Modal -->
+	<div class="modal fade" id="add-note-modal" role="dialog" aria-labelledby="add-note-modalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title" id="add-note-modalLabel">{% trans "Note" %}</h4>
+	      </div>
+	      <div class="modal-body" id="add-note-snippet-content"></div>
+	      <div class="modal-footer">
+	        <button type="button" id="add-note-modal-close" class="btn btn-default" data-dismiss="modal">{% trans "Cancel" %}</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+{% endblock %}
+
+{% block calendar_navigation %}
+$(document).on('click', '#go-prev', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("prev");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
+	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
+});
+$(document).on('click', '#go-today', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("today");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
+	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
+});
+$(document).on('click', '#go-next', function(event) {
+	event.preventDefault();
+	$("#calendar").weekCalendar("next");
+	{% if CUSTOMER.customersubscription.subscription.can_print %}
+	$('#go-print').attr("href", getPrintURL());
+	{% endif %}
+}); 
+$(document).on('click', '#go-fullscreen', function(event) {
+	event.preventDefault();
+	$("#user-nav").toggle();
+	$("#sidebar").toggle();
+	$("#content").toggleClass("fullscreen-mode");
+	$("#header").toggleClass("fullscreen-mode");
+});	
+
+$(document).on('click', '.editable-note', function(event) {
+	event.preventDefault();
+	var pk = $(this).data("pk");
+	var url = Urls['notes:edit_note_snippet'](pk);
+
+	$("#add-note-snippet-content").html("");
+	
+	$("#add-note-snippet-content" ).load(url, function(){
+		$('#add-note-modal').modal();
+		// select2 		
+		$("#id-select-venue").select2({
+			placeholder: "{% trans 'Select a schedule' %}",
+			width:'100%',
+		});
+		// datepicker
+		$('#end-date').datepicker({
+			'format': 'dd-mm-yyyy',
+			'autoclose': true,
+			'todayBtn': true,
+			'todayHighlight': true,
+		});				
+	});
+});
+	
+{% endblock %}	
+
+{% block schedule_specific_js %}
+	timeslotHeight: {{CUSTOMER.time_slot_height}},
+	timeslotsPerHour: {{CUSTOMER.time_slots_per_hour}},
+	startOnFirstDayOfWeek: false,
+	daysToShow: 1,
+	data: "{% url 'appointments:calendar_event_feed' %}",
+		businessHours: {
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+			start: {{CUSTOMER.global_opening_time.from_hour.hour}},
+		{% else %}
+			start: 8,
+		{% endif %}
+		{% if CUSTOMER.global_opening_time.from_hour.hour %}
+        	end: {{CUSTOMER.global_closing_time.to_hour.hour}},
+        {% else %}
+        	end: 17,
+        {% endif %}
+        limitDisplay: true
+	},  
+	users: [
+		{% for venue in object.venues.all %}
+			{
+				'id': {{venue.id}},
+				'name': '{{venue.name|upper}}'
+			},
+		{% endfor %}
+		],	
+	{% if CUSTOMER.allow_overlap %}
+		allowCalEventOverlap: true,
+		overlapEventsSeparate: true,
+	{% endif %}
+	calendarAfterLoad: function() {
+         loadNotes();
+    },
+{% endblock %}
+
+{% block calendar_footer_js %}
+	<script>
+
+		// load notes
+		function loadNotes() {
+			var data = {};
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toISOString();
+			data['view_id'] = {{object.id}};
+			var top_featured_notes_url = "{% url 'notes:top_featured_notes_snippet' %}" + '?' + $.param(data);
+			var top_notes_url = "{% url 'notes:top_notes_snippet' %}" + '?' + $.param(data);
+			var bottom_notes_url = "{% url 'notes:bottom_notes_snippet' %}" + '?' + $.param(data);
+			$("#tr-bottom-notes" ).load(bottom_notes_url, function(){});			
+
+			$.get(top_featured_notes_url, function(data){ 
+				$(".tr-featured-notes").remove();
+				$("#tr-venue-headers" ).before(data);
+			});
+
+			$("#tr-venue-headers" ).load(top_notes_url, function(){});
+		}
+
+		function deleteNote(id) {
+			var note_id = id;
+			var csrftoken = $.cookie('csrftoken');
+			var url = '{% url "notes:ajax_delete_note" 0 %}'.replace (0, note_id);
+			$.post(url, {
+			        csrfmiddlewaretoken: csrftoken,
+			        id: note_id,
+			    },
+			    function(data) {
+			        if(data) {
+			        	loadNotes();
+			        } else {
+			        	loadNotes();
+			        }
+			    }
+			);
+		}
+
+		{% if CUSTOMER.customersubscription.subscription.can_print %}
+		function getPrintURL() {
+			var data = {}
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toDateString();
+			data['cid'] = {{CUSTOMER.id}};
+			var pdf_url = "{% url 'pdf' %}" + '?' + $.param(data);
+			return pdf_url;
+		}
+		{% endif %}
+		
+		$(document).ready(function() {
+			$('.ui-widget-content.wc-header tr:last').after('{% filter escapejs %}{% include "notes/snippets/top.html" %}{% endfilter %}');
+			$('.wc-time-slots tr:last').after('{% filter escapejs %}{% include "notes/snippets/bottom.html" %}{% endfilter %}');
+			{% if CUSTOMER.customersubscription.subscription.can_print %}
+			$('#go-print').attr("href", getPrintURL());
+			{% endif %}
+		});
+
+		$(document).on('click', '#go-add-note', function(event) {
+			event.preventDefault();
+			$("#add-note-snippet-content").html("");
+			var data = {};
+			data['date'] = $("#calendar").weekCalendar("getCurrentFirstDay").toISOString();
+			data['view_id'] = {{object.id}};
+			var url = "{% url 'notes:add_note_snippet' %}" + '?' + $.param(data);
+			$("#add-note-snippet-content" ).load(url, function(){
+				$('#add-note-modal').modal();
+				// select2 		
+				$("#id-select-venue").select2({
+					placeholder: "{% trans 'Select a schedule' %}",
+					width:'100%',
+				});
+				// datepicker
+				$('#end-date').datepicker({
+					'format': 'dd-mm-yyyy',
+					'autoclose': true,
+					'todayBtn': true,
+					'todayHighlight': true,
+				});				
+			});
+		});
+
+		// id-note-form
+		$(document).on('submit','#id-note-form',function(event){
+			event.preventDefault();
+			var add_note_form = '#id-note-form';
+			$.ajax({
+				url: "{% url 'notes:process_add_note_form' %}",
+				type: "POST",
+				data: $(add_note_form).serialize(),
+				dataType: 'json',
+				success: function(data) {				    	
+					if (!(data['success'])) {
+						$(add_note_form).replaceWith(data['form_html']);
+					}
+					else {
+						loadNotes();
+						$('#add-note-modal').modal('hide');
+						$.growl.notice({ 
+							location: 'br',
+							title: "{% trans 'Added Note' %}", 
+							message: '{% trans "Successfully added note" %}' 
+						});
+					}
+				},
+				error: function () {
+					$(add_note_form).find('.error-message').show()
+				}
+			});
+		});
+
+		// id-edit-note-form
+		$(document).on('submit','#id-edit-note-form',function(event){
+			event.preventDefault();
+			var edit_note_form = '#id-edit-note-form';
+			var pk = $('#edit-note').data("pk");
+			var url = Urls['notes:process_edit_note_form'](pk);
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: $(edit_note_form).serialize(),
+				dataType: 'json',
+				success: function(data) {				    	
+					if (!(data['success'])) {
+						$(edit_note_form).replaceWith(data['form_html']);
+					}
+					else {
+						loadNotes();
+						$('#add-note-modal').modal('hide');
+						$.growl.notice({ 
+							location: 'br',
+							title: "{% trans 'Updated Note' %}", 
+							message: '{% trans "Successfully updated note" %}' 
+						});
+					}
+				},
+				error: function () {
+					$(edit_note_form).find('.error-message').show()
+				}
+			});
+		});
+	</script>
+{% endblock %}
