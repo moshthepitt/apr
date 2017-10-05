@@ -41,8 +41,13 @@ class AddNoteSnippetView(Customer404Mixin, TemplateView):
     def dispatch(self, *args, **kwargs):
         self.this_view = None
         if self.request.GET.get('view_id'):
-            self.this_view = View.objects.get(
-                pk=self.request.GET.get('view_id'))
+            try:
+                self.this_view = View.objects.get(
+                    pk=self.request.GET.get('view_id'))
+            except View.DoesNotExist:
+                pass
+            except ValueError:
+                pass
         return super(AddNoteSnippetView, self).dispatch(*args, **kwargs)
 
 
@@ -93,8 +98,13 @@ class TopNotesSnippetView(Customer404Mixin, TemplateView):
     def dispatch(self, *args, **kwargs):
         self.this_view = None
         if self.request.GET.get('view_id'):
-            self.this_view = View.objects.get(
-                pk=self.request.GET.get('view_id'))
+            try:
+                self.this_view = View.objects.get(
+                    pk=self.request.GET.get('view_id'))
+            except View.DoesNotExist:
+                pass
+            except ValueError:
+                pass
         return super(TopNotesSnippetView, self).dispatch(*args, **kwargs)
 
 
@@ -127,8 +137,13 @@ class TopFeaturedNotesSnippetView(Customer404Mixin, TemplateView):
     def dispatch(self, *args, **kwargs):
         self.this_view = None
         if self.request.GET.get('view_id'):
-            self.this_view = View.objects.get(
-                pk=self.request.GET.get('view_id'))
+            try:
+                self.this_view = View.objects.get(
+                    pk=self.request.GET.get('view_id'))
+            except View.DoesNotExist:
+                pass
+            except ValueError:
+                pass
         return super(TopFeaturedNotesSnippetView, self).dispatch(
             *args, **kwargs)
 
@@ -161,6 +176,11 @@ class BottomNotesSnippetView(Customer404Mixin, TemplateView):
     def dispatch(self, *args, **kwargs):
         self.this_view = None
         if self.request.GET.get('view_id'):
-            self.this_view = View.objects.get(
-                pk=self.request.GET.get('view_id'))
+            try:
+                self.this_view = View.objects.get(
+                    pk=self.request.GET.get('view_id'))
+            except View.DoesNotExist:
+                pass
+            except ValueError:
+                pass
         return super(BottomNotesSnippetView, self).dispatch(*args, **kwargs)
