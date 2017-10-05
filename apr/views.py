@@ -109,9 +109,19 @@ class PDFView(CustomerMixin, TemplateView):
         customer_id = self.request.GET.get('cid')
         date = self.request.GET.get('date')
         self.this_view = None
-        if self.request.GET.get('view_id'):
-            self.this_view = View.objects.get(
-                pk=self.request.GET.get('view_id'))
+        view_id = self.request.GET.get('view_id')
+
+        if view_id:
+            try:
+                view_id = int(view_id)
+            except TypeError:
+                pass
+            else:
+                try:
+                    self.this_view = View.objects.get(pk=view_id)
+                except View.DoesNotExist:
+                    pass
+
         if customer_id and date:
             try:
                 self.customer = get_object_or_404(Customer, pk=customer_id)
@@ -123,6 +133,7 @@ class PDFView(CustomerMixin, TemplateView):
                 self.date = timezone.now().date()
         else:
             raise Http404
+
         return super(PDFView, self).dispatch(*args, **kwargs)
 
 
