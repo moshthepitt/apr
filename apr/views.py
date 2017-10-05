@@ -11,13 +11,14 @@ from django.shortcuts import get_object_or_404
 from django.http import Http404
 from django.utils import timezone
 from django.utils.text import slugify
+from django.db import models
 
 import pdfkit
 from schedule.models import Event
 from schedule.periods import Day
 from dateutil import parser
 
-from appointments.models import Tag
+from appointments.models import Tag, Appointment
 from venues.models import Venue, View
 from subscriptions.models import Subscription
 from core.forms import SupportForm
@@ -62,21 +63,16 @@ class PDFView(CustomerMixin, TemplateView):
     template_name = 'appointments/day-pdf.html'
 
     def get_data(self):
-        period = Day(Event.objects.exclude(appointment=None).filter(
-            appointment__customer=self.customer), self.date)
-        data = [{'id': x.event.appointment_set.first().pk,
-                 'title': "{}".format(
-                        x.event.appointment_set.first().display_name),
-                 'userId': [x.event.appointment_set.first().venue.pk],
-                 'start': x.start.isoformat(),
-                 'end': x.end.isoformat(),
-                 'clientId': x.event.appointment_set.first().clientId,
-                 'status': x.event.appointment_set.first().status,
-                 'tag': getattr(x.event.appointment_set.first().tag,
-                                'html_name', ""),
-                 'body': x.event.description
-                 }
-                for x in period.get_occurrences()]
+        appointments = Appointment.objects.filter(
+            customer=self.customer).filter(
+            event__start__day=self.date.day,
+            event__start__month=self.date.month,
+            event__start__year=self.date.year,
+            event__end__day=self.date.day,
+            event__end__month=self.date.month,
+            event__end__year=self.date.year,
+        )
+        data = [x.serialize() for x in appointments]
         return data
 
     def get_context_data(self, **kwargs):
@@ -130,7 +126,7 @@ class PDFView(CustomerMixin, TemplateView):
             except ValueError:
                 raise Http404
             try:
-                self.date = parser.parse(date)
+                self.date = parser.parse(date).date()
             except ValueError:
                 self.date = timezone.now().date()
         else:
