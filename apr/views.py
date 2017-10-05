@@ -116,6 +116,8 @@ class PDFView(CustomerMixin, TemplateView):
                 view_id = int(view_id)
             except TypeError:
                 pass
+            except ValueError:
+                pass
             else:
                 try:
                     self.this_view = View.objects.get(pk=view_id)
