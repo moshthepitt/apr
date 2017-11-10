@@ -189,18 +189,18 @@ class Appointment(models.Model):
             }
             if feed == 'venue':
                 data['title'] = "{}".format(
-                    self.venue_display_name.encode('utf-8',
-                                                   'ignore').decode('utf-8'))
+                    self.venue_display_name.encode('ascii',
+                                                   'ignore').decode('ascii'))
             if feed == 'print':
                 data['title'] = "{}".format(
                     self.print_title.encode('utf-8', 'ignore').decode('utf-8'))
             if data['body']:
                 data['calendarBody'] = "{}<br/>{}".format(
                     data['title'].encode('ascii', 'ignore').decode('ascii'),
-                    data['body'].encode('utf-8', 'ignore').decode('utf-8'))
+                    data['body'].encode('ascii', 'ignore').decode('ascii'))
             else:
                 data['calendarBody'] = "{}".format(
-                    data['title'].encode('utf-8', 'ignore').decode('utf-8'))
+                    data['title'].encode('ascii', 'ignore').decode('ascii'))
             cache.set(cache_name, data, 60 * 60 * 24 * 14)
         return data
 
