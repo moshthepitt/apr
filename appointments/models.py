@@ -177,8 +177,8 @@ class Appointment(models.Model):
             data = {
                 'id': self.pk,
                 'title': "{}".format(
-                    self.display_name.encode('utf-8',
-                                             'ignore').decode('utf-8')),
+                    self.display_name.encode('ascii',
+                                             'ignore').decode('ascii')),
                 'userId': [self.venue.pk],
                 'start': self.event.start.isoformat(),
                 'end': self.event.end.isoformat(),
@@ -196,7 +196,7 @@ class Appointment(models.Model):
                     self.print_title.encode('utf-8', 'ignore').decode('utf-8'))
             if data['body']:
                 data['calendarBody'] = "{}<br/>{}".format(
-                    data['title'].encode('utf-8', 'ignore').decode('utf-8'),
+                    data['title'].encode('ascii', 'ignore').decode('ascii'),
                     data['body'].encode('utf-8', 'ignore').decode('utf-8'))
             else:
                 data['calendarBody'] = "{}".format(
