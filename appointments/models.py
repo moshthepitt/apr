@@ -24,7 +24,8 @@ class Tag(models.Model):
     name = models.CharField(_("Name"), max_length=255)
     color = models.CharField(_("Color"), max_length=50, blank=True)
     customer = models.ForeignKey(
-        Customer, verbose_name=_("Customer"), on_delete=models.PROTECT, null=True)
+        Customer, verbose_name=_("Customer"), on_delete=models.PROTECT,
+        null=True)
 
     @property
     def html_name(self):
@@ -41,7 +42,8 @@ class Tag(models.Model):
 class Appointment(models.Model):
 
     """
-    An appointment is an Event which has a Client and optionally a Doctor & Venue
+    An appointment is an Event which has a Client and optionally a Doctor
+    & Venue
     """
     SCHEDULED = 'scheduled'
     CONFIRMED = 'confirmed'
@@ -173,7 +175,9 @@ class Appointment(models.Model):
         if not data:
             data = {
                 'id': self.pk,
-                'title': "{}".format(self.display_name),
+                'title': "{}".format(
+                    self.display_name.encode('utf-8',
+                                             'ignore').decode('utf-8')),
                 'userId': [self.venue.pk],
                 'start': self.event.start.isoformat(),
                 'end': self.event.end.isoformat(),
@@ -183,13 +187,19 @@ class Appointment(models.Model):
                 'body': self.event.description
             }
             if feed == 'venue':
-                data['title'] = "{}".format(self.venue_display_name)
+                data['title'] = "{}".format(
+                    self.venue_display_name.encode('utf-8',
+                                                   'ignore').decode('utf-8'))
             if feed == 'print':
-                data['title'] = "{}".format(self.print_title)
+                data['title'] = "{}".format(
+                    self.print_title.encode('utf-8', 'ignore').decode('utf-8'))
             if data['body']:
-                data['calendarBody'] = "{}<br/>{}".format(data['title'], data['body'])
+                data['calendarBody'] = "{}<br/>{}".format(
+                    data['title'].encode('utf-8', 'ignore').decode('utf-8'),
+                    data['body'].encode('utf-8', 'ignore').decode('utf-8'))
             else:
-                data['calendarBody'] = "{}".format(data['title'])
+                data['calendarBody'] = "{}".format(
+                    data['title'].encode('utf-8', 'ignore').decode('utf-8'))
             cache.set(cache_name, data, 60 * 60 * 24 * 14)
         return data
 
