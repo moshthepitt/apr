@@ -1,12 +1,10 @@
-Babel==2.3.4
-Django==1.8.17
-Django-Select2==5.3.0
 amqp==1.4.7
 anyjson==0.3.3
-argparse==1.2.1
+Babel==2.3.4
 billiard==3.3.0.21
 celery==3.1.19
 coverage==4.0.2
+Django==1.8.17
 django-allauth==0.24.1
 django-annoying==0.8.4
 django-appconf==1.0.1
@@ -22,6 +20,7 @@ django-phonenumber-field==1.1.0
 django-randomslugfield==0.3.0
 django-redis==4.3.0
 django-scheduler==0.7.5
+Django-Select2==5.3.0
 django-suit==0.2.15
 django-suit-redactor==0.0.2
 django-tables2==1.10.0
@@ -44,5 +43,4 @@ requests==2.8.1
 requests-oauthlib==0.5.0
 six==1.10.0
 sqlparse==0.1.18
-vobject==0.8.1rc0
-wsgiref==0.1.2
+vobject==0.9.5
