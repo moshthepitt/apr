@@ -27,14 +27,15 @@ def task_48hrbefore_reminders():
     currently sends at 6pm
     """
     t = timezone.now().date()
-    fro = datetime(year=t.year, month=t.month, day=t.day, hour=0, tzinfo=timezone.get_current_timezone())
+    fro = datetime(
+        year=t.year, month=t.month, day=t.day, hour=0,
+        tzinfo=timezone.get_current_timezone())
     fro = fro + timedelta(2)
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
-        appointment__status=Appointment.CANCELED).exclude(
-        appointment__status=Appointment.CONFIRMED), fro, to)
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
@@ -53,14 +54,15 @@ def task_day_before_reminders():
     currently sends at 6pm
     """
     t = timezone.now().date()
-    fro = datetime(year=t.year, month=t.month, day=t.day, hour=0, tzinfo=timezone.get_current_timezone())
+    fro = datetime(
+        year=t.year, month=t.month, day=t.day, hour=0,
+        tzinfo=timezone.get_current_timezone())
     fro = fro + timedelta(1)
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
-        appointment__status=Appointment.CANCELED).exclude(
-        appointment__status=Appointment.CONFIRMED), fro, to)
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
@@ -83,8 +85,7 @@ def task_morning_reminders():
     to = fro + timedelta(1)
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__client=None).exclude(
-        appointment__status=Appointment.CANCELED).exclude(
-        appointment__status=Appointment.CONFIRMED), fro, to)
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
@@ -107,7 +108,8 @@ def task_hour_to_reminder():
     we use 46 minutes to avoid cases where events happening at
     exactly *:15, *:30, *:45, or *:00 dont get multiple reminders
 
-    The idea is to catch any appointments happening soon that have NOT been notified
+    The idea is to catch any appointments happening soon that have NOT been
+    notified
     """
     t = timezone.localtime(timezone.now())
     fro = t + timedelta(minutes=46)
@@ -116,12 +118,13 @@ def task_hour_to_reminder():
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
-        appointment__status=Appointment.CANCELED).exclude(
-        appointment__status=Appointment.CONFIRMED), fro, to)
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True, mailgun_campaign_id="fi0bd")
+    send_period_reminders(
+        event_ids, sendsms=True, turn_off_reminders=True,
+        mailgun_campaign_id="fi0bd")
 
 
 @periodic_task(
@@ -131,9 +134,12 @@ def task_hour_to_reminder():
 )
 def task_immediate_reminder():
     """
-    tries to send a reminder for appointments happening in the next 45 minutes that have NOT been notified
-    probably these were created very soon before the appointment start and thus were not caught by any other task
-    The idea is to catch any appointments happening very soon that have NOT been notified
+    tries to send a reminder for appointments happening in the next 45 minutes
+    that have NOT been notified probably these were created very soon before
+    the appointment start and thus were not caught by any other task
+
+    The idea is to catch any appointments happening very soon that have NOT
+    been notified
     """
     t = timezone.localtime(timezone.now())
     fro = t
@@ -142,12 +148,13 @@ def task_immediate_reminder():
     period = Period(Event.objects.exclude(appointment=None).exclude(
         appointment__client=None).exclude(
         appointment__status=Appointment.NOTIFIED).exclude(
-        appointment__status=Appointment.CANCELED).exclude(
-        appointment__status=Appointment.CONFIRMED), fro, to)
+        appointment__status=Appointment.CANCELED), fro, to)
     event_objects = period.get_occurrences()
     event_ids = list(set([x.event.id for x in event_objects]))
 
-    send_period_reminders(event_ids, sendsms=True, turn_off_reminders=True, mailgun_campaign_id="fi0cz")
+    send_period_reminders(
+        event_ids, sendsms=True, turn_off_reminders=True,
+        mailgun_campaign_id="fi0cz")
 
 
 @task(
