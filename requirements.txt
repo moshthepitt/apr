@@ -1,8 +1,8 @@
-amqp==1.4.7
+amqp==2.2.2
 anyjson==0.3.3
 Babel==2.3.4
-billiard==3.3.0.21
-celery==3.1.19
+billiard==3.5.0.3
+celery==4.1.0
 coverage==4.0.2
 Django==1.8.17
 django-allauth==0.24.1
@@ -14,6 +14,7 @@ django-compressor==1.5
 django-crispy-forms==1.5.2
 django-datatable-view==0.8.3
 django-debug-toolbar==1.4
+django-extensions==2.0.6
 django-js-reverse==0.6.1
 django-jsonview==0.5.0
 django-phonenumber-field==1.1.0
@@ -27,7 +28,7 @@ django-tables2==1.10.0
 funcy==1.6
 future==0.15.2
 icalendar==3.9.1
-kombu==3.0.29
+kombu==4.1.0
 msgpack-python==0.4.6
 oauthlib==1.0.3
 oneapi-python==0.3
@@ -37,10 +38,12 @@ phonenumberslite==8.0.0
 psycopg2==2.6.1
 python-dateutil==2.5.0
 python-openid==2.2.5
-pytz==2016.10
+pytz==2018.3
 redis==2.10.5
 requests==2.8.1
 requests-oauthlib==0.5.0
 six==1.10.0
 sqlparse==0.1.18
+typing==3.6.4
+vine==1.1.4
 vobject==0.9.5
