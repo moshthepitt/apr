@@ -8,7 +8,7 @@ from core import labels
 from customers.models import Customer
 from doctors.models import Doctor
 from phonenumber_field.modelfields import PhoneNumberField
-from users import signals  # noqa
+
 from venues.models import Venue
 
 
