@@ -11,6 +11,7 @@ from allauth.utils import generate_unique_username, email_address_exists
 
 from users.models import Client, UserProfile
 from core import labels
+from phonenumber_field.formfields import PhoneNumberField
 
 
 class ClientModelChoiceField(forms.ModelChoiceField):
@@ -93,6 +94,32 @@ class FullClientForm(forms.ModelForm):
     Add a new client form
     Has all fields
     """
+    other_names = forms.CharField(label=_('Other Names'), required=False)
+    other_phone = PhoneNumberField(label=_("Other Phone"), required=False)
+    first_appointment_date = forms.DateField(
+        label=_("First Appointment Date"), required=False)
+    address = forms.CharField(
+        label=_("Address"),
+        widget=forms.Textarea(attrs={
+            'rows': 5
+        }),
+        required=False)
+    adult_dependant = forms.ChoiceField(
+        label=_("Adult or Dependant"),
+        choices=Client.ADULT_DEPENDANT_CHOICES,
+        required=False)
+    next_of_kin = forms.CharField(
+        label=_('Next of Kin Name'), max_length=255, required=False)
+    next_of_kin_relationship = forms.CharField(
+        label=_('Next of Kin Relationship'), max_length=255, required=False)
+    next_of_kin_phone = forms.CharField(
+        label=_('Next of Kin Phone Number(s)'), max_length=255, required=False)
+    notes = forms.CharField(
+        label=_("Notes"),
+        widget=forms.Textarea(attrs={
+            'rows': 5
+        }),
+        required=False)
 
     class Meta:
         model = Client
@@ -113,6 +140,43 @@ class FullClientForm(forms.ModelForm):
             customer=user.userprofile.customer)
         new_client.save()
         return new_client
+
+    def clean_client_id(self):
+        """Clean client_id"""
+        value = self.cleaned_data.get('client_id')
+        # pylint: disable=no-member
+        if value and Client.objects.exclude(id=self.instance.id).filter(
+                client_id=value).exists():
+            raise forms.ValidationError(
+                _('This client id is already in use.'))
+        return value
+
+    def save(self, commit=True):
+        """
+        Custom save method
+        """
+        client = super(FullClientForm, self).save()
+        data = {
+            "other_names": self.cleaned_data.get('other_names'),
+            "other_phone": self.cleaned_data.get('other_phone'),
+            "first_appointment_date": self.cleaned_data.get(
+                'first_appointment_date'),
+            "adult_dependant": self.cleaned_data.get('adult_dependant'),
+            "address": self.cleaned_data.get('address'),
+            "notes": self.cleaned_data.get('notes'),
+            "next_of_kin": self.cleaned_data.get('next_of_kin'),
+            "next_of_kin_relationship": self.cleaned_data.get(
+                'next_of_kin_relationship'),
+            "next_of_kin_phone": self.cleaned_data.get('next_of_kin_phone'),
+        }
+        if data["first_appointment_date"]:
+            data["first_appointment_date"] = data[
+                "first_appointment_date"].strftime("%x")
+        if data["other_phone"]:
+            data["other_phone"] = data["other_phone"].as_e164
+        client.data = data
+        client.save()
+        return client
 
     def __init__(self, *args, **kwargs):
         super(FullClientForm, self).__init__(*args, **kwargs)
@@ -152,9 +216,18 @@ def edit_client_helper():
             'client_id',
             'first_name',
             'last_name',
+            'other_names',
             'email',
             'phone',
+            'other_phone',
             Field('birth_date', id="id_birth_date"),
+            'adult_dependant',
+            Field('first_appointment_date', id="id_first_appointment_date"),
+            'address',
+            'next_of_kin',
+            'next_of_kin_relationship',
+            'next_of_kin_phone',
+            'notes',
         ),
         FormActions(
             Submit('submit', _('Save'), css_class='btn-success'),
