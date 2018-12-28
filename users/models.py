@@ -1,21 +1,21 @@
 from django.contrib.auth.models import User
+from django.contrib.postgres.fields import JSONField
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from django.core.urlresolvers import reverse
-
-from phonenumber_field.modelfields import PhoneNumberField
 
 from core import labels
+from customers.models import Customer
+from doctors.models import Doctor
+from phonenumber_field.modelfields import PhoneNumberField
 
 from venues.models import Venue
-from doctors.models import Doctor
-from customers.models import Customer
 
 
 class Client(models.Model):
-
     """
-    This models stores clients in the sense that it is clients who come to any appointments
+    This models stores clients in the sense that it is clients who come to any
+    appointments
     """
     SELF_PAYING = '1'
     COMPANY_PAYING = '2'
@@ -29,23 +29,46 @@ class Client(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     client_id = models.CharField(
-        getattr(labels, 'CLIENT_ID', _("Client ID")), max_length=255, blank=True, unique=False, help_text=_("Optional unique client ID"))
+        getattr(labels, 'CLIENT_ID', _("Client ID")),
+        max_length=255,
+        blank=True,
+        unique=False,
+        help_text=_("Optional unique client ID"))
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
-    birth_date = models.DateField(_("Date of Birth"), blank=True, default=None, null=True, help_text=_(
-        "Needed to send birthday greetings"))
+    birth_date = models.DateField(
+        _("Date of Birth"),
+        blank=True,
+        default=None,
+        null=True,
+        help_text=_("Needed to send birthday greetings"))
     email = models.EmailField(
-        _('Email address'), blank=True, help_text=_("Needed to send reminders by email"))
+        _('Email address'),
+        blank=True,
+        help_text=_("Needed to send reminders by email"))
     phone = PhoneNumberField(
-        _('Phone Number'), max_length=255, blank=True, help_text=_("Needed to send reminders by SMS"))
-    payment = models.CharField(_("Payment Method"), max_length=1, choices=PAYMENT_CHOICES, blank=False, help_text=_(
-        "How will payment be made?"))
-    insurance_company = models.CharField(_('Insurance Company'), max_length=255, blank=True)
-    is_active = models.BooleanField(_('Active'), default=True,
-                                    help_text=_('Designates whether this client should be treated as '
-                                                'active.'))
-    creator = models.ForeignKey(User, verbose_name=_("Creator"), on_delete=models.PROTECT)
-    customer = models.ForeignKey(Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
+        _('Phone Number'),
+        max_length=255,
+        blank=True,
+        help_text=_("Needed to send reminders by SMS"))
+    payment = models.CharField(
+        _("Payment Method"),
+        max_length=1,
+        choices=PAYMENT_CHOICES,
+        blank=False,
+        help_text=_("How will payment be made?"))
+    insurance_company = models.CharField(
+        _('Insurance Company'), max_length=255, blank=True)
+    data = JSONField(_("Data"), default=dict)
+    is_active = models.BooleanField(
+        _('Active'),
+        default=True,
+        help_text=_('Designates whether this client should be treated as '
+                    'active.'))
+    creator = models.ForeignKey(
+        User, verbose_name=_("Creator"), on_delete=models.PROTECT)
+    customer = models.ForeignKey(
+        Customer, verbose_name=_("Customer"), on_delete=models.PROTECT)
 
     def get_full_name(self):
         """
@@ -70,13 +93,19 @@ class Client(models.Model):
             elif venue.client_display == Venue.SHOW_CLIENT_ID:
                 return "{}".format(self.client_id)
             elif venue.client_display == Venue.SHOW_CLIENT_NAME_AND_ID:
-                return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
+                return "{name} {client_id}".format(
+                    name=self.__str__(), client_id=self.client_id)
             elif venue.client_display == Venue.SHOW_CLIENT_NAME_PHONE_AND_ID:
                 if self.phone:
-                    return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                    return "{name} {phone} {client_id}".format(
+                        name=self.__str__(),
+                        phone=self.phone,
+                        client_id=self.client_id)
                 else:
-                    return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
-            elif venue.client_display == Venue.SHOW_APPOINTMENT_TITLE and title:
+                    return "{name} {client_id}".format(
+                        name=self.__str__(), client_id=self.client_id)
+            elif venue.client_display == Venue.SHOW_APPOINTMENT_TITLE and\
+                    title:
                 return "{}".format(title)
         elif self.customer.client_display != Customer.SHOW_CLIENT_NAME:
             if self.customer.client_display == Customer.SHOW_CLIENT_PHONE:
@@ -85,14 +114,22 @@ class Client(models.Model):
                 return "{}".format(self.email)
             elif self.customer.client_display == Customer.SHOW_CLIENT_ID:
                 return "{}".format(self.client_id)
-            elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_AND_ID:
-                return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
-            elif self.customer.client_display == Customer.SHOW_CLIENT_NAME_PHONE_AND_ID:
+            elif self.customer.client_display ==\
+                    Customer.SHOW_CLIENT_NAME_AND_ID:
+                return "{name} {client_id}".format(
+                    name=self.__str__(), client_id=self.client_id)
+            elif self.customer.client_display ==\
+                    Customer.SHOW_CLIENT_NAME_PHONE_AND_ID:
                 if self.phone:
-                    return "{name} {phone} {client_id}".format(name=self.__str__(), phone=self.phone, client_id=self.client_id)
+                    return "{name} {phone} {client_id}".format(
+                        name=self.__str__(),
+                        phone=self.phone,
+                        client_id=self.client_id)
                 else:
-                    return "{name} {client_id}".format(name=self.__str__(), client_id=self.client_id)
-            elif self.customer.client_display == Customer.SHOW_APPOINTMENT_TITLE and title:
+                    return "{name} {client_id}".format(
+                        name=self.__str__(), client_id=self.client_id)
+            elif self.customer.client_display ==\
+                    Customer.SHOW_APPOINTMENT_TITLE and title:
                 return "{}".format(title)
 
         return self.get_full_name()
@@ -131,10 +168,19 @@ class UserProfile(models.Model):
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     user = models.OneToOneField(User, verbose_name=_("User"))
-    customer = models.ForeignKey(Customer, verbose_name=_(
-        "Customer"), on_delete=models.PROTECT, blank=True, null=True, default=None)
+    customer = models.ForeignKey(
+        Customer,
+        verbose_name=_("Customer"),
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        default=None)
     role = models.CharField(
-        _("Role"), max_length=1, choices=ROLE_CHOICES, blank=False, default=ADMIN)
+        _("Role"),
+        max_length=1,
+        choices=ROLE_CHOICES,
+        blank=False,
+        default=ADMIN)
     staff = models.BooleanField(_("Staff Member"), default=False)
 
     @property
@@ -190,7 +236,3 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return _("%s's profile") % self.user
-
-
-# ### S I G N A L S ####
-from users import signals
