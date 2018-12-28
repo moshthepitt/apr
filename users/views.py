@@ -108,6 +108,14 @@ class ClientUpdate(CustomerMixin, UpdateView):
     template_name = "users/client_edit.html"
     success_url = reverse_lazy('users:list')
 
+    def get_initial(self):
+        """
+        Returns the initial data to use for forms on this view.
+        """
+        initial = super(ClientUpdate, self).get_initial()
+        initial.update(self.object.data)
+        return initial
+
     def get_context_data(self, **kwargs):
         context = super(ClientUpdate, self).get_context_data(**kwargs)
         context['form_helper'] = edit_client_helper
