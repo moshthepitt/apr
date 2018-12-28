@@ -20,7 +20,7 @@ class ClientModelChoiceField(forms.ModelChoiceField):
             return "%s %s" % (obj.first_name, obj.last_name)
         if obj.email:
             return "%s" % obj.email
-        return "%s" % obj.username
+        return "%s" % obj.client_id
 
 
 class SelectClientForm(forms.Form):
