@@ -165,6 +165,34 @@ class ClientDatatableView(CustomerMixin, DatatableView):
     def get_queryset(self, **kwargs):
         queryset = Client.objects.filter(
             customer=self.request.user.userprofile.customer)
+        # remove new style clients
+        queryset = queryset.exclude(data__has_key='next_of_kin')
+        return queryset
+
+
+class NewClientDatatableView(ClientDatatableView):
+    """New ClientDatatableView"""
+
+    def get_actions(self, instance, *args, **kwargs):
+        if self.request.user.userprofile.is_admin:
+            return format_html(
+                '<a href="{}">View</a> | <a href="{}">Appointments</a> | <a href="{}">Edit</a> | <a href="{}">Delete</a>',  # noqa
+                instance.get_absolute_url(),
+                reverse('users:client_appointments', args=[instance.pk]),
+                reverse('users:edit', args=[instance.pk]),
+                reverse('users:delete', args=[instance.pk]))
+        else:
+            return format_html(
+                '<a href="{}">View</a> | <a href="{}">Appointments</a> | <a href="{}">Edit</a>',  # noqa
+                instance.get_absolute_url(),
+                reverse('users:client_appointments', args=[instance.pk]),
+                reverse('users:edit', args=[instance.pk]))
+
+    def get_queryset(self, **kwargs):
+        queryset = Client.objects.filter(
+            customer=self.request.user.userprofile.customer)
+        # only new style clients
+        queryset = queryset.filter(data__has_key='next_of_kin')
         return queryset
 
 
