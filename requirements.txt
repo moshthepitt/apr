@@ -3,6 +3,8 @@ anyjson==0.3.3
 Babel==2.3.4
 billiard==3.5.0.3
 celery==4.1.0
+certifi==2018.11.29
+chardet==3.0.4
 configparser==3.5.0
 coverage==4.0.2
 Django==1.8.17
@@ -31,6 +33,7 @@ flake8==3.6.0
 funcy==1.6
 future==0.15.2
 icalendar==3.9.1
+idna==2.8
 kombu==4.1.0
 mccabe==0.6.1
 msgpack-python==0.4.6
@@ -46,10 +49,11 @@ python-dateutil==2.5.0
 python-openid==2.2.5
 pytz==2018.3
 redis==2.10.5
-requests==2.8.1
+requests==2.21.0
 requests-oauthlib==0.5.0
 six==1.10.0
 sqlparse==0.1.18
 typing==3.6.4
+urllib3==1.24.1
 vine==1.1.4
 vobject==0.9.5
