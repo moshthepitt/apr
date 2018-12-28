@@ -14,7 +14,6 @@ from core import labels
 
 
 class ClientModelChoiceField(forms.ModelChoiceField):
-
     def label_from_instance(self, obj):
         if obj.first_name:
             return "%s %s" % (obj.first_name, obj.last_name)
@@ -37,12 +36,9 @@ class SelectClientForm(forms.Form):
         self.helper.layout = Layout(
             Fieldset(
                 getattr(labels, 'SELECT_CLIENT', _('Select client')),
-                Field('client', id="id-select-client")
-            ),
+                Field('client', id="id-select-client")),
             FormActions(
-                Submit('submit', _('Submit'), css_class='btn-primary')
-            )
-        )
+                Submit('submit', _('Submit'), css_class='btn-primary')))
 
 
 class AddClientForm(forms.ModelForm):
@@ -62,8 +58,7 @@ class AddClientForm(forms.ModelForm):
             last_name=self.cleaned_data['last_name'],
             client_id=self.cleaned_data['client_id'],
             creator=user,
-            customer=user.userprofile.customer
-        )
+            customer=user.userprofile.customer)
         new_client.save()
         return new_client
 
@@ -87,10 +82,10 @@ class AddClientForm(forms.ModelForm):
             ),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
-                HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
-                css_class="form-group"
-            )
-        )
+                HTML(
+                    "<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"  # noqa
+                ),
+                css_class="form-group"))
 
 
 class FullClientForm(forms.ModelForm):
@@ -101,7 +96,10 @@ class FullClientForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'birth_date', 'email', 'phone', 'client_id']
+        fields = [
+            'first_name', 'last_name', 'birth_date', 'email', 'phone',
+            'client_id'
+        ]
 
     def create_client(self, user):
         new_client = Client(
@@ -112,8 +110,7 @@ class FullClientForm(forms.ModelForm):
             client_id=self.cleaned_data['client_id'],
             birth_date=self.cleaned_data['birth_date'],
             creator=user,
-            customer=user.userprofile.customer
-        )
+            customer=user.userprofile.customer)
         new_client.save()
         return new_client
 
@@ -122,7 +119,8 @@ class FullClientForm(forms.ModelForm):
         self.fields['email'].required = False
         self.fields['phone'].required = False
         self.fields['first_name'].required = True
-        self.fields['last_name'].required = False
+        self.fields['last_name'].required = True
+        self.fields['client_id'].required = True
         self.helper = FormHelper()
         self.helper.form_id = 'id-full-add-client-form'
         self.helper.form_method = 'post'
@@ -138,10 +136,10 @@ class FullClientForm(forms.ModelForm):
             ),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
-                HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
-                css_class="form-group"
-            )
-        )
+                HTML(
+                    "<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"  # noqa
+                ),
+                css_class="form-group"))
 
 
 def edit_client_helper():
@@ -151,19 +149,19 @@ def edit_client_helper():
     helper.layout = Layout(
         Fieldset(
             getattr(labels, 'EDIT_CLIENT', _('Edit client')),
-            'email',
-            'phone',
+            'client_id',
             'first_name',
             'last_name',
+            'email',
+            'phone',
             Field('birth_date', id="id_birth_date"),
-            'client_id',
         ),
         FormActions(
             Submit('submit', _('Save'), css_class='btn-success'),
-            HTML("<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"),
-            css_class="form-group"
-        )
-    )
+            HTML(
+                "<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"  # noqa
+            ),
+            css_class="form-group"))
 
     return helper
 
@@ -181,14 +179,10 @@ def add_client_form_modal_helper():
         Field('first_name', css_class="input-sm"),
         Field('last_name', css_class="input-sm"),
         Field('client_id', css_class="input-sm"),
-        Div(
-            FormActions(
-                Submit('submit', _('Save'), css_class='btn-sm btn-success'),
-                css_class="col-lg-offset-3 col-lg-9"
-            ),
-            css_class="form-group"
-        )
-    )
+        Div(FormActions(
+            Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+            css_class="col-lg-offset-3 col-lg-9"),
+            css_class="form-group"))
 
     return helper
 
@@ -206,20 +200,19 @@ def edit_client_form_modal_helper():
         Field('first_name', css_class="input-sm"),
         Field('last_name', css_class="input-sm"),
         Field('client_id', css_class="input-sm"),
-        Div(
-            FormActions(
-                Submit('submit', _('Save'), css_class='btn-sm btn-success'),
-                css_class="col-lg-offset-3 col-lg-9"
-            ),
-            css_class="form-group"
-        )
-    )
+        Div(FormActions(
+            Submit('submit', _('Save'), css_class='btn-sm btn-success'),
+            css_class="col-lg-offset-3 col-lg-9"),
+            css_class="form-group"))
 
     return helper
 
 
 class AddUserProfileForm(forms.ModelForm):
-    role = forms.ChoiceField(label=_("Role"), choices=UserProfile.ROLE_CHOICES, initial=UserProfile.USER)
+    role = forms.ChoiceField(
+        label=_("Role"),
+        choices=UserProfile.ROLE_CHOICES,
+        initial=UserProfile.USER)
 
     class Meta:
         model = User
@@ -239,8 +232,7 @@ class AddUserProfileForm(forms.ModelForm):
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
             password=password,
-            username=username
-        )
+            username=username)
         new_user.save()
         new_user.userprofile.customer = user.userprofile.customer
         new_user.userprofile.role = self.cleaned_data['role']
@@ -257,20 +249,16 @@ class AddUserProfileForm(forms.ModelForm):
         self.helper.form_id = 'add-userprofile-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
-            Field('first_name'),
-            Field('last_name'),
-            Field('email'),
-            Field('password'),
-            Field('role'),
+            Field('first_name'), Field('last_name'), Field('email'),
+            Field('password'), Field('role'),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
-                HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
-            )
-        )
+                HTML(
+                    "<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>"  # noqa
+                )))
 
 
 class EditUserPasswordForm(forms.ModelForm):
-
     class Meta:
         model = User
         fields = ['password']
@@ -284,9 +272,9 @@ class EditUserPasswordForm(forms.ModelForm):
             Field('password'),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
-                HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
-            )
-        )
+                HTML(
+                    "<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>"  # noqa
+                )))
 
     def change_password(self, userprofile):
         password = make_password(self.cleaned_data['password'])
@@ -329,6 +317,6 @@ class EditUserProfileForm(forms.ModelForm):
             Field('role'),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
-                HTML("<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>")
-            )
-        )
+                HTML(
+                    "<a class='btn btn-default' href='{% url \"users:staff_list\" %}'>Cancel</a>"  # noqa
+                )))
