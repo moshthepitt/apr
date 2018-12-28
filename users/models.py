@@ -26,6 +26,13 @@ class Client(models.Model):
         (INSURANCE_PAYING, _('Insurance')),
     )
 
+    ADULT = 'Adult'
+    DEPENDANT = 'Dependant'
+    ADULT_DEPENDANT_CHOICES = (
+        (ADULT, _(ADULT)),
+        (DEPENDANT, _(DEPENDANT)),
+    )
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     client_id = models.CharField(
