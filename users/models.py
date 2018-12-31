@@ -33,6 +33,22 @@ class Client(models.Model):
         (DEPENDANT, _(DEPENDANT)),
     )
 
+    NEW = '1'
+    UNKNOWN = '2'
+    COMPLETE = '3'
+    STATUS_CHOICES = (
+        (NEW, _("New")),
+        (UNKNOWN, _("Unknown")),
+        (COMPLETE, _("Complete")),
+    )
+    ADD_STATUS_CHOICES = (
+        (NEW, _("New")),
+        (UNKNOWN, _("Unknown")),
+    )
+    COMPLETE_STATUS_CHOICES = (
+        (COMPLETE, _("Complete")),
+    )
+
     created_on = models.DateTimeField(_("created on"), auto_now_add=True)
     updated_on = models.DateTimeField(_("updated on"), auto_now=True)
     client_id = models.CharField(
@@ -40,7 +56,9 @@ class Client(models.Model):
         max_length=255,
         blank=True,
         unique=False,
-        help_text=_("Optional unique client ID"))
+        help_text=_(
+            "Optional unique client ID.  Will be auto-generated if left blank"
+        ))
     first_name = models.CharField(_('First name'), max_length=255, blank=True)
     last_name = models.CharField(_('Last name'), max_length=255, blank=True)
     birth_date = models.DateField(
@@ -64,6 +82,12 @@ class Client(models.Model):
         choices=PAYMENT_CHOICES,
         blank=False,
         help_text=_("How will payment be made?"))
+    status = models.CharField(
+        _("Status"),
+        max_length=1,
+        choices=STATUS_CHOICES,
+        blank=False,
+        default=COMPLETE)
     insurance_company = models.CharField(
         _('Insurance Company'), max_length=255, blank=True)
     data = JSONField(_("Data"), default=dict)
