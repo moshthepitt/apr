@@ -145,7 +145,10 @@ STATICFILES_FINDERS = (
 )
 
 # COMPRESSOR
-COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter', 'compressor.filters.cssmin.CSSMinFilter']
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter',
+    'compressor.filters.cssmin.CSSMinFilter',
+]
 
 STATIC_URL = '/static/'
 
@@ -201,7 +204,11 @@ SUIT_CONFIG = {
 
 }
 
+APR_CLIENTID_PREFIX = "D."
+APR_NEW_CLIENT_PREFIX = "NPT"
+APR_UNKNOWN_CLIENT_PREFIX = "UPT"
+
 try:
-   from local_settings import *
+    from local_settings import *  # noqa
 except ImportError, e:
-   pass
+    pass
