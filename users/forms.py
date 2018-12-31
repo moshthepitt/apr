@@ -12,6 +12,7 @@ from allauth.utils import generate_unique_username, email_address_exists
 from users.models import Client, UserProfile
 from core import labels
 from phonenumber_field.formfields import PhoneNumberField
+from users.utils import get_client_id
 
 
 class ClientModelChoiceField(forms.ModelChoiceField):
@@ -125,7 +126,7 @@ class FullClientForm(forms.ModelForm):
         model = Client
         fields = [
             'first_name', 'last_name', 'birth_date', 'email', 'phone',
-            'client_id'
+            'client_id', 'status'
         ]
 
     def create_client(self, user):
@@ -139,6 +140,7 @@ class FullClientForm(forms.ModelForm):
             creator=user,
             customer=user.userprofile.customer)
         new_client.save()
+        self.generate_client_id(client=new_client)
         return new_client
 
     def clean_client_id(self):
@@ -150,6 +152,15 @@ class FullClientForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('This client id is already in use.'))
         return value
+
+    def generate_client_id(self, client):
+        """Generate client id"""
+        if not client.client_id:
+            client.client_id = get_client_id(
+                client=client,
+                use_name=True,
+            )
+            client.save()
 
     def save(self, commit=True):
         """
@@ -176,6 +187,7 @@ class FullClientForm(forms.ModelForm):
             data["other_phone"] = data["other_phone"].as_e164
         client.data = data
         client.save()
+        self.generate_client_id(client=client)
         return client
 
     def __init__(self, *args, **kwargs):
@@ -184,19 +196,31 @@ class FullClientForm(forms.ModelForm):
         self.fields['phone'].required = False
         self.fields['first_name'].required = True
         self.fields['last_name'].required = True
-        self.fields['client_id'].required = True
+        self.fields['client_id'].required = False
+        self.fields['status'].choices = Client.COMPLETE_STATUS_CHOICES
         self.helper = FormHelper()
         self.helper.form_id = 'id-full-add-client-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
                 getattr(labels, 'CREATE_CLIENT', _('Create new client')),
-                Field('email', css_class="input-sm"),
-                Field('phone', css_class="input-sm"),
-                Field('first_name', css_class="input-sm"),
-                Field('last_name', css_class="input-sm"),
-                Field('birth_date', css_class="input-sm", id="id_birth_date"),
-                Field('client_id', css_class="input-sm"),
+                'client_id',
+                'first_name',
+                'last_name',
+                'other_names',
+                'email',
+                'phone',
+                'other_phone',
+                Field('birth_date', id="id_birth_date"),
+                'adult_dependant',
+                Field(
+                    'first_appointment_date', id="id_first_appointment_date"),
+                'address',
+                'next_of_kin',
+                'next_of_kin_relationship',
+                'next_of_kin_phone',
+                'notes',
+                'status',
             ),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
@@ -204,6 +228,18 @@ class FullClientForm(forms.ModelForm):
                     "<a class='btn btn-default' href='{% url \"users:list\" %}'>Cancel</a>"  # noqa
                 ),
                 css_class="form-group"))
+
+
+class EditClientFullForm(FullClientForm):
+    """Edit client form"""
+
+    def __init__(self, *args, **kwargs):
+        super(EditClientFullForm, self).__init__(*args, **kwargs)
+        self.fields['email'].required = False
+        self.fields['phone'].required = False
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['client_id'].required = True
 
 
 def edit_client_helper():
@@ -228,6 +264,7 @@ def edit_client_helper():
             'next_of_kin_relationship',
             'next_of_kin_phone',
             'notes',
+            'status',
         ),
         FormActions(
             Submit('submit', _('Save'), css_class='btn-success'),
