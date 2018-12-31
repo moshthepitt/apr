@@ -15,6 +15,16 @@ from phonenumber_field.formfields import PhoneNumberField
 from users.utils import get_client_id
 
 
+def generate_client_id(client):
+    """Generate client id"""
+    if not client.client_id:
+        client.client_id = get_client_id(
+            client=client,
+            use_name=True,
+        )
+        client.save()
+
+
 class ClientModelChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
         if obj.first_name:
@@ -50,7 +60,10 @@ class AddClientForm(forms.ModelForm):
 
     class Meta:
         model = Client
-        fields = ['first_name', 'last_name', 'email', 'phone', 'client_id']
+        fields = [
+            'first_name', 'last_name', 'email', 'phone', 'status',
+            'client_id'
+        ]
 
     def create_client(self, user):
         new_client = Client(
@@ -58,29 +71,33 @@ class AddClientForm(forms.ModelForm):
             phone=self.cleaned_data['phone'],
             first_name=self.cleaned_data['first_name'],
             last_name=self.cleaned_data['last_name'],
-            client_id=self.cleaned_data['client_id'],
+            client_id=self.cleaned_data.get('client_id', None),
+            status=self.cleaned_data['status'],
             creator=user,
             customer=user.userprofile.customer)
         new_client.save()
+        generate_client_id(client=new_client)
         return new_client
 
     def __init__(self, *args, **kwargs):
         super(AddClientForm, self).__init__(*args, **kwargs)
         self.fields['email'].required = False
-        self.fields['phone'].required = False
+        self.fields['phone'].required = True
         self.fields['first_name'].required = True
-        self.fields['last_name'].required = False
+        self.fields['last_name'].required = True
+        self.fields['status'].choices = Client.ADD_STATUS_CHOICES
         self.helper = FormHelper()
         self.helper.form_id = 'id-add-client-form'
         self.helper.form_method = 'post'
         self.helper.layout = Layout(
             Fieldset(
                 getattr(labels, 'CREATE_CLIENT', _('Create new client')),
-                Field('email', css_class="input-sm"),
-                Field('phone', css_class="input-sm"),
                 Field('first_name', css_class="input-sm"),
                 Field('last_name', css_class="input-sm"),
-                Field('client_id', css_class="input-sm"),
+                Field('phone', css_class="input-sm"),
+                Field('email', css_class="input-sm"),
+                Field('status', css_class="input-sm"),
+                Field('client_id', type="hidden"),
             ),
             FormActions(
                 Submit('submit', _('Save'), css_class='btn-success'),
@@ -140,7 +157,7 @@ class FullClientForm(forms.ModelForm):
             creator=user,
             customer=user.userprofile.customer)
         new_client.save()
-        self.generate_client_id(client=new_client)
+        generate_client_id(client=new_client)
         return new_client
 
     def clean_client_id(self):
@@ -152,15 +169,6 @@ class FullClientForm(forms.ModelForm):
             raise forms.ValidationError(
                 _('This client id is already in use.'))
         return value
-
-    def generate_client_id(self, client):
-        """Generate client id"""
-        if not client.client_id:
-            client.client_id = get_client_id(
-                client=client,
-                use_name=True,
-            )
-            client.save()
 
     def save(self, commit=True):
         """
@@ -187,7 +195,7 @@ class FullClientForm(forms.ModelForm):
             data["other_phone"] = data["other_phone"].as_e164
         client.data = data
         client.save()
-        self.generate_client_id(client=client)
+        generate_client_id(client=client)
         return client
 
     def __init__(self, *args, **kwargs):
@@ -284,11 +292,12 @@ def add_client_form_modal_helper():
     helper.label_class = 'col-lg-3'
     helper.field_class = 'col-lg-9'
     helper.layout = Layout(
-        Field('email', css_class="input-sm"),
-        Field('phone', css_class="input-sm", id="id_phone"),
         Field('first_name', css_class="input-sm"),
         Field('last_name', css_class="input-sm"),
-        Field('client_id', css_class="input-sm"),
+        Field('phone', css_class="input-sm", id="id_phone"),
+        Field('email', css_class="input-sm"),
+        Field('status', css_class="input-sm"),
+        Field('client_id', type="hidden"),
         Div(FormActions(
             Submit('submit', _('Save'), css_class='btn-sm btn-success'),
             css_class="col-lg-offset-3 col-lg-9"),
@@ -309,7 +318,8 @@ def edit_client_form_modal_helper():
         Field('phone', css_class="input-sm", id="id_phone"),
         Field('first_name', css_class="input-sm"),
         Field('last_name', css_class="input-sm"),
-        Field('client_id', css_class="input-sm"),
+        Field('status', css_class="input-sm"),
+        Field('client_id', type="hidden"),
         Div(FormActions(
             Submit('submit', _('Save'), css_class='btn-sm btn-success'),
             css_class="col-lg-offset-3 col-lg-9"),
