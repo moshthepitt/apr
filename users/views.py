@@ -1,27 +1,26 @@
-from django.views.generic import FormView, DeleteView
-from django.views.generic.detail import DetailView
-from django.views.generic.edit import UpdateView
-from django.core.urlresolvers import reverse_lazy, reverse
-from django.core.cache import cache
-from django.utils.translation import ugettext as _
-from django.utils.html import format_html
-from django.utils import timezone
 from django.contrib import messages
+from django.core.cache import cache
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import Http404
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
+from django.utils.html import format_html
+from django.utils.translation import ugettext as _
+from django.views.generic import DeleteView, FormView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import UpdateView
 
-from datatableview.views import DatatableView
-
-from customers.mixins import CustomerMixin
-from core import labels
 from appointments.models import Appointment
-
-from users.models import Client, UserProfile
-from users.forms import EditUserProfileForm, AddUserProfileForm, FullClientForm
-from users.forms import EditUserPasswordForm, edit_client_helper
-
+from core import labels
+from customers.mixins import CustomerMixin
 from datatableview.utils import FIELD_TYPES
+from datatableview.views import DatatableView
 from phonenumber_field.modelfields import PhoneNumberField
+from users.forms import (AddUserProfileForm, EditClientFullForm,
+                         EditUserPasswordForm, EditUserProfileForm,
+                         FullClientForm, edit_client_helper)
+from users.models import Client, UserProfile
+
 FIELD_TYPES['text'].append(PhoneNumberField)
 
 
@@ -104,7 +103,7 @@ class ClientAppointmentsView(CustomerMixin, DatatableView):
 
 class ClientUpdate(CustomerMixin, UpdateView):
     model = Client
-    form_class = FullClientForm
+    form_class = EditClientFullForm
     template_name = "users/client_edit.html"
     success_url = reverse_lazy('users:list')
 
