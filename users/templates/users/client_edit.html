@@ -41,30 +41,43 @@
 			  	utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
 			});
 
+			$("#id_other_phone").intlTelInput({
+				autoFormat: true,
+				nationalMode: false,
+				preferredCountries: ['ke'],
+				utilsScript: "{% static 'intlTelInput/lib/libphonenumber/build/utils.js' %}"
+			});
+
 			$('#id_birth_date').datepicker({
 				'format': 'yyyy-mm-dd',
 				'autoclose': true,
 				'todayBtn': true,
 				'todayHighlight': true,
 			});
-	  	});	
+			$('#id_first_appointment_date').datepicker({
+				'format': 'yyyy-mm-dd',
+				'autoclose': true,
+				'todayBtn': true,
+				'todayHighlight': true,
+			});
+	  });
 
-	  	// on blur: validate
-	  	var telInput = $("#id_phone");
-	  	telInput.blur(function() {
-	  	  if ($.trim(telInput.val())) {
-	  	    if (telInput.intlTelInput("isValidNumber")) {		      
-	  	      $('#div_id_phone').addClass('has-success');
-	  	      $("#id_full_phone").val($("#id_phone").intlTelInput("getNumber"));
-	  	    } else {
-	  	      telInput.addClass("error");
-	  	      $('#div_id_phone').addClass('has-error');
-	  	    }
-	  	  }
-	  	});
-	  	// on keydown: reset
-	  	telInput.keydown(function() {
-	  	  $('#div_id_phone').removeClass('has-error');
-	  	});
+		// on blur: validate
+		var telInput = $("#id_phone");
+		telInput.blur(function() {
+			if ($.trim(telInput.val())) {
+				if (telInput.intlTelInput("isValidNumber")) {
+					$('#div_id_phone').addClass('has-success');
+					$("#id_full_phone").val($("#id_phone").intlTelInput("getNumber"));
+				} else {
+					telInput.addClass("error");
+					$('#div_id_phone').addClass('has-error');
+				}
+			}
+		});
+		// on keydown: reset
+		telInput.keydown(function() {
+			$('#div_id_phone').removeClass('has-error');
+		});
 	</script>
 {% endblock %}

@@ -1,15 +1,17 @@
 from django.conf.urls import url
 from django.contrib.auth.decorators import login_required
-from users.views import (CanceledClientAppointments, ClientAdd,
-                         ClientAppointmentsView, ClientDatatableView,
-                         ClientDelete, ClientUpdate, ClientView,
-                         PendingClientAppointments, UserProfileAdd,
-                         UserProfileDatatableView, UserProfileDelete,
-                         UserProfileUpdate, UserProfileUpdatePassword,
-                         UserProfileView)
+from users.views import (
+    CanceledClientAppointments, ClientAdd, ClientAppointmentsView,
+    ClientDatatableView, ClientDelete, ClientUpdate, ClientView,
+    PendingClientAppointments, UserProfileAdd, UserProfileDatatableView,
+    UserProfileDelete, UserProfileUpdate, UserProfileUpdatePassword,
+    UserProfileView, NewClientDatatableView)
 
 urlpatterns = [
     url(r'^$', login_required(ClientDatatableView.as_view()), name='list'),
+    url(r'^new-database/',
+        login_required(NewClientDatatableView.as_view()),
+        name='new-list'),
     url(r'^add/', login_required(ClientAdd.as_view()), name='add'),
     url(r'^edit/(?P<pk>\d+)/',
         login_required(ClientUpdate.as_view()),

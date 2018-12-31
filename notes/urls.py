@@ -31,5 +31,4 @@ urlpatterns = [
         name='top_featured_notes_snippet'),
     url(r'^bottom-notes-snippet/',
         login_required(BottomNotesSnippetView.as_view()),
-        name='bottom_notes_snippet'),
-]
+        name='bottom_notes_snippet'), ]
