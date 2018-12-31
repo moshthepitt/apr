@@ -46,8 +46,8 @@ def clean_clients():
 
 
 def get_client_id(client,
-                  prefix=settings.APR_CLIENTID_PREFIX,
-                  separator="-",
+                  prefix=None,
+                  separator=None,
                   use_name=False):
     """
     Generate client id
@@ -59,6 +59,22 @@ def get_client_id(client,
     :return: client_id
     """
     number = 1
+
+    if prefix is None:
+        if client.status == Client.NEW:
+            prefix = settings.APR_NEW_CLIENT_PREFIX
+        elif client.status == Client.UNKNOWN:
+            prefix = settings.APR_UNKNOWN_CLIENT_PREFIX
+        else:
+            prefix = settings.APR_CLIENTID_PREFIX
+
+    if separator is None:
+        if client.status == Client.NEW:
+            separator = settings.APR_NEW_CLIENT__SEP
+        elif client.status == Client.UNKNOWN:
+            separator = settings.APR_UNKNOWN_CLIENT_SEP
+        else:
+            separator = settings.APR_COMPLETE_CLIENT_SEP
 
     if use_name:
         name = next(
@@ -77,8 +93,12 @@ def get_client_id(client,
                             number = int(filter(unicode.isdigit, curr_id))
                         except ValueError:
                             pass
+                        else:
+                            number = number + 1
                     except ValueError:
                         pass
+                    else:
+                        number = number + 1
 
                     return "{prefix}{initial}{separator}{number}".format(
                         prefix=prefix,

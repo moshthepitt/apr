@@ -208,6 +208,10 @@ APR_CLIENTID_PREFIX = "D."
 APR_NEW_CLIENT_PREFIX = "NPT"
 APR_UNKNOWN_CLIENT_PREFIX = "UPT"
 
+APR_UNKNOWN_CLIENT_SEP = "-"
+APR_NEW_CLIENT__SEP = "-"
+APR_COMPLETE_CLIENT_SEP = " "
+
 try:
     from local_settings import *  # noqa
 except ImportError, e:
