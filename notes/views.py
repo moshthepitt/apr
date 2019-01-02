@@ -79,9 +79,9 @@ class TopNotesSnippetView(Customer404Mixin, TemplateView):
         context = super(TopNotesSnippetView, self).get_context_data(**kwargs)
         input_date = self.request.GET.get('date', "")
         if input_date:
-            date = timezone.localtime(parser.parse(input_date)).date
+            date = timezone.localtime(parser.parse(input_date)).date()
         else:
-            date = timezone.now().date
+            date = timezone.now().date()
         context['notes'] = Note.objects.filter(
             customer=self.request.user.userprofile.customer).exclude(
             featured=True).filter(
@@ -118,9 +118,9 @@ class TopFeaturedNotesSnippetView(Customer404Mixin, TemplateView):
             **kwargs)
         input_date = self.request.GET.get('date', "")
         if input_date:
-            date = timezone.localtime(parser.parse(input_date)).date
+            date = timezone.localtime(parser.parse(input_date)).date()
         else:
-            date = timezone.now().date
+            date = timezone.now().date()
         context['notes'] = Note.objects.filter(
             customer=self.request.user.userprofile.customer).exclude(
             featured=False).filter(
@@ -158,9 +158,9 @@ class BottomNotesSnippetView(Customer404Mixin, TemplateView):
             **kwargs)
         input_date = self.request.GET.get('date', "")
         if input_date:
-            date = timezone.localtime(parser.parse(input_date)).date
+            date = timezone.localtime(parser.parse(input_date)).date()
         else:
-            date = timezone.now().date
+            date = timezone.now().date()
         context['notes'] = Note.objects.filter(
             customer=self.request.user.userprofile.customer).filter(
             date=date).filter(note_type=Note.BOTTOM).order_by(
