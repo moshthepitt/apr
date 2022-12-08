@@ -6,7 +6,7 @@ Babel==2.3.4
 backports.functools-lru-cache==1.5
 billiard==3.5.0.3
 celery==4.1.0
-certifi==2018.11.29
+certifi==2022.12.7
 chardet==3.0.4
 configparser==3.5.0
 coverage==4.0.2
